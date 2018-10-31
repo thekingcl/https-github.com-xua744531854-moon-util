@@ -1,0 +1,118 @@
+package com.moon.util.compute.core;
+
+import com.moon.enums.ArraysEnum;
+import com.moon.lang.reflect.MethodUtil;
+import com.moon.util.FilterUtil;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.moon.lang.reflect.MethodUtil.getPublicStaticMethods;
+import static java.util.Objects.requireNonNull;
+
+/**
+ * @author benshaoye
+ */
+class EnsureInvokerOne implements AsInvoker {
+    final AsValuer valuer;
+    final Class sourceType;
+    final String name;
+    Method method;
+    Class paramType;
+    Class componentType;
+
+    private EnsureInvokerOne(AsValuer paramValuer, Class sourceType, String name) {
+        this.valuer = paramValuer;
+        this.sourceType = sourceType;
+        this.name = name;
+    }
+
+    final static EnsureInvokerOne of(AsValuer paramValuer, Class sourceType, String name) {
+        return new EnsureInvokerOne(paramValuer, sourceType, name);
+    }
+
+    /**
+     * 变长参数支持
+     *
+     * @param data
+     * @param type
+     * @return
+     */
+    public Method getMethod(Object data, final Class type) {
+        Method m = this.method;
+        if (m == null || !paramType.isInstance(data)) {
+            List<Method> methods = getMethods(type);
+            m = this.method = requireNonNull(methods.get(0));
+        }
+        return m;
+    }
+
+    private List<Method> getMethods(final Class type) {
+        List<Method> methods = getPublicStaticMethods(
+            sourceType, name, type);
+        if (methods.size() > 0) {
+            paramType = type;
+            return methods;
+        }
+        if (methods.isEmpty()) {
+            Class type0 = ArraysEnum.OBJECTS.type();
+            methods = getPublicStaticMethods(
+                sourceType, name, type0);
+            if (methods.size() > 0) {
+                paramType = type0;
+                componentType = Object.class;
+                return methods;
+            }
+        }
+        if (methods.isEmpty()) {
+            Class type1 = Array.newInstance(type, 0).getClass();
+            methods = getPublicStaticMethods(
+                sourceType, name, type1);
+            if (methods.size() > 0) {
+                componentType = type;
+                return methods;
+            }
+        }
+        if (methods.isEmpty()) {
+            methods = FilterUtil.filter(getPublicStaticMethods(sourceType, name),
+                method0 -> {
+                    Class[] classes = method0.getParameterTypes();
+                    if (classes.length == 1) {
+                        Class clazz = classes[0];
+                        return clazz.isArray()
+                            && clazz.getComponentType().isAssignableFrom(type);
+                    }
+                    return false;
+                }, new ArrayList<>());
+            if (methods.size() > 0) {
+                componentType = type.getComponentType();
+                return methods;
+            }
+        }
+        throw new IllegalArgumentException("Can not find method of: " + sourceType + "(" + name + ")");
+
+    }
+
+    public Object createParams(Object data, Class type) {
+        if (paramType == type) {
+            return data;
+        } else if (paramType == ArraysEnum.OBJECTS.type()) {
+            return new Object[]{data};
+        } else if (componentType.isAssignableFrom(type)) {
+            Object arr = Array.newInstance(componentType, 1);
+            Array.set(arr, 0, data);
+            return arr;
+        } else {
+            throw new IllegalArgumentException("Unknown type of: " + type + "(" + data + ")");
+        }
+    }
+
+    @Override
+    public Object use(Object data) {
+        data = valuer.use(data);
+        Class type = data.getClass();
+        return MethodUtil.invokeStatic(getMethod(data, type), createParams(data, type));
+    }
+}

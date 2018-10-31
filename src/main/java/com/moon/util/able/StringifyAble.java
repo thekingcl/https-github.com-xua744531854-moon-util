@@ -1,0 +1,15 @@
+package com.moon.util.able;
+
+/**
+ * @author benshaoye
+ */
+@FunctionalInterface
+public interface StringifyAble<T> {
+    /**
+     * 字符串化对象
+     *
+     * @param t
+     * @return
+     */
+    String stringify(T t);
+}

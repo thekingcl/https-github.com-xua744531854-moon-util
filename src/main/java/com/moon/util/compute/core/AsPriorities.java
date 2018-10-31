@@ -1,0 +1,31 @@
+package com.moon.util.compute.core;
+
+import static com.moon.lang.ThrowUtil.noInstanceError;
+
+/**
+ * @author benshaoye
+ */
+final class AsPriorities {
+    private AsPriorities() {
+        noInstanceError();
+    }
+
+    final static int BIT_AND = 4;
+    final static int BIT_OR = 4;
+    final static int NOT_OR = 4;
+    final static int PLUS = 5;
+    final static int MINUS = 5;
+    final static int MULTI = 6;
+    final static int DIVIDE = 6;
+    final static int MOD = 6;
+
+    final static int AND = 1;
+    final static int OR = 1;
+    final static int NOT = 2;
+
+    final static int EQ = 3;
+    final static int GT = 3;
+    final static int LT = 3;
+    final static int GT_OR_EQ = 3;
+    final static int LT_OR_EQ = 3;
+}
