@@ -56,6 +56,11 @@ enum Computes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Integer && o2 instanceof Integer){
+                    return ((Number) o1).intValue() + ((Number) o2).intValue();
+                }
+                return ((Number) o1).doubleValue() + ((Number) o2).doubleValue();
+                /*
                 if (o1 instanceof Double
                     || o2 instanceof Double
                     || o1 instanceof Float
@@ -63,6 +68,7 @@ enum Computes implements AsCompute {
                     return ((Number) o1).doubleValue() + ((Number) o2).doubleValue();
                 }
                 return ((Number) o1).intValue() + ((Number) o2).intValue();
+                */
             }
             return String.valueOf(o1) + String.valueOf(o2);
         }

@@ -6,6 +6,7 @@ package com.moon.util.compute.core;
 enum DataConstNull implements AsConst {
     NULL;
 
+
     @Override
     public boolean isNull() {
         return true;
@@ -19,5 +20,10 @@ enum DataConstNull implements AsConst {
     @Override
     public String toString() {
         return "null";
+    }
+
+    @Override
+    public Object use(Object data) {
+        return null;
     }
 }

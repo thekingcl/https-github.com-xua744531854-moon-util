@@ -44,7 +44,7 @@ final class ParseInvoker {
                 }
             } else {
                 // 支持一个参数
-                AsHandler valuer = ParseCore.parseTo(chars, indexer.minus(), len, Constants.YUAN_RIGHT);
+                AsHandler valuer = ParseCore.parse(chars, indexer.minus(), len, Constants.YUAN_RIGHT);
                 if (isStaticCaller) {
                     // 静态方法
                     Class sourceType = ((DataConstLoader) prevValuer).getValue();

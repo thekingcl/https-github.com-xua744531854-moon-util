@@ -15,6 +15,25 @@ class RunnerUtilTestTest {
     Object data, res;
 
     @Test
+    void testMapAndList() {
+        res = RunnerUtil.run("{:}.get(true)");
+        assertions.assertEquals(res, null);
+        res = RunnerUtil.run("{}.isEmpty()");
+        assertions.assertEquals(res, true);
+        res = RunnerUtil.run("{:}.isEmpty()");
+        assertions.assertEquals(res, true);
+
+        res = RunnerUtil.run("{a:10}.isEmpty()");
+        assertions.assertEquals(res, false);
+
+        assertions.assertThrows(()-> RunnerUtil.run("{a:}.isEmpty()"));
+        assertions.assertThrows(()-> RunnerUtil.run("{a}.isEmpty()"));
+
+        res = RunnerUtil.run("{a:10}.isEmpty() + false");
+        assertions.assertEquals(res, "falsefalse");
+    }
+
+    @Test
     void testRun() {
         res = RunnerUtil.run("1+1.doubleValue()");
         assertions.assertEquals(res, 2D);

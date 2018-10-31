@@ -89,13 +89,13 @@ final class ParseGetter {
      * @return
      */
     final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len) {
-        AsHandler handler = ParseCore.parseTo(chars, indexer, len, Constants.FANG_RIGHT);
+        AsHandler handler = ParseCore.parse(chars, indexer, len, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
     }
 
     final static AsHandler parseYuan(char[] chars, IntAccessor indexer, int len) {
-        return ParseCore.parseTo(chars, indexer, len, Constants.YUAN_RIGHT);
+        return ParseCore.parse(chars, indexer, len, Constants.YUAN_RIGHT);
     }
 
     final static AsHandler parseCaller(char[] chars, IntAccessor indexer, int len) {

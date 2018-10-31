@@ -4,6 +4,7 @@ package com.moon.util.compute.core;
  * @author benshaoye
  */
 interface AsConst extends AsValuer {
+
     /**
      * 普通常量
      *

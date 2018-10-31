@@ -65,7 +65,6 @@ class ParseCoreTestTest {
     void testGetTotalFiles() {
         String path = "D:\\WorkSpaces\\IDEA\\moonsky\\src\\main\\java\\com\\moon";
         List<File> all = FileUtil.traverseDirectory(path);
-        IteratorUtil.forEach(all, (Consumer<File>) Console.out::println);
         Console.out.println("==============================================");
         Console.out.println(all.size());
     }

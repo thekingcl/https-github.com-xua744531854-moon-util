@@ -16,12 +16,16 @@ class Calculator implements AsGetter {
 
     final static AsHandler valueOf(List<AsHandler> handlers) {
         AsHandler handler;
-        if (handlers.size() == 1 && (handler = handlers.get(0)).isValuer()) {
+        int size = handlers.size();
+        if (size == 0) {
+            return DataConstNull.NULL;
+        }
+        if (size == 1 && (handler = handlers.get(0)).isValuer()) {
             return handler;
         }
         Calculator calculator = new Calculator(handlers);
         for (AsHandler current : handlers) {
-            if (current.isValuer() && current.isGetter()) {
+            if (current.isValuer() && !current.isConst()) {
                 return calculator;
             }
         }
@@ -33,7 +37,7 @@ class Calculator implements AsGetter {
         return use1(data);
     }
 
-    private Object use1(Object data){
+    private Object use1(Object data) {
         Deque<AsHandler> result = new LinkedList();
         AsHandler[] handlers = this.handlers;
         final int length = handlers.length;
