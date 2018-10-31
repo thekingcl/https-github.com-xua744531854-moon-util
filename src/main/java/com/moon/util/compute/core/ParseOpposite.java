@@ -36,9 +36,11 @@ final class ParseOpposite {
                 break;
         }
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        handler = handler.isConst()
-            ? DataConst.getOpposite((DataConst) handler)
-            : new DataGetterOpposite(handler);
-        return handler;
+        return tryParseLinkedOfOpposite(chars, indexer, len, handler);
+    }
+
+    private static final AsHandler tryParseLinkedOfOpposite(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
+        AsHandler handler = ParseGetter.tryParseLinked(chars, indexer, len, valuer);
+        return handler.isConst() ? DataConst.getOpposite((DataConst) handler) : new DataGetterOpposite(handler);
     }
 }

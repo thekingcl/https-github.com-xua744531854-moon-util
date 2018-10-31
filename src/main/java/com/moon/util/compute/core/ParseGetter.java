@@ -89,10 +89,15 @@ final class ParseGetter {
         } else {
             valuer = ParseUtil.throwErr(chars, indexer);
         }
-        return valuer.isConst() ? valuer : parseNotOfLink(chars, indexer, len, valuer);
+        return tryParseLinkedOfNot(chars, indexer, len, valuer);
     }
 
-    private final static AsHandler parseNotOfLink(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
+    private static AsHandler tryParseLinkedOfNot(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
+        AsHandler parsed = tryParseLinked(chars, indexer, len, valuer);
+        return parsed == valuer && parsed.isConst() ? valuer : new DataGetterNot(parsed);
+    }
+
+    final static AsHandler tryParseLinked(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
         final int index = indexer.get();
         AsHandler next = valuer;
         for (int curr; ; ) {
@@ -105,7 +110,7 @@ final class ParseGetter {
                 if (next == valuer) {
                     indexer.set(index);
                 }
-                return new DataGetterNot(next);
+                return next;
             }
         }
     }
