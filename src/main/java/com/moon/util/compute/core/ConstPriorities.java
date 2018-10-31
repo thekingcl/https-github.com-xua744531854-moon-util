@@ -5,8 +5,8 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 /**
  * @author benshaoye
  */
-final class AsPriorities {
-    private AsPriorities() {
+final class ConstPriorities {
+    private ConstPriorities() {
         noInstanceError();
     }
 

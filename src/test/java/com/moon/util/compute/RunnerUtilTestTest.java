@@ -32,6 +32,24 @@ class RunnerUtilTestTest {
 
         res = RunnerUtil.run("{a:10}.isEmpty() + false");
         assertions.assertEquals(res, "falsefalse");
+
+        res = RunnerUtil.run("!{:}.isEmpty()");
+        assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("!{}.isEmpty()");
+        assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("!({:}.isEmpty())");
+        assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("!({}.isEmpty())");
+        assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("!({:}).isEmpty()");
+        assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("!({}).isEmpty()");
+        assertions.assertEquals(res, false);
     }
 
     @Test

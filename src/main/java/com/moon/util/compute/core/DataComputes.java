@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * @author benshaoye
  */
-enum Computes implements AsCompute {
+enum DataComputes implements AsCompute {
     YUAN_LEFT(10) {
         /**
          * 计算得到一个值
@@ -33,26 +33,26 @@ enum Computes implements AsCompute {
         }
     },
 
-    BIT_AND(AsPriorities.BIT_AND) {
+    BIT_AND(ConstPriorities.BIT_AND) {
         @Override
         public Object handle(Object o2, Object o1) {
             return ((Number) o1).intValue() & ((Number) o2).intValue();
         }
     },
-    BIT_OR(AsPriorities.BIT_OR) {
+    BIT_OR(ConstPriorities.BIT_OR) {
         @Override
         public Object handle(Object o2, Object o1) {
             return ((Number) o1).intValue() | ((Number) o2).intValue();
         }
     },
-    NOT_OR(AsPriorities.NOT_OR) {
+    NOT_OR(ConstPriorities.NOT_OR) {
         @Override
         public Object handle(Object o2, Object o1) {
             return ((Number) o1).intValue() ^ ((Number) o2).intValue();
         }
     },
 
-    PLUS(AsPriorities.PLUS) {
+    PLUS(ConstPriorities.PLUS) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Number && o2 instanceof Number) {
@@ -73,7 +73,7 @@ enum Computes implements AsCompute {
             return String.valueOf(o1) + String.valueOf(o2);
         }
     },
-    MINUS(AsPriorities.MINUS) {
+    MINUS(ConstPriorities.MINUS) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Double
@@ -85,7 +85,7 @@ enum Computes implements AsCompute {
             return ((Number) o1).intValue() - ((Number) o2).intValue();
         }
     },
-    MULTI(AsPriorities.MULTI) {
+    MULTI(ConstPriorities.MULTI) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Double
@@ -97,7 +97,7 @@ enum Computes implements AsCompute {
             return ((Number) o1).intValue() * ((Number) o2).intValue();
         }
     },
-    DIVIDE(AsPriorities.DIVIDE) {
+    DIVIDE(ConstPriorities.DIVIDE) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Double
@@ -109,7 +109,7 @@ enum Computes implements AsCompute {
             return ((Number) o1).intValue() / ((Number) o2).intValue();
         }
     },
-    MOD(AsPriorities.MOD) {
+    MOD(ConstPriorities.MOD) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Double
@@ -121,7 +121,7 @@ enum Computes implements AsCompute {
             return ((Number) o1).intValue() % ((Number) o2).intValue();
         }
     },
-    AND(AsPriorities.AND) {
+    AND(ConstPriorities.AND) {
         @Override
         public Object handle(Object o2, Object o1) {
             // return Boolean.valueOf(((Boolean) o1).booleanValue() && ((Boolean) o2).booleanValue());
@@ -142,7 +142,7 @@ enum Computes implements AsCompute {
             return (Boolean) left.use(data) && (Boolean) right.use(data);
         }
     },
-    OR(AsPriorities.OR) {
+    OR(ConstPriorities.OR) {
         @Override
         public Object handle(Object o2, Object o1) {
             // return Boolean.valueOf(((Boolean) o1).booleanValue() || ((Boolean) o2).booleanValue());
@@ -163,13 +163,13 @@ enum Computes implements AsCompute {
             return (Boolean) left.use(data) || (Boolean) right.use(data);
         }
     },
-    EQ(AsPriorities.EQ) {
+    EQ(ConstPriorities.EQ) {
         @Override
         public Object handle(Object o2, Object o1) {
             return o1 == o2 || Boolean.valueOf(Objects.equals(o1, o2));
         }
     },
-    GT(AsPriorities.GT) {
+    GT(ConstPriorities.GT) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
@@ -181,7 +181,7 @@ enum Computes implements AsCompute {
             return ((Comparable) o1).compareTo(o2) > 0;
         }
     },
-    LT(AsPriorities.LT) {
+    LT(ConstPriorities.LT) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
@@ -193,7 +193,7 @@ enum Computes implements AsCompute {
             return ((Comparable) o1).compareTo(o2) < 0;
         }
     },
-    GT_OR_EQ(AsPriorities.GT_OR_EQ) {
+    GT_OR_EQ(ConstPriorities.GT_OR_EQ) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
@@ -205,7 +205,7 @@ enum Computes implements AsCompute {
             return ((Comparable) o1).compareTo(o2) >= 0;
         }
     },
-    LT_OR_EQ(AsPriorities.LT_OR_EQ) {
+    LT_OR_EQ(ConstPriorities.LT_OR_EQ) {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
@@ -220,7 +220,7 @@ enum Computes implements AsCompute {
 
     private final int priority;
 
-    Computes(int priority) {
+    DataComputes(int priority) {
         this.priority = priority;
     }
 

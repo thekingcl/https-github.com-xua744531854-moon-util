@@ -7,10 +7,10 @@ import java.util.List;
 /**
  * @author benshaoye
  */
-class Calculator implements AsGetter {
+class DataGetterCalculator implements AsGetter {
     final AsHandler[] handlers;
 
-    private Calculator(List<AsHandler> handlers) {
+    private DataGetterCalculator(List<AsHandler> handlers) {
         this.handlers = handlers.toArray(new AsHandler[handlers.size()]);
     }
 
@@ -23,7 +23,7 @@ class Calculator implements AsGetter {
         if (size == 1 && (handler = handlers.get(0)).isValuer()) {
             return handler;
         }
-        Calculator calculator = new Calculator(handlers);
+        DataGetterCalculator calculator = new DataGetterCalculator(handlers);
         for (AsHandler current : handlers) {
             if (current.isValuer() && !current.isConst()) {
                 return calculator;

@@ -1,6 +1,5 @@
 package com.moon.util.compute.core;
 
-import com.moon.enums.Predicates;
 import com.moon.lang.ref.IntAccessor;
 
 import java.util.HashMap;
@@ -70,13 +69,13 @@ class ParseCore {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == end0 || curr == end1 || tester.test(curr)) {
                 if (curr == YUAN_RIGHT) {
-                    cleanMethodsTo(values, methods, Computes.YUAN_LEFT);
+                    cleanMethodsTo(values, methods, DataComputes.YUAN_LEFT);
                 }
                 break;
             }
             handler = core(chars, indexer, len, curr, values, methods, handler);
         }
-        return Calculator.valueOf(cleanMethodsTo(values, methods, null));
+        return DataGetterCalculator.valueOf(cleanMethodsTo(values, methods, null));
     }
 
     private final static AsHandler core(
@@ -94,56 +93,56 @@ class ParseCore {
             switch (curr) {
                 case PLUS:
                     // +
-                    handler = compareAndSwapSymbol(values, methods, Computes.PLUS);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.PLUS);
                     break;
                 case MINUS:
                     // -
                     if (prevHandler == null || prevHandler.isHandler()) {
                         values.add(handler = ParseOpposite.parse(chars, indexer, len));
                     } else {
-                        handler = compareAndSwapSymbol(values, methods, Computes.MINUS);
+                        handler = compareAndSwapSymbol(values, methods, DataComputes.MINUS);
                     }
                     break;
                 case MULTI:
                     // *
-                    handler = compareAndSwapSymbol(values, methods, Computes.MULTI);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.MULTI);
                     break;
                 case DIVIDE:
                     // /
-                    handler = compareAndSwapSymbol(values, methods, Computes.DIVIDE);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.DIVIDE);
                     break;
                 case MOD:
                     // %
-                    handler = compareAndSwapSymbol(values, methods, Computes.MOD);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.MOD);
                     break;
                 case NOT_OR:
                     // ^
-                    handler = compareAndSwapSymbol(values, methods, Computes.NOT_OR);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.NOT_OR);
                     break;
                 case EQ:
                     // ==
                     ParseUtil.assertTrue(chars[indexer.get()] == EQ, chars, indexer);
-                    handler = compareAndSwapSymbol(values, methods, Computes.EQ);
+                    handler = compareAndSwapSymbol(values, methods, DataComputes.EQ);
                     break;
                 case GT:
                     // >、>=
                     handler = toGtLtAndOr(chars, indexer, values, methods,
-                        EQ, Computes.GT_OR_EQ, Computes.GT);
+                        EQ, DataComputes.GT_OR_EQ, DataComputes.GT);
                     break;
                 case LT:
                     // <、<=
                     handler = toGtLtAndOr(chars, indexer, values, methods,
-                        EQ, Computes.LT_OR_EQ, Computes.LT);
+                        EQ, DataComputes.LT_OR_EQ, DataComputes.LT);
                     break;
                 case AND:
                     // && 、&
                     handler = toGtLtAndOr(chars, indexer, values, methods,
-                        AND, Computes.AND, Computes.BIT_AND);
+                        AND, DataComputes.AND, DataComputes.BIT_AND);
                     break;
                 case OR:
                     // || 、|
                     handler = toGtLtAndOr(chars, indexer, values, methods,
-                        OR, Computes.OR, Computes.BIT_OR);
+                        OR, DataComputes.OR, DataComputes.BIT_OR);
                     break;
                 case NOT:
                     // !
@@ -155,12 +154,7 @@ class ParseCore {
                     break;
                 case DOT:
                     // .
-                    AsValuer prevValuer = (AsValuer) values.pollLast();
-                    handler = ParseGetter.parseDot(chars, indexer, len);
-                    ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-                    AsHandler invoker = ParseInvoker.parse(chars, indexer, len, handler.toString(), prevValuer);
-                    handler = invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
-                    values.add(handler);
+                    values.add(handler = ParseGetter.parseDot(chars, indexer, len, values.pollLast()));
                     break;
                 case HUA_LEFT:
                     // {
@@ -192,9 +186,9 @@ class ParseCore {
     private final static AsCompute toGtLtAndOr(
         char[] chars, IntAccessor indexer,
         LinkedList<AsHandler> values, LinkedList<AsHandler> methods,
-        int testTarget, Computes matchType, Computes defaultType
+        int testTarget, DataComputes matchType, DataComputes defaultType
     ) {
-        Computes type;
+        DataComputes type;
         if (chars[indexer.get()] == testTarget) {
             indexer.add();
             type = matchType;
@@ -236,7 +230,7 @@ class ParseCore {
     }
 
     private final static boolean isBoundary(AsHandler computer) {
-        return computer == null || computer == Computes.YUAN_LEFT;
+        return computer == null || computer == DataComputes.YUAN_LEFT;
     }
 
     private final static boolean isNotBoundary(AsHandler computer) {

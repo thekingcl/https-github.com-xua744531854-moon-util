@@ -5,7 +5,7 @@ import com.moon.util.compute.core.ParseUtil;
 /**
  * 介绍，运行计算表达式工具类，如：
  * <p>employee.name<p>employee.name.length()
- * <p>group.employee.age.doubleValue() + employee.name.length() + 20 * 5 等
+ * <p>group.employee.age.doubleValue() + employee.name.length() + 20 * 5 等。
  * <p>
  * <strong>【 一 】</strong>、支持的运算：
  * <p>
@@ -92,7 +92,7 @@ import com.moon.util.compute.core.ParseUtil;
  */
 public final class RunnerUtil extends ParseUtil {
     /**
-     * 默认字符串表达式分隔符：{"{{", "}}"}
+     * 默认字符串表达式分隔符：DELIMITERS = {"{{", "}}"}
      */
     public final static String[] DELIMITERS = {"{{", "}}"};
 

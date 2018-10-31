@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 import static com.moon.lang.SupportUtil.setChar;
@@ -53,10 +54,19 @@ final class ParseGetter {
      * @param len
      * @return
      */
-    final static AsValuer parseDot(char[] chars, IntAccessor indexer, int len) {
+    private final static AsValuer parseDot(char[] chars, IntAccessor indexer, int len) {
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         ParseUtil.assertTrue(ParseUtil.isVar(curr), chars, indexer);
         return parseVar(chars, indexer, len, curr);
+    }
+
+    final static AsHandler parseDot(char[] chars, IntAccessor indexer, int len, AsHandler prevHandler) {
+        AsValuer prevValuer = (AsValuer) prevHandler;
+        AsHandler handler = parseDot(chars, indexer, len);
+        ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
+        AsHandler invoker = ParseInvoker.parse(chars, indexer, len, handler.toString(), prevValuer);
+        handler = invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
+        return handler;
     }
 
     final static AsHandler parseNot(char[] chars, IntAccessor indexer, int len) {
@@ -69,15 +79,35 @@ final class ParseGetter {
                 valuer = DataConstBoolean.FALSE;
             } else if (valuer == DataConstBoolean.FALSE) {
                 valuer = DataConstBoolean.TRUE;
-            } else {
-                valuer = new DataGetterNot(valuer);
             }
         } else if (curr == Constants.FANG_LEFT) {
-            valuer = new DataGetterNot(parseFang(chars, indexer, len));
+            valuer = parseFang(chars, indexer, len);
+        } else if (curr == Constants.YUAN_LEFT) {
+            valuer = parseYuan(chars, indexer, len);
+        } else if (curr == Constants.HUA_LEFT) {
+            valuer = ParseCurly.parse(chars, indexer, len);
         } else {
             valuer = ParseUtil.throwErr(chars, indexer);
         }
-        return valuer;
+        return valuer.isConst() ? valuer : parseNotOfLink(chars, indexer, len, valuer);
+    }
+
+    private final static AsHandler parseNotOfLink(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
+        final int index = indexer.get();
+        AsHandler next = valuer;
+        for (int curr; ; ) {
+            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
+            if (curr == Constants.DOT) {
+                next = parseDot(chars, indexer, len, next);
+            } else if (curr == Constants.FANG_LEFT) {
+                next = parseFangToComplex(chars, indexer, len, next);
+            } else {
+                if (next == valuer) {
+                    indexer.set(index);
+                }
+                return new DataGetterNot(next);
+            }
+        }
     }
 
     /**
@@ -92,6 +122,22 @@ final class ParseGetter {
         AsHandler handler = ParseCore.parse(chars, indexer, len, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
+    }
+
+    /**
+     * 参考{@link ParseCore#core(char[], IntAccessor, int, int, LinkedList, LinkedList, AsHandler)}
+     * case FANG_LEFT: 的详细步骤
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param prevHandler
+     * @return
+     */
+    private final static AsHandler parseFangToComplex(char[] chars, IntAccessor indexer, int len, AsHandler prevHandler) {
+        AsHandler handler = ParseGetter.parseFang(chars, indexer, len);
+        ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
+        return ((DataGetterFang) handler).toComplex(prevHandler);
     }
 
     final static AsHandler parseYuan(char[] chars, IntAccessor indexer, int len) {

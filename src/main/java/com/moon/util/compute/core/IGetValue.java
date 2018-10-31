@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author benshaoye
  */
-enum IGet implements IGetter {
+enum IGetValue implements IGetter {
     MAP {
         /**
          * Evaluates this predicate on the given argument.
