@@ -3,7 +3,7 @@ package com.moon.util;
 import com.moon.lang.ClassUtil;
 import com.moon.lang.ref.WeakAccessor;
 import com.moon.lang.reflect.MethodUtil;
-import com.moon.util.impl.TextReaderIterator;
+import com.moon.util.iterators.TextReaderIterator;
 import com.moon.util.json.JSON;
 
 import java.io.File;

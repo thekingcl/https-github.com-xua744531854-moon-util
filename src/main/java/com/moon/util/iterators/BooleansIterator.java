@@ -1,4 +1,4 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import java.util.Iterator;
 
@@ -6,13 +6,13 @@ import java.util.Iterator;
  * @author benshaoye
  * @date 2018/9/11
  */
-public class IntsIterator
+public class BooleansIterator
     extends BaseArrayIterator
-    implements Iterator<Integer> {
+    implements Iterator<Boolean> {
 
-    private int[] array;
+    private boolean[] array;
 
-    public IntsIterator(int[] array) {
+    public BooleansIterator(boolean[] array) {
         super(array == null ? 0 : array.length);
         this.array = array;
     }
@@ -23,7 +23,7 @@ public class IntsIterator
     }
 
     @Override
-    public Integer next() {
+    public Boolean next() {
         return this.array[index++];
     }
 }

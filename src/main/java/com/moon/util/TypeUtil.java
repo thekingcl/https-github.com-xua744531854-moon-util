@@ -2,7 +2,6 @@ package com.moon.util;
 
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.WeakAccessor;
-import com.moon.util.impl.GenericTypeConverter;
 
 import java.util.function.BiFunction;
 

@@ -1,4 +1,4 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import java.util.Iterator;
 

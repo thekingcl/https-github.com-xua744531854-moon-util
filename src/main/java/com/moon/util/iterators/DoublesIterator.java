@@ -1,4 +1,4 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import java.util.Iterator;
 
@@ -6,13 +6,13 @@ import java.util.Iterator;
  * @author benshaoye
  * @date 2018/9/11
  */
-public class BytesIterator
+public class DoublesIterator
     extends BaseArrayIterator
-    implements Iterator<Byte> {
+    implements Iterator<Double> {
 
-    private byte[] array;
+    private double[] array;
 
-    public BytesIterator(byte[] array) {
+    public DoublesIterator(double[] array) {
         super(array == null ? 0 : array.length);
         this.array = array;
     }
@@ -23,7 +23,7 @@ public class BytesIterator
     }
 
     @Override
-    public Byte next() {
+    public Double next() {
         return this.array[index++];
     }
 }

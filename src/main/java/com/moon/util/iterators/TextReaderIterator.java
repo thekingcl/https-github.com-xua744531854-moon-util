@@ -1,9 +1,8 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import com.moon.io.FileUtil;
 import com.moon.io.IOUtil;
 import com.moon.lang.StringUtil;
-import com.moon.lang.SystemUtil;
 import com.moon.util.ResourceUtil;
 
 import java.io.*;

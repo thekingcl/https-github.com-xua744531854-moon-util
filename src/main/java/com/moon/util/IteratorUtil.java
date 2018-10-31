@@ -6,7 +6,7 @@ import com.moon.enums.CollectionEnum;
 import com.moon.lang.EnumUtil;
 import com.moon.lang.ThrowUtil;
 import com.moon.util.function.*;
-import com.moon.util.impl.*;
+import com.moon.util.iterators.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.function.*;
 import static com.moon.io.FileUtil.getFileInputStream;
 import static com.moon.lang.ThrowUtil.throwRuntime;
 import static com.moon.util.OptionalUtil.computeOrElse;
-import static com.moon.util.impl.NullIterator.Null;
+import static com.moon.util.iterators.NullIterator.Null;
 
 /**
  * 通用迭代器

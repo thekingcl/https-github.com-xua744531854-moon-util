@@ -1,4 +1,4 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import java.util.Iterator;
 
@@ -6,13 +6,13 @@ import java.util.Iterator;
  * @author benshaoye
  * @date 2018/9/11
  */
-public class DoublesIterator
+public class ShortsIterator
     extends BaseArrayIterator
-    implements Iterator<Double> {
+    implements Iterator<Short> {
 
-    private double[] array;
+    private short[] array;
 
-    public DoublesIterator(double[] array) {
+    public ShortsIterator(short[] array) {
         super(array == null ? 0 : array.length);
         this.array = array;
     }
@@ -23,7 +23,7 @@ public class DoublesIterator
     }
 
     @Override
-    public Double next() {
+    public Short next() {
         return this.array[index++];
     }
 }

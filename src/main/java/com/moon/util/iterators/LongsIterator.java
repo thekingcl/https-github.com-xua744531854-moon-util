@@ -1,4 +1,4 @@
-package com.moon.util.impl;
+package com.moon.util.iterators;
 
 import java.util.Iterator;
 
@@ -6,13 +6,13 @@ import java.util.Iterator;
  * @author benshaoye
  * @date 2018/9/11
  */
-public class FloatsIterator
+public class LongsIterator
     extends BaseArrayIterator
-    implements Iterator<Float> {
+    implements Iterator<Long> {
 
-    private float[] array;
+    private long[] array;
 
-    public FloatsIterator(float[] array) {
+    public LongsIterator(long[] array) {
         super(array == null ? 0 : array.length);
         this.array = array;
     }
@@ -23,7 +23,7 @@ public class FloatsIterator
     }
 
     @Override
-    public Float next() {
+    public Long next() {
         return this.array[index++];
     }
 }
