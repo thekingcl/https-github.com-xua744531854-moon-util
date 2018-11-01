@@ -38,6 +38,8 @@ class ParseCurlyTestTest {
         doMap();
         doVarMap();
         doVarList();
+
+        assertions.assertThrows(() -> running0("{key: 'value', : (50 + 60   ), true: @DateUtil.now()+0}"));
     }
 
     void doVarList() {

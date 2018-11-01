@@ -80,6 +80,22 @@ class ParseCoreTestTest {
     }
 
     @Test
+    void testGetOpposite() {
+        handler = ParseCore.parse("1+-1*5");
+        assertions.assertEq((Integer) handler.use(), -4);
+        handler = ParseCore.parse("(1+-1)*5");
+        assertions.assertEq((Integer) handler.use(), 0);
+        handler = ParseCore.parse("-1*5");
+        assertions.assertEq((Integer) handler.use(), -5);
+
+        data = new HashMap(){{
+            put(true, 20);
+        }};
+        handler = ParseCore.parse("-[true]*5");
+        assertions.assertEq((Integer) handler.use(data), -100);
+    }
+
+    @Test
     void testParse() {
         handler = ParseCore.parse("1+1");
         assertions.assertEq((Integer) handler.use(), 2);

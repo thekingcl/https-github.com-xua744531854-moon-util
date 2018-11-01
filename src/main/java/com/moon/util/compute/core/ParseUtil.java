@@ -3,16 +3,18 @@ package com.moon.util.compute.core;
 import com.moon.lang.CharUtil;
 import com.moon.lang.ref.IntAccessor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static com.moon.util.compute.core.Constants.DOUBLE_QUOTE;
+import static com.moon.util.compute.core.Constants.SINGLE_QUOTE;
 import static java.lang.Character.isWhitespace;
 
 /**
  * @author benshaoye
  */
 public class ParseUtil {
+    /**
+     * @throws AssertionError 不可实例化
+     */
     protected ParseUtil() {
         noInstanceError();
     }
@@ -34,7 +36,7 @@ public class ParseUtil {
     }
 
     final static boolean isStr(int value) {
-        return value == Constants.SINGLE_QUOTE || value == Constants.DOUBLE_QUOTE;
+        return value == SINGLE_QUOTE || value == DOUBLE_QUOTE;
     }
 
     final static void setIndexer(IntAccessor indexer, int index, int len) {
@@ -88,20 +90,6 @@ public class ParseUtil {
         );
     }
 
-    final static void assertNull(Object value, char[] chars, IntAccessor indexer) {
-        if (value == null) {
-            return;
-        }
-        throwErr(chars, indexer);
-    }
-
-
-    final static void assertNonNull(Object value, char[] chars, IntAccessor indexer) {
-        if (value == null) {
-            throwErr(chars, indexer);
-        }
-    }
-
     final static void assertTrue(boolean value, char[] chars, IntAccessor indexer) {
         if (value) {
             return;
@@ -115,16 +103,37 @@ public class ParseUtil {
         }
     }
 
+    final static void assertNonNull(Object value, char[] chars, IntAccessor indexer) {
+        if (value == null) {
+            throwErr(chars, indexer);
+        }
+    }
+
     /*
      * -----------------------------------------------
      * api
      * -----------------------------------------------
      */
 
+    /**
+     * 解析运行一个字符串表达式的入口方法
+     *
+     * @param expression
+     * @param data
+     * @return
+     */
     protected final static Object run0(String expression, Object data) {
         return ParseCore.parse(expression).use(data);
     }
 
+    /**
+     * 解析运行一个包含字符串表达式的入口方法
+     *
+     * @param expression
+     * @param delimiters 指定分隔符
+     * @param data       如表达式中有变量，变量则从 data 中读取值
+     * @return 返回运行结果
+     */
     protected final static Object parseRun0(String expression, String[] delimiters, Object data) {
         return ParseDelimiters.parse(expression, delimiters).use(data);
     }

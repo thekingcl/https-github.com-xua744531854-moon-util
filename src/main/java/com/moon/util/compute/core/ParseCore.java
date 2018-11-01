@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.IntPredicate;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
@@ -20,6 +21,21 @@ import static com.moon.util.compute.core.Constants.*;
 class ParseCore {
     private ParseCore() {
         noInstanceError();
+    }
+
+    enum Testers implements IntPredicate {
+        FALSE {
+            @Override
+            public boolean test(int value) {
+                return false;
+            }
+        },
+        NOT_NUM {
+            @Override
+            public boolean test(int value) {
+                return !ParseUtil.isNum(value);
+            }
+        }
     }
 
     private final static Map<String, AsHandler> CACHE = new HashMap<>();
@@ -59,13 +75,19 @@ class ParseCore {
     final static AsHandler parse(
         char[] chars, IntAccessor indexer, int len, int end0, int end1
     ) {
+        return parse(chars, indexer, len, end0, end1, Testers.FALSE);
+    }
+
+    final static AsHandler parse(
+        char[] chars, IntAccessor indexer, int len, int end0, int end1, IntPredicate tester
+    ) {
         LinkedList<AsHandler> values = new LinkedList<>();
         Deque<AsHandler> methods = new LinkedList();
         AsHandler handler = null;
         int curr;
         for (; indexer.get() < len; ) {
             curr = ParseUtil.skipWhitespace(chars, indexer, len);
-            if (curr == end0 || curr == end1) {
+            if (curr == end0 || curr == end1 || tester.test(curr)) {
                 if (curr == YUAN_RIGHT) {
                     cleanMethodsTo(values, methods, Computes.YUAN_LEFT);
                 }
@@ -96,15 +118,11 @@ class ParseCore {
                     break;
                 case MINUS:
                     // -
-                    handler = compareAndSwapSymbol(values, methods, Computes.MINUS);
-                    /*
-                    int currChar = ParseUtil.skipWhitespace(chars, indexer, len);
-                    ParseUtil.assertTrue(ParseUtil.isNum(currChar), chars, indexer);
-                    handler = ParseConst.parseNum(chars, indexer, len, curr);
-                    ParseUtil.assertTrue(handler instanceof DataConst, chars, indexer);
-                    compareAndSwapSymbol(values, methods, Computes.PLUS);
-                    values.add(handler);
-                    */
+                    if (prevHandler == null || prevHandler.isHandler()) {
+                        values.add(handler = ParseOpposite.parse(chars, indexer, len));
+                    } else {
+                        handler = compareAndSwapSymbol(values, methods, Computes.MINUS);
+                    }
                     break;
                 case MULTI:
                     // *

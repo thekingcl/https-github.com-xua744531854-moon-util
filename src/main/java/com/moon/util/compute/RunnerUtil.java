@@ -3,99 +3,114 @@ package com.moon.util.compute;
 import com.moon.util.compute.core.ParseUtil;
 
 /**
- * 介绍：
+ * 介绍，
+ * 预定义的关键字有：true、false、null
  * <p>
- * 【 1 】、此工具类没有 char 类型，单引号和双引号包裹起来的均是字符串（类似 JavaScript）
- * - 当出现交叉包裹时抛出异常或者不能得到预期结果，如：
- * - 'abc"def'.gh" ---> 抛出异常
- * - 将单引号设为字符串符号是为了书写方便，将双引号设为字符串符号是为了兼容 Java 自身语言特性
+ * <strong>【 一 】</strong>、支持的运算：
  * <p>
+ * 1. 基本运算：+、-、*、/、%；
  * <p>
- * 【 2 】、所有整形数均采用 int 数据计算，所有浮点数均采用 double 计算；
- * - char 类型数据会被视为字符串进行，进而可能导致得不到预期结果；
- * - 其他自动转型同 Java 自身语言特性。
+ * 2. 位运算：&、|、^；
  * <p>
- * - 虽然是用 int 或 double 进行计算，但是由于 Java 语言的自动拆装箱，实际上数字也具有对应的方法
- * - 如：20.compareTo(30)
- * - 同样，true 和 false 也是如此
+ * 3. 比较运算：==、>、>=、==、<、<=；
  * <p>
+ * 4. 逻辑运算：&&、||、！;
  * <p>
- * 【 3 】、可通过 ‘@’ 符号执行静态方法：目前只支持无参或只有一个参数的方法执行和静态字段的访问
- * - 包括{@link java.lang}、{@link java.lang.reflect}、{@link java.util}包中的静态公共方法;
- * - 调用方式形如：1 + 2 + @Objects.toString('10') --> "310"
- * - 单引号包裹的 ‘'10'’ 是此工具类支持的字符串，‘@’ 符号是此工具类支持的静态方法调用符号
+ * 5. 括号提升优先级：( )
  * <p>
- * - 也包括此工具类的所有工具方法，如：@DateUtil.format();
- * - 静态公共字段，如：@Console.out.getLowestLevel().name();
- * - 内部类的调用方式需如此：@Console$Level.ASSERT.name()，需要手动将 ‘$’ 符号包含进去
+ * <strong>【 二 】</strong>、预定义关键字：null、true、false
  * <p>
- * - 调用时注意方法本身的规则，比如只能调用公共类的静态公共方法，不建议调用过时方法等
+ * <strong>【 三 】</strong>、int 数字：12、25 等
  * <p>
- * - 虽然支持静态方法调用，但仍然建议使用已经处理好的数据，一则可以提高性能，更能避免未知的异常
+ * <strong>【 四 】</strong>、double 数字：20.0、36.5 等
  * <p>
+ * <strong>注意：</strong>
+ * 参与运算的数字只有 int 或 double，
+ * 如果一个方法调用的返回值是其他类型数字且没有继续参与运算，
+ * 则可以返回其他类似数字，包括 char
  * <p>
- * 【 4 】、数组：用花括号（{1,2,3}）表示:
- * - 形如：{1, 2, 3}
- * - 取值：（注意区分 JS 对象和 JSON）
- * {1, {key: 'value', number: 123, boolean: true, null: null}}[1]['key'] --> value
- * [1, {key: 'value', number: 123, boolean: true, null: null}][1].number --> 123
+ * <strong>【 五 】</strong>、字符串：'string'、"string"
  * <p>
+ * <strong>【 六 】</strong>、Map：解析成 HashMap，
  * <p>
- * 【 5 】、Map 对象用花括号表示，最终会被转换成{@link java.util.HashMap}处理：
- * - 形如：{key: 123, 'key1': '123', "key2": true}
- * - 可设置为键的包括：字符串、数字（int | double）、null、true、false，与 JS 对象不同，
- * - js 对象的所有键均为字符串
+ * Map 的键：null、true、false、int 型数字、double 型数字、字符串；
+ * 其他所有形式的键均认为是字符串，且不能是表达式；
  * <p>
+ * 类似 JavaScript 中的对象，不同的是 Map 的键支持数字、true 等；
  * <p>
- * 【 6 】、小结
- * 1、支持的运算：
- * - 基本运算：+、-、*、/、%；
- * - 位运算：&、|、^；
- * - 比较运算：==、>、>=、==、<、<=；
- * - 逻辑运算：&&、||、！;
- * - 括号提升优先级：()
- * 2、预定义关键字：null、true、false
- * 3、int 数字：12、25 等
- * 4、double 数字：20.0、36.5 等（其他类型数字不支持）
- * 5、字符串：'string'、"string"
- * 6、其他支持：
- * - {} ===> List；
- * - {:} ===> Map；Map 的键可以是：null、true、false、数字、字符串，其他对象均会自动转为 string，值可以是任意类型
- * - @System.currentTimeMillis() ===> 无参公共静态方法调用；
- * - @DateUtil.yyyy_MM ===> 公共静态字段访问；
- * - 'string'.length() ===> 无参公共实例方法调用；
- * - {0}.get(0) ===> 带有一个参数的公共实例方法调用；
- * - 变量
- * - 链式取值和方法调用：employee.name.length()
+ * Map 的值支持任意对象；
  * <p>
- * 注意：
- * - 静态方法调用只支持部分包下的类，具体见【 3 】
- * - 方法调用只支持无参方法和只有一个参数的方法，变长参数的方法不完全支持（慎用）
- * - 基本数据类型只支持 boolean、int、double，没有 char 类型数据，被征用做字符串了
+ * <strong>声明方式：</strong><p>
+ * 1. 空 Map 必须包含一个冒号，如：{:}
+ * <p>
+ * 2. 带有值的 Map：{key: 'value', null: 1, true: true, false: 2, 'null': null, "true": "string",}
+ * <p>
+ * 一个键值对需用<strong> 冒号 </strong>分割，键值对之间需用<strong> 逗号 </strong>分割；
+ * 最后一个键值对后的逗号可有可无。
+ * <p>
+ * <strong>【 七 】</strong>、List：解析成 ArrayList，
+ * <p>
+ * List 的每一项可以是任意值，两个连续逗号之间若没有任何字符会被解析成一个 null 值，如：
+ * <p>
+ * 空 List：{}
+ * <p>
+ * 带有值的 List：{null, true, false,, 20, 23.5, 'abc', "xyz",  ,};
+ * <p>
+ * 最后一个逗号可有可无
+ * <p>
+ * <strong>【 八 】</strong>、静态方法调用符：@ ；
+ * <p>
+ * 如：@System.currentTimeMillis() ===> 无参公共静态方法调用；
+ * <p>
+ * <strong>说明：</strong>
+ * 静态方法调用只能调用此工具库所包含的类和 JDK 中以下包的静态方法：
+ * <p>
+ * {@link java.lang}、 {@link java.util}、 {@link java.lang.reflect}
+ * <p>
+ * 目前只能调用最多一个参数的方法，变长参数不完全支持
+ * <p>
+ * <strong>【 九 】</strong>、实例方法调用，如：
+ * <p>
+ * 无参公共实例方法调用：'string'.length()；
+ * <p>
+ * {0}.get(0) ===> 带有一个参数的公共实例方法调用；
+ * <p>
+ * <strong>【 十 】</strong>、链式取值和方法调用：employee.name.length()
+ * <p>
+ * <strong>注意：</strong>
+ * * 静态方法调用只支持部分包下的类，具体见【 3 】
+ * <p>
+ * * 方法调用只支持无参方法和只有一个参数的方法，变长参数的方法不完全支持（慎用）
+ * <p>
+ * * 基本数据类型只支持 boolean、int、double，没有 char 类型数据，被征用做字符串了
  *
  * @author benshaoye
  */
 public final class RunnerUtil extends ParseUtil {
-
+    /**
+     * 默认字符串表达式分隔符：{"{{", "}}"}
+     */
     public final static String[] DELIMITERS = {"{{", "}}"};
 
+    /**
+     * @throws AssertionError 不可实例化
+     */
     private RunnerUtil() {
         super();
     }
 
     /**
-     * 运行简单表达式，形如：
-     * 1 + 2
-     * 'a' + 'b'
-     * 等不含有参数的表达式
+     * 运行简单表达式，形如： 1 + 2 或 'a' + 'b' 等不含有参数的表达式。
+     * <p>
      * 如果 expression 是一个包含参数的表达式，将抛出异常
      * <p>
      * 实际实现方式:
      * {@link RunnerUtil#run(String)}会缓存所有不包含参数表达式的结果，
      * 只解析执行一次，并缓存，以后的运行返回第一次缓存的结果
      *
-     * @param expression
+     * @param expression 字符串表达式
      * @return
+     * @throws Throwable 如果字符串表达式中包含变量
      */
     public final static Object run(String expression) {
         return run(expression, null);
@@ -103,14 +118,19 @@ public final class RunnerUtil extends ParseUtil {
 
     /**
      * 计算复杂表达式，形如：
-     * 1 + 2 + key1[0].name      --> key1 可以是 Map 的 key 或一个实体对象的字段
+     * <p>
+     * 1 + 2 + key1[0].name      ==> key1 可以是 Map 的 key 或一个实体对象的字段
+     * <p>
      * 或
-     * 'a' + '2' + [0].key.name  --> 0 是数组或 List 的索引
+     * <p>
+     * 'a' + '2' + [0].key.name  ==> 0 是数组或 List 的索引
+     * <p>
      * 等带有参数的表达式
      *
-     * @param expression
-     * @param data
+     * @param expression 字符串表达式
+     * @param data       表达式运行时变量所引用的数据
      * @return
+     * @throws NullPointerException 如果字符串表达式中包含 data 中没有的变量
      */
     public final static Object run(String expression, Object data) {
         return run0(expression, data);
@@ -118,27 +138,38 @@ public final class RunnerUtil extends ParseUtil {
 
     /**
      * 运行字符串中的表达式，如：
+     * <p>
      * RunnerUtil.parseRun("1 + 2 = {{1+2}}");        // =====> "1 + 2 = 3"
+     * <p>
      * RunnerUtil.parseRun("中华人民共和国{{'棒棒的'}}"); // =====> "中华人民共和国棒棒的"
      * <p>
      * 默认分隔符为：${@link #DELIMITERS} ==> {"{{", "}}"}；
-     * 可包含多个表达式，但不能嵌套包含，也不能交叉嵌套
+     * 可包含多个表达式，但不能嵌套包含，也不能交叉嵌套，如下：
+     * <p>
      * 错误示例："1 + 2 = {{ 1 + {{ 3 + 4 }} + 2 }}"
+     * <p>
      * 正确示例："1 + 2 = {{ 1 + 2 }}  {{ 3 + 4 }}"
      * <p>
      * 如果字符串中只有一个表达式，并且始末位置分别就是始末分割符，
      * 那么这个表达式返回值可以是任意对象，否则只能返回字符串，如：
      * RunnerUtil.parseRun("中华人民共和国{{'棒棒的'}}"); // =====> "中华人民共和国棒棒的"
-     * RunnerUtil.parseRun("{{'棒棒的'}}");             // =====> "棒棒的"
-     * RunnerUtil.parseRun("{{1}}");                  // =====> 1
      * <p>
-     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，所以在可能引起边界混淆的地方最好自定义分隔符，如：
-     * {{{'name'}}}
+     * RunnerUtil.parseRun("{{'棒棒的'}}");             // =====> "棒棒的"
+     * <p>
+     * RunnerUtil.parseRun("{{1}}");                  // =====> 1
+     * <p><strong>【注意：】</strong>
+     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，
+     * 所以在可能引起边界混淆的地方最好自定义分隔符，如：
+     * <p>
+     * 错误示例： {{{'name'}}}
+     * <p>
      * 应该写成： {{ {'name'}[0] }} ==> 边界处留有空格；
+     * <p>
      * 或： $[{'name'}] ==> 自定义分隔符；
      *
-     * @param expression
+     * @param expression 包含插值语法的字符串表达式
      * @return
+     * @throws Throwable 如果字符串表达式中包含变量
      */
     public final static Object parseRun(String expression) {
         return parseRun(expression, DELIMITERS);
@@ -148,18 +179,25 @@ public final class RunnerUtil extends ParseUtil {
      * 运行字符串中的带变量的表达式，如：
      * <p>
      * Map data = {"desc": "棒棒的"} // 这是一个 Map
+     * <p>
      * RunnerUtil.parseRun("中华人民共和国{{desc}}", data); // =====> "中华人民共和国棒棒的"
      * <p>
      * 默认分隔符为：${@link #DELIMITERS} ==> {"{{", "}}"}
      * <p>
-     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，所以在可能引起边界混淆的地方最好自定义分隔符，如：
-     * {{{'name'}}}
+     * <strong>【注意：】</strong>
+     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，
+     * 所以在可能引起边界混淆的地方最好自定义分隔符，如：
+     * <p>
+     * 错误示例： {{{'name'}}}
+     * <p>
      * 应该写成： {{ {'name'}[0] }} ==> 边界处留有空格；
+     * <p>
      * 或： $[{'name'}] ==> 自定义分隔符；
      *
-     * @param expression
-     * @param data
+     * @param expression 包含插值语法的字符串表达式
+     * @param data       表达式运行时变量所引用的数据
      * @return
+     * @throws NullPointerException 如果字符串表达式中包含 data 中没有的变量
      * @see #parseRun(String)
      */
     public final static Object parseRun(String expression, Object data) {
@@ -167,15 +205,29 @@ public final class RunnerUtil extends ParseUtil {
     }
 
     /**
-     * 可自定义分隔符
+     * 可自定义分隔符，如：
      * <p>
-     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，所以在可能引起边界混淆的地方最好自定义分隔符，如：
-     * {{{'name'}}}
+     * Map data = {"desc": "棒棒的"} // 这是一个 Map
+     * <p>
+     * String[] delimiters = {"${", "}"};
+     * <p>
+     * RunnerUtil.parseRun("本草纲目{desc}", delimiters, data); // =====> "本草纲目棒棒的"
+     * <p>
+     * <strong>【注意：】</strong>同一个字符串中不可包含多种不同的分隔符而运行多次；
+     * <p>
+     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，
+     * 所以在可能引起边界混淆的地方最好自定义分隔符，如：
+     * <p>
+     * 错误示例： {{{'name'}}}
+     * <p>
      * 应该写成： {{ {'name'}[0] }} ==> 边界处留有空格；
+     * <p>
      * 或： $[{'name'}] ==> 自定义分隔符；
      *
-     * @param expression
+     * @param expression 包含插值语法的字符串表达式
+     * @param delimiters 必须是一个长度不小于 2 包含始末标记的非空字符串，长度大于 2 后面的内容会被忽略
      * @return
+     * @throws Throwable 如果字符串表达式中包含变量
      * @see #parseRun(String, String[], Object)
      */
     public final static Object parseRun(String expression, String[] delimiters) {
@@ -186,20 +238,27 @@ public final class RunnerUtil extends ParseUtil {
      * 可自定义分隔符，如：
      * <p>
      * Map data = {"desc": "棒棒的"} // 这是一个 Map
+     * <p>
      * String[] delimiters = {"${", "}"};
-     * RunnerUtil.parseRun("中华人民共和国${desc}", delimiters,data); // =====> "中华人民共和国棒棒的"
      * <p>
-     * 【注意】同一个字符串中不可包含多种不同的分隔符而运行多次
+     * RunnerUtil.parseRun("本草纲目{desc}", delimiters, data); // =====> "本草纲目棒棒的"
      * <p>
-     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，所以在可能引起边界混淆的地方最好自定义分隔符，如：
-     * {{{'name'}}}
+     * <strong>【注意：】</strong>同一个字符串中不可包含多种不同的分隔符而运行多次；
+     * <p>
+     * 由于花括号 “{}、{:}” 在此工具中可表示 Map 或 List，
+     * 所以在可能引起边界混淆的地方最好自定义分隔符，如：
+     * <p>
+     * 错误示例： {{{'name'}}}
+     * <p>
      * 应该写成： {{ {'name'}[0] }} ==> 边界处留有空格；
+     * <p>
      * 或： $[{'name'}] ==> 自定义分隔符；
      *
-     * @param expression
+     * @param expression 包含插值语法的字符串表达式
      * @param delimiters 必须是一个长度不小于 2 包含始末标记的非空字符串，长度大于 2 后面的内容会被忽略
-     * @param data
+     * @param data       表达式运行时变量所引用的数据
      * @return
+     * @throws NullPointerException 如果字符串表达式中包含 data 中没有的变量
      * @see #parseRun(String)
      */
     public final static Object parseRun(String expression, String[] delimiters, Object data) {

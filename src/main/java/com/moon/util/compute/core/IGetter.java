@@ -25,6 +25,7 @@ interface IGetter extends BiFunction, Predicate {
             if (prevData instanceof Map) {
                 getter = IGet.MAP;
             } else {
+                Objects.requireNonNull(prevData);
                 getter = IGet.BEAN;
             }
         } else if (prevData instanceof Map) {
@@ -32,6 +33,7 @@ interface IGetter extends BiFunction, Predicate {
         } else if (prevData instanceof List) {
             getter = IGet.LIST;
         } else {
+            Objects.requireNonNull(prevData);
             getter = IGet.BEAN;
         }
         Objects.requireNonNull(getter);

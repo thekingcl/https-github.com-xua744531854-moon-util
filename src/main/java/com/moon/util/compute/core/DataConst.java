@@ -1,5 +1,7 @@
 package com.moon.util.compute.core;
 
+import com.moon.lang.BooleanUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,5 +62,18 @@ abstract class DataConst<T> implements AsConst {
             return (AsConst) data;
         }
         return DataConstObj.valueOf(data);
+    }
+
+    public static final AsConst getOpposite(DataConst data) {
+        BooleanUtil.requireTrue(data instanceof DataConstNumber);
+        Number num = (Number) data.use(), value;
+        if (num instanceof Double || num instanceof Float) {
+            value = -num.doubleValue();
+        } else if (num instanceof Long) {
+            value = -num.longValue();
+        } else {
+            value = -num.intValue();
+        }
+        return DataConstNumber.valueOf(value);
     }
 }
