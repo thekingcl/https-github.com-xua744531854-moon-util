@@ -27,6 +27,7 @@ class RunnerUtilTestTest {
         assertions.assertEquals(res, false);
 
         assertions.assertThrows(()-> RunnerUtil.run("{a:}.isEmpty()"));
+        assertions.assertThrows(()-> RunnerUtil.run("{a:,}.isEmpty()"));
         assertions.assertThrows(()-> RunnerUtil.run("{a}.isEmpty()"));
 
         res = RunnerUtil.run("{a:10}.isEmpty() + false");

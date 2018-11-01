@@ -82,13 +82,13 @@ class ParseCoreTestTest {
     @Test
     void testGetOpposite() {
         handler = ParseCore.parse("1+-1*5");
-        assertions.assertEq((Integer) handler.use(), -4);
+        assertions.assertEq((Integer) handler.use(), 1 + -1 * 5);
         handler = ParseCore.parse("(1+-1)*5");
-        assertions.assertEq((Integer) handler.use(), 0);
+        assertions.assertEq((Integer) handler.use(), (1 + -1) * 5);
         handler = ParseCore.parse("-1*5");
-        assertions.assertEq((Integer) handler.use(), -5);
+        assertions.assertEq((Integer) handler.use(), -1 * 5);
 
-        data = new HashMap(){{
+        data = new HashMap() {{
             put(true, 20);
         }};
         handler = ParseCore.parse("-[true]*5");

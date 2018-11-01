@@ -18,7 +18,7 @@ final class ParseCurly {
     }
 
     final static AsHandler parse(char[] chars, IntAccessor indexer, int len) {
-        int curr = ParseUtil.skipWhitespace(chars, indexer, len);
+        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         AsHandler handler = tryEmpty(chars, indexer, len, curr);
         if (handler == null) {
             LinkedList<BiConsumer> creators = new LinkedList<>();
@@ -57,7 +57,7 @@ final class ParseCurly {
                     break inner;
             }
             creators.add(new ListAdder(valuer));
-            next = ParseUtil.skipWhitespace(chars, indexer, len);
+            next = ParseUtil.skipWhitespaces(chars, indexer, len);
         }
     }
 
@@ -102,13 +102,13 @@ final class ParseCurly {
                     break;
             }
             ParseUtil.assertTrue(
-                ParseUtil.skipWhitespace(
+                ParseUtil.skipWhitespaces(
                     chars, indexer, len
                 ) == COLON, chars, indexer
             );
 
             index = indexer.get();
-            next = ParseUtil.skipWhitespace(chars, indexer, len);
+            next = ParseUtil.skipWhitespaces(chars, indexer, len);
             ParseUtil.assertTrue(
                 next != COMMA && next != HUA_RIGHT, chars, indexer
             );
@@ -121,7 +121,7 @@ final class ParseCurly {
                 )
             ));
             if ((next = chars[indexer.get() - 1]) == COMMA) {
-                next = ParseUtil.skipWhitespace(chars, indexer, len);
+                next = ParseUtil.skipWhitespaces(chars, indexer, len);
             }
         }
     }
@@ -184,12 +184,12 @@ final class ParseCurly {
     }
 
     private final static CreateType doNext(char[] chars, IntAccessor indexer, int len) {
-        return ParseUtil.skipWhitespace(chars, indexer, len) == COLON ? CreateType.MAP : CreateType.LIST;
+        return ParseUtil.skipWhitespaces(chars, indexer, len) == COLON ? CreateType.MAP : CreateType.LIST;
     }
 
     private final static AsHandler tryEmpty(char[] chars, IntAccessor indexer, int len, int curr) {
         if (curr == COLON) {
-            int next = ParseUtil.skipWhitespace(chars, indexer, len);
+            int next = ParseUtil.skipWhitespaces(chars, indexer, len);
             ParseUtil.assertTrue(next == HUA_RIGHT, chars, indexer);
             return CreateType.MAP;
         } else if (curr == HUA_RIGHT) {

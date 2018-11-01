@@ -23,7 +23,7 @@ class ParseCurlyTestTest {
         char[] chars = expression.toCharArray();
         IntAccessor indexer = IntAccessor.of();
         int length = chars.length;
-        ParseUtil.skipWhitespace(chars, indexer, length);
+        ParseUtil.skipWhitespaces(chars, indexer, length);
         return ParseCurly.parse(chars, indexer, length);
     }
 

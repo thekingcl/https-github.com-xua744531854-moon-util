@@ -16,7 +16,7 @@ final class ParseOpposite {
 
     final static AsHandler parse(char[] chars, IntAccessor indexer, int len) {
         AsHandler handler;
-        int curr = ParseUtil.skipWhitespace(chars, indexer, len);
+        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case YUAN_LEFT:
                 handler = ParseGetter.parseYuan(chars, indexer, len);

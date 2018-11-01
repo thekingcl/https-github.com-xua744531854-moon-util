@@ -3,8 +3,9 @@ package com.moon.util.compute;
 import com.moon.util.compute.core.ParseUtil;
 
 /**
- * 介绍，
- * 预定义的关键字有：true、false、null
+ * 介绍，运行计算表达式工具类，如：
+ * <p>employee.name<p>employee.name.length()
+ * <p>group.employee.age.doubleValue() + employee.name.length() + 20 * 5 等
  * <p>
  * <strong>【 一 】</strong>、支持的运算：
  * <p>
@@ -78,11 +79,14 @@ import com.moon.util.compute.core.ParseUtil;
  * <strong>【 十 】</strong>、链式取值和方法调用：employee.name.length()
  * <p>
  * <strong>注意：</strong>
- * * 静态方法调用只支持部分包下的类，具体见【 3 】
+ * * 静态方法调用只支持部分包下的类，具体见【 八 】
  * <p>
  * * 方法调用只支持无参方法和只有一个参数的方法，变长参数的方法不完全支持（慎用）
  * <p>
  * * 基本数据类型只支持 boolean、int、double，没有 char 类型数据，被征用做字符串了
+ * <p>
+ * * 没有 char 数据类型，双引号和单引号包裹的都是字符串，
+ * 单引号可包裹双引号，双引号可包裹单引号，暂不支持同时出现在字符串中的情况
  *
  * @author benshaoye
  */
@@ -150,7 +154,7 @@ public final class RunnerUtil extends ParseUtil {
      * <p>
      * 正确示例："1 + 2 = {{ 1 + 2 }}  {{ 3 + 4 }}"
      * <p>
-     * 如果字符串中只有一个表达式，并且始末位置分别就是始末分割符，
+     * <strong>说明：</strong>如果字符串中只有一个表达式，并且始末位置分别就是始末分割符，
      * 那么这个表达式返回值可以是任意对象，否则只能返回字符串，如：
      * RunnerUtil.parseRun("中华人民共和国{{'棒棒的'}}"); // =====> "中华人民共和国棒棒的"
      * <p>

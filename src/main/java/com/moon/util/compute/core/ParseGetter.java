@@ -54,14 +54,14 @@ final class ParseGetter {
      * @return
      */
     final static AsValuer parseDot(char[] chars, IntAccessor indexer, int len) {
-        int curr = ParseUtil.skipWhitespace(chars, indexer, len);
+        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         ParseUtil.assertTrue(ParseUtil.isVar(curr), chars, indexer);
         return parseVar(chars, indexer, len, curr);
     }
 
     final static AsHandler parseNot(char[] chars, IntAccessor indexer, int len) {
         AsHandler valuer;
-        int curr = ParseUtil.skipWhitespace(chars, indexer, len);
+        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         if (ParseUtil.isVar(curr)) {
             valuer = parseVar(chars, indexer, len, curr);
             ParseUtil.assertFalse(valuer == DataConstNull.NULL, chars, indexer);
@@ -105,7 +105,7 @@ final class ParseGetter {
             // 为自定义静态类留位置，调用方式是两个‘@’：@@CustomType.method()
             throw new UnsupportedOperationException("未来将支持 ‘@@’ 符号，供自定义静态方法字段调用");
         } else {
-            curr = ParseUtil.skipWhitespace(chars, indexer, len);
+            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (ParseUtil.isVar(curr)) {
                 handler = parseVar(chars, indexer, len, curr);
                 handler = new DataConstLoader(ILoader.of(handler.toString()));

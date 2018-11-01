@@ -14,8 +14,8 @@ final class DataGetterFang implements AsGetter {
         this.valuer = valuer;
     }
 
-    AsHandler toComplex(AsValuer beforeValuer) {
-        return new DataGetterComplex(beforeValuer, this.valuer);
+    AsHandler toComplex(AsHandler beforeValuer) {
+        return new DataGetterComplex((AsValuer) beforeValuer, this.valuer);
     }
 
     public IGetter getGetter(Object data, Object innerData) {

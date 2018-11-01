@@ -39,15 +39,15 @@ public class ParseUtil {
         return value == SINGLE_QUOTE || value == DOUBLE_QUOTE;
     }
 
-    final static void setIndexer(IntAccessor indexer, int index, int len) {
-        indexer.set(index < len ? index : len);
-    }
-
     /*
      * -----------------------------------------------
      * tools
      * -----------------------------------------------
      */
+
+    final static void setIndexer(IntAccessor indexer, int index, int len) {
+        indexer.set(index < len ? index : len);
+    }
 
     final static String toStr(char[] chars, int len) {
         return new String(chars, 0, len);
@@ -63,7 +63,7 @@ public class ParseUtil {
      * @param len
      * @return
      */
-    final static int skipWhitespace(char[] chars, IntAccessor indexer, final int len) {
+    final static int skipWhitespaces(char[] chars, IntAccessor indexer, final int len) {
         int index = indexer.get();
         int ch = 0;
         while (index < len && isWhitespace(ch = chars[index++])) {
@@ -99,12 +99,6 @@ public class ParseUtil {
 
     final static void assertFalse(boolean value, char[] chars, IntAccessor indexer) {
         if (value) {
-            throwErr(chars, indexer);
-        }
-    }
-
-    final static void assertNonNull(Object value, char[] chars, IntAccessor indexer) {
-        if (value == null) {
             throwErr(chars, indexer);
         }
     }

@@ -1,8 +1,8 @@
 package com.moon.util.compute.core;
 
+import com.moon.enums.Predicates;
 import com.moon.lang.ref.IntAccessor;
 
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -23,21 +23,6 @@ class ParseCore {
         noInstanceError();
     }
 
-    enum Testers implements IntPredicate {
-        FALSE {
-            @Override
-            public boolean test(int value) {
-                return false;
-            }
-        },
-        NOT_NUM {
-            @Override
-            public boolean test(int value) {
-                return !ParseUtil.isNum(value);
-            }
-        }
-    }
-
     private final static Map<String, AsHandler> CACHE = new HashMap<>();
 
     final static AsHandler parse(String expression) {
@@ -47,9 +32,7 @@ class ParseCore {
                 handler = DataConstNull.NULL;
             } else {
                 char[] chars = expression.trim().toCharArray();
-                IntAccessor indexer = IntAccessor.of();
-                final int len = chars.length;
-                handler = parse(chars, indexer, len);
+                handler = parse(chars, IntAccessor.of(), chars.length);
             }
             synchronized (CACHE) {
                 if (CACHE.get(expression) == null) {
@@ -75,18 +58,16 @@ class ParseCore {
     final static AsHandler parse(
         char[] chars, IntAccessor indexer, int len, int end0, int end1
     ) {
-        return parse(chars, indexer, len, end0, end1, Testers.FALSE);
+        return parse(chars, indexer, len, end0, end1, IntTesters.FALSE);
     }
 
     final static AsHandler parse(
         char[] chars, IntAccessor indexer, int len, int end0, int end1, IntPredicate tester
     ) {
-        LinkedList<AsHandler> values = new LinkedList<>();
-        Deque<AsHandler> methods = new LinkedList();
         AsHandler handler = null;
-        int curr;
-        for (; indexer.get() < len; ) {
-            curr = ParseUtil.skipWhitespace(chars, indexer, len);
+        LinkedList<AsHandler> values = new LinkedList<>(), methods = new LinkedList();
+        for (int curr; indexer.get() < len; ) {
+            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == end0 || curr == end1 || tester.test(curr)) {
                 if (curr == YUAN_RIGHT) {
                     cleanMethodsTo(values, methods, Computes.YUAN_LEFT);
@@ -100,9 +81,9 @@ class ParseCore {
 
     private final static AsHandler core(
         char[] chars, IntAccessor indexer, int len, int curr,
-        LinkedList<AsHandler> values, Deque<AsHandler> methods, AsHandler prevHandler
+        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, AsHandler prevHandler
     ) {
-        AsHandler valuer, handler;
+        AsHandler handler;
         if (ParseUtil.isStr(curr)) {
             values.add(handler = ParseConst.parseStr(chars, indexer, curr));
         } else if (ParseUtil.isNum(curr)) {
@@ -110,7 +91,6 @@ class ParseCore {
         } else if (ParseUtil.isVar(curr)) {
             values.add(handler = ParseGetter.parseVar(chars, indexer, len, curr));
         } else {
-            Computes type;
             switch (curr) {
                 case PLUS:
                     // +
@@ -147,43 +127,23 @@ class ParseCore {
                     break;
                 case GT:
                     // >、>=
-                    if (chars[indexer.get()] == EQ) {
-                        indexer.add();
-                        type = Computes.GT_OR_EQ;
-                    } else {
-                        type = Computes.GT;
-                    }
-                    handler = compareAndSwapSymbol(values, methods, type);
+                    handler = toGtLtAndOr(chars, indexer, values, methods,
+                        EQ, Computes.GT_OR_EQ, Computes.GT);
                     break;
                 case LT:
                     // <、<=
-                    if (chars[indexer.get()] == EQ) {
-                        indexer.add();
-                        type = Computes.LT_OR_EQ;
-                    } else {
-                        type = Computes.LT;
-                    }
-                    handler = compareAndSwapSymbol(values, methods, type);
+                    handler = toGtLtAndOr(chars, indexer, values, methods,
+                        EQ, Computes.LT_OR_EQ, Computes.LT);
                     break;
                 case AND:
                     // && 、&
-                    if (chars[indexer.get()] == AND) {
-                        indexer.add();
-                        type = Computes.AND;
-                    } else {
-                        type = Computes.BIT_AND;
-                    }
-                    handler = compareAndSwapSymbol(values, methods, type);
+                    handler = toGtLtAndOr(chars, indexer, values, methods,
+                        AND, Computes.AND, Computes.BIT_AND);
                     break;
                 case OR:
                     // || 、|
-                    if (chars[indexer.get()] == OR) {
-                        indexer.add();
-                        type = Computes.OR;
-                    } else {
-                        type = Computes.BIT_OR;
-                    }
-                    handler = compareAndSwapSymbol(values, methods, type);
+                    handler = toGtLtAndOr(chars, indexer, values, methods,
+                        OR, Computes.OR, Computes.BIT_OR);
                     break;
                 case NOT:
                     // !
@@ -196,12 +156,11 @@ class ParseCore {
                 case DOT:
                     // .
                     AsValuer prevValuer = (AsValuer) values.pollLast();
-                    valuer = ParseGetter.parseDot(chars, indexer, len);
-                    ParseUtil.assertTrue(valuer.isValuer(), chars, indexer);
-                    AsHandler invoker = ParseInvoker.parse(chars, indexer, len, valuer.toString(), prevValuer);
-                    valuer = invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) valuer) : invoker;
-                    values.add(valuer);
-                    handler = valuer;
+                    handler = ParseGetter.parseDot(chars, indexer, len);
+                    ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
+                    AsHandler invoker = ParseInvoker.parse(chars, indexer, len, handler.toString(), prevValuer);
+                    handler = invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
+                    values.add(handler);
                     break;
                 case HUA_LEFT:
                     // {
@@ -209,14 +168,13 @@ class ParseCore {
                     break;
                 case FANG_LEFT:
                     // [
-                    valuer = ParseGetter.parseFang(chars, indexer, len);
+                    handler = ParseGetter.parseFang(chars, indexer, len);
                     if (prevHandler != null && prevHandler.isValuer()) {
-                        ParseUtil.assertTrue(valuer.isValuer(), chars, indexer);
-                        valuer = ((DataGetterFang) valuer).toComplex((AsValuer) prevHandler);
+                        ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
+                        handler = ((DataGetterFang) handler).toComplex(prevHandler);
                         values.pollLast();
                     }
-                    values.add(valuer);
-                    handler = valuer;
+                    values.add(handler);
                     break;
                 case YUAN_LEFT:
                     // (
@@ -231,8 +189,23 @@ class ParseCore {
         return handler;
     }
 
+    private final static AsCompute toGtLtAndOr(
+        char[] chars, IntAccessor indexer,
+        LinkedList<AsHandler> values, LinkedList<AsHandler> methods,
+        int testTarget, Computes matchType, Computes defaultType
+    ) {
+        Computes type;
+        if (chars[indexer.get()] == testTarget) {
+            indexer.add();
+            type = matchType;
+        } else {
+            type = defaultType;
+        }
+        return compareAndSwapSymbol(values, methods, type);
+    }
+
     private final static AsCompute compareAndSwapSymbol(
-        LinkedList<AsHandler> values, Deque<AsHandler> methods, AsCompute computer
+        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, AsCompute computer
     ) {
         AsHandler prev = methods.peekFirst();
         int currPriority = computer.getPriority();
@@ -253,7 +226,7 @@ class ParseCore {
 
 
     private final static LinkedList<AsHandler> cleanMethodsTo(
-        LinkedList<AsHandler> values, Deque<AsHandler> methods, Object end
+        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, Object end
     ) {
         AsHandler computer;
         while ((computer = methods.pollFirst()) != end && computer != null) {
