@@ -35,6 +35,7 @@ public final class ThreadPoolSupport {
 
         private static ThreadPoolExecutor SINGLETON;
 
+
         static {
             /**
              * 默认开启一个最少一个线程，最多 CPU 核心数 2 倍，任务队列最多 65536 个任务的线程池运行任务

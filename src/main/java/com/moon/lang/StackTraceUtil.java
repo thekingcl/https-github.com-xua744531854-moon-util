@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier;
  */
 public final class StackTraceUtil {
 
-    private static Class<StackTraceUtil> CURRENT_TYPE = StackTraceUtil.class;
+    private static Class<StackTraceUtil> TYPE = StackTraceUtil.class;
 
     private StackTraceUtil() {
         ThrowUtil.noInstanceError();
@@ -111,11 +111,11 @@ public final class StackTraceUtil {
     /**
      * 获取动调用位置开始前 skips 步的栈信息
      *
-     * @param skips
+     * @param steps
      * @return
      */
-    public static StackTraceElement getPrevCallerStepOf(int skips) {
-        return traces(skips);
+    public static StackTraceElement getPrevTraceOfSteps(int steps) {
+        return traces(steps);
     }
 
     // ============================= core ================================================================
@@ -150,13 +150,13 @@ public final class StackTraceUtil {
         return null;
     }
 
-    private static StackTraceElement traces(int skips) {
+    private static StackTraceElement traces(int skipsCount) {
         String classname;
         StackTraceElement element;
         boolean isCurrent = false;
 
         StackTraceElement[] elements = traces();
-        for (int i = 1, len = elements.length; i < len; i++) {
+        for (int i = 1, skips = skipsCount, len = elements.length; i < len; i++) {
             element = elements[i];
             classname = element.getClassName();
             if (isCurrent) {
@@ -184,7 +184,7 @@ public final class StackTraceUtil {
     }
 
     private static boolean isNotThisType(Class type) {
-        return !CURRENT_TYPE.isAssignableFrom(type);
+        return !TYPE.isAssignableFrom(type);
     }
 
     private static boolean isNotThisType(String classname) {
@@ -196,7 +196,7 @@ public final class StackTraceUtil {
         return Modifier.isAbstract(mode) || Modifier.isInterface(mode);
     }
 
-    static Class classForName(String name) {
+    private static Class classForName(String name) {
         return ClassUtil.forName(name);
     }
 

@@ -75,4 +75,25 @@ public final class ThrowUtil {
     public static void noInstanceError(String message) {
         throw new AssertionError(message);
     }
+
+    /**
+     * 不能访问指定位置
+     */
+    public final static void rejectAccessError() {
+        rejectAccessError("Refuse to execute. \n\tLocation: " + StackTraceUtil.getPrevTraceOfSteps(1));
+    }
+
+    /***
+     * 不能访问指定位置
+     * @param message
+     */
+    public final static void rejectAccessError(String message) {
+        throw new IllegalAccessException(message);
+    }
+
+    static class IllegalAccessException extends RuntimeException {
+        public IllegalAccessException(String message) {
+            super(message);
+        }
+    }
 }

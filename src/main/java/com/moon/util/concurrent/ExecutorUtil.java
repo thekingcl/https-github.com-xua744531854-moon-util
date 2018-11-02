@@ -1,5 +1,6 @@
 package com.moon.util.concurrent;
 
+import com.moon.lang.ThrowUtil;
 import com.moon.util.support.ThreadPoolSupport;
 
 import java.util.concurrent.*;
@@ -13,7 +14,7 @@ import static com.moon.util.CPUUtil.coreCount;
  */
 public final class ExecutorUtil {
 
-    private final static long DEFAULT_TIMEOUT_OF_SS = 10 * 1000;
+    private final static long TIMEOUT = 10 * 1000;
 
     private ExecutorUtil() {
         noInstanceError();
@@ -36,7 +37,8 @@ public final class ExecutorUtil {
      * executes
      */
 
-    public final static void loopRun(Runnable runner, long timeInterval, boolean ignoreAbnormal) {
+    private final static void loopRun(Runnable runner, long timeInterval, boolean ignoreAbnormal) {
+        ThrowUtil.rejectAccessError();
         execute(new Runnable() {
             @Override
             public void run() {
@@ -54,7 +56,7 @@ public final class ExecutorUtil {
                 } catch (Throwable e) {
                     if (!ignoreAbnormal) {
                         if (e instanceof InterruptedException) {
-                            Thread.currentThread().isInterrupted();
+                            Thread.currentThread().interrupt();
                         }
                         throw new IllegalStateException(e);
                     }
@@ -63,7 +65,8 @@ public final class ExecutorUtil {
         });
     }
 
-    public final static void loopRun(Runnable runner, boolean ignoreAbnormal) {
+    private final static void loopRun(Runnable runner, boolean ignoreAbnormal) {
+        ThrowUtil.rejectAccessError();
         execute(() -> {
             try {
                 runner.run();
@@ -89,11 +92,11 @@ public final class ExecutorUtil {
     }
 
     /*
-     * 最大线程数为处理器可用核心数
+     * 最大线程数为处理器可用核心数 2 倍
      */
 
     public static final ThreadPoolExecutor auto() {
-        return auto(DEFAULT_TIMEOUT_OF_SS);
+        return auto(TIMEOUT);
     }
 
     public static final ThreadPoolExecutor auto(long timeout) {
@@ -103,22 +106,22 @@ public final class ExecutorUtil {
     }
 
     public static final ThreadPoolExecutor auto(RejectedExecutionHandler rejected) {
-        return auto(DEFAULT_TIMEOUT_OF_SS, rejected);
+        return auto(TIMEOUT, rejected);
     }
 
     public static final ThreadPoolExecutor auto(long timeout, RejectedExecutionHandler rejected) {
         return new ThreadPoolExecutor(1, maxCount(),
-            DEFAULT_TIMEOUT_OF_SS, TimeUnit.MILLISECONDS,
+            TIMEOUT, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(), rejected);
     }
 
     public static final ThreadPoolExecutor auto(ThreadFactory factory) {
-        return auto(DEFAULT_TIMEOUT_OF_SS, factory);
+        return auto(TIMEOUT, factory);
     }
 
     public static final ThreadPoolExecutor auto(long timeout, ThreadFactory factory) {
         return new ThreadPoolExecutor(1, maxCount(),
-            DEFAULT_TIMEOUT_OF_SS, TimeUnit.MILLISECONDS,
+            TIMEOUT, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<>(), factory);
     }
 
@@ -134,7 +137,7 @@ public final class ExecutorUtil {
      */
 
     public static final ThreadPoolExecutor threshold(int thresholdTasks) {
-        return threshold(thresholdTasks, DEFAULT_TIMEOUT_OF_SS);
+        return threshold(thresholdTasks, TIMEOUT);
     }
 
     public static final ThreadPoolExecutor threshold(int thresholdTasks, long timeout) {
@@ -144,7 +147,7 @@ public final class ExecutorUtil {
     }
 
     public static final ThreadPoolExecutor threshold(int thresholdTasks, ThreadFactory factory) {
-        return threshold(thresholdTasks, DEFAULT_TIMEOUT_OF_SS, factory);
+        return threshold(thresholdTasks, TIMEOUT, factory);
     }
 
     public static final ThreadPoolExecutor threshold(
@@ -156,7 +159,7 @@ public final class ExecutorUtil {
 
     public static final ThreadPoolExecutor threshold(
         int thresholdTasks, RejectedExecutionHandler rejected) {
-        return threshold(thresholdTasks, DEFAULT_TIMEOUT_OF_SS, rejected);
+        return threshold(thresholdTasks, TIMEOUT, rejected);
     }
 
     public static final ThreadPoolExecutor threshold(
@@ -168,7 +171,7 @@ public final class ExecutorUtil {
 
     public static final ThreadPoolExecutor threshold(
         int thresholdTasks, ThreadFactory factory, RejectedExecutionHandler rejected) {
-        return threshold(thresholdTasks, DEFAULT_TIMEOUT_OF_SS, factory, rejected);
+        return threshold(thresholdTasks, TIMEOUT, factory, rejected);
     }
 
     public static final ThreadPoolExecutor threshold(
@@ -178,7 +181,7 @@ public final class ExecutorUtil {
             new ArrayBlockingQueue<>(thresholdTasks), factory, rejected);
     }
 
-    public static int maxCount() {
+    private static int maxCount() {
         return max(coreCount() * 2, 1);
     }
 }

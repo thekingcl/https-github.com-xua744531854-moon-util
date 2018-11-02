@@ -49,6 +49,6 @@ public final class WeakCoordinate<X, Y, Z> extends FinalCoordinate<X, Y, Z> {
 
     @Override
     protected Map<Object, Object> newSub(int capacity) {
-        return isManage ? ReferenceUtil.weakMap(capacity) : ReferenceUtil.weakMap();
+        return isManage ? ReferenceUtil.manageMap(capacity) : ReferenceUtil.manageMap();
     }
 }

@@ -88,4 +88,16 @@ public final class ReferenceUtil {
     public static <K, V> WeakHashMap<K, V> weakMap(Map<? extends K, ? extends V> m) {
         return new WeakHashMap<>(m);
     }
+
+    public static <K, V> WeakHashMap<K, V> manageMap() {
+        return WeakMapManager.manage(weakMap());
+    }
+
+    public static <K, V> WeakHashMap<K, V> manageMap(int initCapacity) {
+        return WeakMapManager.manage(weakMap(initCapacity));
+    }
+
+    public static <K, V> WeakHashMap<K, V> manageMap(Map<? extends K, ? extends V> m) {
+        return WeakMapManager.manage(weakMap(m));
+    }
 }

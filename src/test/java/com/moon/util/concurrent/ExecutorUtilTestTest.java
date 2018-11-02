@@ -19,14 +19,5 @@ class ExecutorUtilTestTest {
 
     @Test
     void testLoopRun() {
-        AtomicInteger atomic = new AtomicInteger();
-        ExecutorUtil.loopRun(() -> System.out.println(" - " + atomic.incrementAndGet()), 10, true);
-        synchronized (this) {
-            try {
-                this.wait(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

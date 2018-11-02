@@ -31,7 +31,7 @@ public class JSONStringBuilder implements Buildable<String>, StringifyAble {
 
     private static final String NULL = "null";
 
-    private final Map<Object, String> hashCached = ReferenceUtil.weakMap();
+    private final Map<Object, String> hashCached = ReferenceUtil.manageMap();
 
     private String stringifyOfCollection(Collection collect) {
         return String.valueOf(collect);

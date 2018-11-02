@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class PropertiesGroup {
 
-    private final static Map<String, PropertiesGroup> CACHE = ReferenceUtil.weakMap();
+    private final static Map<String, PropertiesGroup> CACHE = ReferenceUtil.manageMap();
 
     private final String key;
     private final PropertiesGroup parent;
