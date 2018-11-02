@@ -45,4 +45,9 @@ final class DataGetterFang implements AsGetter {
     public boolean test(Object o) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "[" + valuer.toString() + "]";
+    }
 }

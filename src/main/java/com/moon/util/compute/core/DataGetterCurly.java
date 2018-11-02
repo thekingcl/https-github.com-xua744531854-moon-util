@@ -1,5 +1,6 @@
 package com.moon.util.compute.core;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -24,5 +25,10 @@ final class DataGetterCurly implements AsGetter {
             consumers[i].accept(result, data);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(consumers);
     }
 }

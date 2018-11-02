@@ -42,4 +42,9 @@ class DataGetterComplex implements AsGetter {
         }
         return getter.apply(prevData, afterData);
     }
+
+    @Override
+    public String toString() {
+        return beforeItem.toString() + " " + afterItem.toString();
+    }
 }

@@ -34,4 +34,9 @@ final class DataGetterLinker implements AsGetter {
     public boolean test(Object o) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return prevGetter.toString() + " " + valuer.toString();
+    }
 }

@@ -1,5 +1,6 @@
 package com.moon.util.compute.core;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,5 +100,10 @@ class DataGetterCalculator implements AsGetter {
     @Override
     public boolean test(Object o) {
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(handlers);
     }
 }
