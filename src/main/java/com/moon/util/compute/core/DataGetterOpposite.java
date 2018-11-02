@@ -20,6 +20,11 @@ final class DataGetterOpposite implements AsGetter {
         } else if (value instanceof Number) {
             return -((Number) value).intValue();
         }
-        throw new IllegalArgumentException(handler.toString());
+        throw new IllegalArgumentException(toString());
+    }
+
+    @Override
+    public String toString() {
+        return "-" + handler.toString();
     }
 }

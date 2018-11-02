@@ -18,7 +18,7 @@ class DataGetterCalculator implements AsGetter {
         AsHandler handler;
         int size = handlers.size();
         if (size == 0) {
-            return DataConstNull.NULL;
+            return DataConst.NULL;
         }
         if (size == 1 && (handler = handlers.get(0)).isValuer()) {
             return handler;

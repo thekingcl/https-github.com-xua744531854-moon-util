@@ -42,7 +42,7 @@ final class ParseCurly {
                 case HUA_RIGHT:
                     return createAsGetter(creators, CreateType.LIST);
                 case COMMA:
-                    valuer = DataConstNull.NULL;
+                    valuer = DataConst.NULL;
                     break inner;
                 case SINGLE_QUOTE:
                 case DOUBLE_QUOTE:
@@ -66,7 +66,7 @@ final class ParseCurly {
         final AsHandler valuer;
 
         private ListAdder(AsHandler valuer) {
-            this.valuer = valuer == null ? DataConstNull.NULL : valuer;
+            this.valuer = valuer == null ? DataConst.NULL : valuer;
         }
 
         @Override

@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
+import static com.moon.util.assertions.Assertions.of;
+import static com.moon.util.assertions.Assertions.ofPrintln;
+
 /**
  * @author benshaoye
  */
 class RunnerUtilTestTest {
-    static final Assertions assertions = Assertions.of();
+    static final Assertions assertions = of();
     Object data, res;
 
     @Test
@@ -26,9 +29,9 @@ class RunnerUtilTestTest {
         res = RunnerUtil.run("{a:10}.isEmpty()");
         assertions.assertEquals(res, false);
 
-        assertions.assertThrows(()-> RunnerUtil.run("{a:}.isEmpty()"));
-        assertions.assertThrows(()-> RunnerUtil.run("{a:,}.isEmpty()"));
-        assertions.assertThrows(()-> RunnerUtil.run("{a}.isEmpty()"));
+        assertions.assertThrows(() -> RunnerUtil.run("{a:}.isEmpty()"));
+        assertions.assertThrows(() -> RunnerUtil.run("{a:,}.isEmpty()"));
+        assertions.assertThrows(() -> RunnerUtil.run("{a}.isEmpty()"));
 
         res = RunnerUtil.run("{a:10}.isEmpty() + false");
         assertions.assertEquals(res, "falsefalse");
@@ -50,6 +53,15 @@ class RunnerUtilTestTest {
 
         res = RunnerUtil.run("!({}).isEmpty()");
         assertions.assertEquals(res, false);
+
+        res = RunnerUtil.run("-20.doubleValue()");
+        assertions.assertEquals(res, -20D);
+
+        res = RunnerUtil.run("-20.doubleValue().intValue()");
+        assertions.assertEquals(res, -20);
+
+        res = RunnerUtil.run("-@DateUtil.now().intValue()");
+        assertions.assertInstanceOf(res, Integer.class);
     }
 
     @Test

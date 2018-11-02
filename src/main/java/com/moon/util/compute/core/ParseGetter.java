@@ -36,11 +36,11 @@ final class ParseGetter {
         String str = ParseUtil.toStr(value, index);
         switch (str) {
             case "null":
-                return DataConstNull.NULL;
+                return DataConst.NULL;
             case "true":
-                return DataConstBoolean.TRUE;
+                return DataConst.TRUE;
             case "false":
-                return DataConstBoolean.FALSE;
+                return DataConst.FALSE;
             default:
                 return new DataGetterOrdinary(str);
         }
@@ -70,31 +70,38 @@ final class ParseGetter {
     }
 
     final static AsHandler parseNot(char[] chars, IntAccessor indexer, int len) {
-        AsHandler valuer;
+        AsHandler valuer, parsed;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
-        if (ParseUtil.isVar(curr)) {
-            valuer = parseVar(chars, indexer, len, curr);
-            ParseUtil.assertFalse(valuer == DataConstNull.NULL, chars, indexer);
-            if (valuer == DataConstBoolean.TRUE) {
-                valuer = DataConstBoolean.FALSE;
-            } else if (valuer == DataConstBoolean.FALSE) {
-                valuer = DataConstBoolean.TRUE;
-            }
-        } else if (curr == Constants.FANG_LEFT) {
-            valuer = parseFang(chars, indexer, len);
-        } else if (curr == Constants.YUAN_LEFT) {
-            valuer = parseYuan(chars, indexer, len);
-        } else if (curr == Constants.HUA_LEFT) {
-            valuer = ParseCurly.parse(chars, indexer, len);
-        } else {
-            valuer = ParseUtil.throwErr(chars, indexer);
+        switch (curr) {
+            case Constants.FANG_LEFT:
+                valuer = parseFang(chars, indexer, len);
+                break;
+            case Constants.YUAN_LEFT:
+                valuer = parseYuan(chars, indexer, len);
+                break;
+            case Constants.HUA_LEFT:
+                valuer = ParseCurly.parse(chars, indexer, len);
+                break;
+            case Constants.CALLER:
+                valuer = parseCaller(chars, indexer, len);
+                break;
+            default:
+                if (ParseUtil.isVar(curr)) {
+                    valuer = parseVar(chars, indexer, len, curr);
+                    ParseUtil.assertFalse(valuer == DataConst.NULL, chars, indexer);
+                    if (valuer == DataConst.TRUE) {
+                        valuer = DataConst.FALSE;
+                    } else if (valuer == DataConst.FALSE) {
+                        valuer = DataConst.TRUE;
+                    }
+                } else {
+                    valuer = ParseUtil.throwErr(chars, indexer);
+                }
+                break;
         }
-        return tryParseLinkedOfNot(chars, indexer, len, valuer);
-    }
-
-    private static AsHandler tryParseLinkedOfNot(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
-        AsHandler parsed = tryParseLinked(chars, indexer, len, valuer);
-        return parsed == valuer && parsed.isConst() ? valuer : new DataGetterNot(parsed);
+        parsed = tryParseLinked(chars, indexer, len, valuer);
+        return parsed == valuer && parsed.isConst() ? valuer
+            : new DataGetterNot(parsed);
     }
 
     final static AsHandler tryParseLinked(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {

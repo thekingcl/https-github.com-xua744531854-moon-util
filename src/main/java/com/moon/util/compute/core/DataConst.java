@@ -10,6 +10,10 @@ import java.util.Map;
  */
 abstract class DataConst<T> implements AsConst {
 
+    final static AsConst NULL = DataConstNull.NULL;
+    final static AsConst TRUE = DataConstBoolean.TRUE;
+    final static AsConst FALSE = DataConstBoolean.FALSE;
+
     protected final static Map<Object, AsConst> CACHE = new HashMap<>();
 
     final T value;
@@ -44,7 +48,7 @@ abstract class DataConst<T> implements AsConst {
 
     public static final AsConst get(Object data) {
         if (data == null) {
-            return DataConstNull.NULL;
+            return DataConst.NULL;
         }
         if (data instanceof CharSequence) {
             return DataConstString.valueOf(data.toString());
@@ -53,10 +57,10 @@ abstract class DataConst<T> implements AsConst {
             return DataConstNumber.valueOf((Number) data);
         }
         if (Boolean.TRUE.equals(data)) {
-            return DataConstBoolean.TRUE;
+            return DataConst.TRUE;
         }
         if (Boolean.FALSE.equals(data)) {
-            return DataConstBoolean.FALSE;
+            return DataConst.FALSE;
         }
         if (data instanceof AsConst) {
             return (AsConst) data;

@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-final class DataGetterNot  implements AsGetter {
+final class DataGetterNot implements AsGetter {
 
     final AsHandler valuer;
 
@@ -26,5 +26,10 @@ final class DataGetterNot  implements AsGetter {
     @Override
     public boolean test(Object o) {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "!" + valuer.toString();
     }
 }

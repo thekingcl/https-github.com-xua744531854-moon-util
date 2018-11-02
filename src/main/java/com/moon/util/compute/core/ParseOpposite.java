@@ -3,8 +3,7 @@ package com.moon.util.compute.core;
 import com.moon.lang.ref.IntAccessor;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
-import static com.moon.util.compute.core.Constants.FANG_LEFT;
-import static com.moon.util.compute.core.Constants.YUAN_LEFT;
+import static com.moon.util.compute.core.Constants.*;
 
 /**
  * @author benshaoye
@@ -15,7 +14,7 @@ final class ParseOpposite {
     }
 
     final static AsHandler parse(char[] chars, IntAccessor indexer, int len) {
-        AsHandler handler;
+        AsHandler handler, linked;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case YUAN_LEFT:
@@ -23,6 +22,12 @@ final class ParseOpposite {
                 break;
             case FANG_LEFT:
                 handler = ParseGetter.parseFang(chars, indexer, len);
+                break;
+            case HUA_LEFT:
+                handler = ParseCurly.parse(chars, indexer, len);
+                break;
+            case CALLER:
+                handler = ParseGetter.parseCaller(chars, indexer, len);
                 break;
             default:
                 if (ParseUtil.isNum(curr)) {
@@ -36,11 +41,9 @@ final class ParseOpposite {
                 break;
         }
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        return tryParseLinkedOfOpposite(chars, indexer, len, handler);
-    }
-
-    private static final AsHandler tryParseLinkedOfOpposite(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
-        AsHandler handler = ParseGetter.tryParseLinked(chars, indexer, len, valuer);
-        return handler.isConst() ? DataConst.getOpposite((DataConst) handler) : new DataGetterOpposite(handler);
+        linked = ParseGetter.tryParseLinked(chars, indexer, len, handler);
+        return linked.isConst()
+            ? DataConst.getOpposite((DataConst) linked)
+            : new DataGetterOpposite(linked);
     }
 }

@@ -1,5 +1,6 @@
 package com.moon.enums;
 
+import com.moon.lang.BooleanUtil;
 import com.moon.util.able.IteratorAble;
 import com.moon.util.able.StringifyAble;
 import com.moon.util.function.IntBiFunction;
@@ -263,7 +264,7 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
     private final Object empty;
 
     ArraysEnum(Object empty) {
-        Cached.CACHE.putIfAbsent(this.type = (this.empty = empty).getClass(), this);
+        Cached.CACHE.put(this.type = (this.empty = empty).getClass(), this);
     }
 
     public Class type() {
@@ -279,10 +280,19 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
     }
 
     public static ArraysEnum getOrDefault(Class type, ArraysEnum defaultVal) {
+        BooleanUtil.requireTrue(type.isArray());
         return Cached.CACHE.getOrDefault(type, defaultVal);
     }
 
     public static ArraysEnum getOrObjects(Class type) {
         return getOrDefault(type, OBJECTS);
+    }
+
+    public static ArraysEnum getOrDefault(Object array, ArraysEnum defaultType) {
+        return getOrDefault(array.getClass(), defaultType);
+    }
+
+    public static ArraysEnum getOrObjects(Object array) {
+        return getOrObjects(array.getClass());
     }
 }

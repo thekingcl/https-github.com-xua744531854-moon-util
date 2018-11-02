@@ -28,7 +28,7 @@ class ParseCore {
         AsHandler handler = CACHE.get(expression);
         if (handler == null) {
             if (expression == null) {
-                handler = DataConstNull.NULL;
+                handler = DataConst.NULL;
             } else {
                 char[] chars = expression.trim().toCharArray();
                 handler = parse(chars, IntAccessor.of(), chars.length);
