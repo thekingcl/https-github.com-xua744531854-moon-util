@@ -2,9 +2,13 @@ package com.moon.util.compute;
 
 import com.moon.util.Console;
 import com.moon.util.DateUtil;
+import com.moon.util.MapUtil;
+import com.moon.util.TypeUtil;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.moon.util.assertions.Assertions.of;
@@ -144,5 +148,19 @@ class RunnerUtilTestTest {
 
     @Test
     void testParseRun2() {
+        res = RunnerUtil.run("@Long.parseLong(@Objects.toString(@DateUtil.now()))");
+        res = RunnerUtil.run("-(-@Long.parseLong(@Objects.toString(@DateUtil.now()))).longValue()");
+        assertions.assertInstanceOf(res, Long.class);
+        res = RunnerUtil.run("@MapUtil.sizeByObject({key: null, null: true})");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, 2);
+        res = RunnerUtil.run("{key: null, null: true, 25.3: 25}");
+        assertions.assertInstanceOf(res, HashMap.class);
+        assertions.assertEquals(MapUtil.sizeByObject(res), 3);
+        assertions.assertEquals(MapUtil.getByObject(res, "key"), null);
+        assertions.assertEquals(MapUtil.getByObject(res, null), true);
+        assertions.assertEquals(MapUtil.getByObject(res, null), true);
+        assertions.assertEquals(MapUtil.getByObject(res, "null"), null);
+        assertions.assertEquals(MapUtil.getByObject(res, 25.3), 25);
     }
 }
