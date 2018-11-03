@@ -1,18 +1,19 @@
 package com.moon.util.compute;
 
+import com.moon.lang.ClassUtil;
+import com.moon.lang.DoubleUtil;
+import com.moon.lang.reflect.MethodUtil;
 import com.moon.util.Console;
 import com.moon.util.DateUtil;
+import com.moon.util.ListUtil;
 import com.moon.util.MapUtil;
-import com.moon.util.TypeUtil;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static com.moon.util.assertions.Assertions.of;
-import static com.moon.util.assertions.Assertions.ofPrintln;
 
 /**
  * @author benshaoye
@@ -148,8 +149,8 @@ class RunnerUtilTestTest {
 
     @Test
     void testParseRun2() {
-        res = RunnerUtil.run("@Long.parseLong(@Objects.toString(@DateUtil.now()))");
-        res = RunnerUtil.run("-(-@Long.parseLong(@Objects.toString(@DateUtil.now()))).longValue()");
+        res = RunnerUtil.run("@Long.  parseLong(   @Objects.toString(   @DateUtil.now(   )   )  )");
+        res = RunnerUtil.run("-(-@Long.parseLong(   @   Objects  . toString( @    DateUtil .  now(   ))  )   ).longValue()");
         assertions.assertInstanceOf(res, Long.class);
         res = RunnerUtil.run("@MapUtil.sizeByObject({key: null, null: true})");
         assertions.assertInstanceOf(res, Integer.class);
@@ -162,5 +163,18 @@ class RunnerUtilTestTest {
         assertions.assertEquals(MapUtil.getByObject(res, null), true);
         assertions.assertEquals(MapUtil.getByObject(res, "null"), null);
         assertions.assertEquals(MapUtil.getByObject(res, 25.3), 25);
+    }
+
+    @Test
+    void testGetMethod() {
+        res = MethodUtil.getPublicStaticMethods(Objects.class, "hash");
+        Console.out.println((Object) ListUtil.getByObject(res, 0));
+    }
+
+    @Test
+    void testParseMultipleParamMethod() {
+        res = ClassUtil.getClasses(1, 2.0);
+        res = MethodUtil.getPublicStaticMethods(DoubleUtil.class, "requireGt", (Class[]) res);
+        //res = RunnerUtil.run("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
     }
 }

@@ -1,6 +1,5 @@
 package com.moon.util.console;
 
-import com.moon.enums.ArraysEnum;
 import com.moon.lang.JoinerUtil;
 import com.moon.lang.StringUtil;
 
@@ -8,7 +7,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static com.moon.enums.ArraysEnum.getOrDefault;
 import static com.moon.enums.ArraysEnum.getOrObjects;
 
 /**
@@ -53,8 +51,9 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
                 Class clazz = val.getClass();
                 if (clazz.isArray()) {
                     this.executePrintlnOutput(stream, getOrObjects(clazz).stringify(val));
+                } else {
+                    executePrintlnOutput(stream, val);
                 }
-                executePrintlnOutput(stream, val);
             }
         }
     }

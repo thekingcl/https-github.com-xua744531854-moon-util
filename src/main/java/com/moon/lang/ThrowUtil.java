@@ -88,12 +88,6 @@ public final class ThrowUtil {
      * @param message
      */
     public final static void rejectAccessError(String message) {
-        throw new IllegalAccessException(message);
-    }
-
-    static class IllegalAccessException extends RuntimeException {
-        public IllegalAccessException(String message) {
-            super(message);
-        }
+        throw new IllegalAccessError(message);
     }
 }

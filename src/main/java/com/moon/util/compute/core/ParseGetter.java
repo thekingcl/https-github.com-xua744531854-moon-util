@@ -64,9 +64,8 @@ final class ParseGetter {
         AsValuer prevValuer = (AsValuer) prevHandler;
         AsHandler handler = parseDot(chars, indexer, len);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        AsHandler invoker = ParseInvoker.parse(chars, indexer, len, handler.toString(), prevValuer);
-        handler = invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
-        return handler;
+        AsHandler invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, handler.toString(), prevValuer);
+        return invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
     }
 
     final static AsHandler parseNot(char[] chars, IntAccessor indexer, int len) {
@@ -161,15 +160,16 @@ final class ParseGetter {
         AsHandler handler;
         if (curr == Constants.CALLER) {
             // 为自定义静态类留位置，调用方式是两个‘@’：@@CustomType.method()
-            throw new UnsupportedOperationException("未来将支持 ‘@@’ 符号，供自定义静态方法字段调用");
+            throw new UnsupportedOperationException("@@");
         } else {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (ParseUtil.isVar(curr)) {
                 handler = parseVar(chars, indexer, len, curr);
                 handler = new DataConstLoader(ILoader.of(handler.toString()));
             } else {
+                ParseUtil.throwErr(chars, indexer);
                 // 为更多符号留位置，比如动态变化的类，等
-                throw new UnsupportedOperationException("未来将支持动态类的构造");
+                throw new UnsupportedOperationException();
             }
         }
         return Objects.requireNonNull(handler);

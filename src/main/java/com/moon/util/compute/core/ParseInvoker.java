@@ -6,14 +6,15 @@ import com.moon.lang.reflect.FieldUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static com.moon.lang.SupportUtil.matchOne;
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.lang.reflect.FieldUtil.getAccessibleField;
 import static com.moon.lang.reflect.MethodUtil.getPublicStaticMethods;
-import static com.moon.util.compute.core.Constants.YUAN_LEFT;
-import static com.moon.util.compute.core.Constants.YUAN_RIGHT;
+import static com.moon.util.compute.core.Constants.*;
 import static com.moon.util.compute.core.ParseUtil.skipWhitespaces;
 import static java.util.Objects.requireNonNull;
 
@@ -27,7 +28,7 @@ final class ParseInvoker {
 
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
-    final static AsHandler parse(
+    final static AsHandler tryParseInvoker(
         char[] chars, IntAccessor indexer, int len, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
@@ -37,31 +38,60 @@ final class ParseInvoker {
                 // 无参方法调用
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
-                // 带有一个参数的方法调用
-                return parseMoreParams(chars, indexer, len, prevValuer, name, isStatic);
+                // 带有参数的方法调用
+                return parseHasParams(chars, indexer.minus(), len, prevValuer, name, isStatic);
             }
         } else {
             // 静态字段检测
             indexer.set(cache);
-            return parseStaticField(prevValuer, name, isStatic);
+            return tryParseStaticField(prevValuer, name, isStatic);
         }
     }
 
     /*
-     * 带有一个参数的方法调用
+     * 带有参数的方法调用
      */
-    private final static AsHandler parseMoreParams(
+    private final static AsHandler parseHasParams(
         char[] chars, IntAccessor indexer, int len,
         AsValuer prev, String name, boolean isStatic
     ) {
-        AsHandler valuer = ParseCore.parse(chars, indexer.minus(), len, YUAN_RIGHT);
+        for (List valuers = new ArrayList(); ; ) {
+            valuers.add(ParseCore.parse(chars, indexer, len, YUAN_RIGHT, COMMA));
+            if (chars[indexer.get() - 1] == YUAN_RIGHT) {
+                return valuers.size() > 1
+                    ? parseMultiParamCaller(valuers, prev, name, isStatic)
+                    : parseOnlyParamCaller(valuers, prev, name, isStatic);
+            }
+        }
+    }
+
+    /*
+     * 多参数调用的方法
+     */
+    private final static AsHandler parseMultiParamCaller(
+        List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
+    ) {
+        if (isStatic) {
+
+        } else {
+
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    /*
+     * 带有一个参数的方法
+     */
+    private final static AsHandler parseOnlyParamCaller(
+        List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
+    ) {
         if (isStatic) {
             // 静态方法
             Class sourceType = ((DataConstLoader) prev).getValue();
-            return EnsureInvokerOne.of((AsValuer) valuer, sourceType, name);
+            return EnsureInvokerOne.of(valuers.get(0), sourceType, name);
         } else {
             // 成员方法
-            return new DataInvokeOne(prev, (AsValuer) valuer, name);
+            return new DataInvokeOne(prev, valuers.get(0), name);
         }
     }
 
@@ -73,9 +103,9 @@ final class ParseInvoker {
     ) {
         if (isStatic) {
             // 静态方法
-            List<Method> methods = getPublicStaticMethods(
-                ((DataConstLoader) prev).getValue(), name);
-            return new EnsureInvokerEmpty(SupportUtil.matchOne(methods, NONE_PARAM));
+            return new EnsureInvokerEmpty(
+                matchOne(getPublicStaticMethods(
+                    ((DataConstLoader) prev).getValue(), name), NONE_PARAM));
         } else {
             // 成员方法
             return new DataGetterLinker(prev, new DataInvokeEmpty(name));
@@ -83,9 +113,9 @@ final class ParseInvoker {
     }
 
     /*
-     * 静态字段
+     * 尝试解析静态字段，如果不是静态字段调用返回 null
      */
-    private final static AsValuer parseStaticField(
+    private final static AsValuer tryParseStaticField(
         AsValuer prevValuer, String name, boolean isStatic
     ) {
         if (isStatic) {

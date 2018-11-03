@@ -5,10 +5,6 @@ import com.moon.enums.ConverterEnum;
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.WeakAccessor;
 import com.moon.lang.reflect.ConstructorUtil;
-import com.moon.util.IteratorUtil;
-import com.moon.util.ListUtil;
-import com.moon.util.TypeConverter;
-import com.moon.util.TypeUtil;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
@@ -421,11 +417,12 @@ public class GenericTypeConverter implements TypeConverter {
     public <T> T toArray(Object value, Class<T> arrayType) {
         if (arrayType == null) {
             return null;
-        } else if (!arrayType.isArray()) {
-            ThrowUtil.throwRuntime("Must an array type:" + arrayType);
+        } else if (arrayType == Array.class) {
+            return (T) toTypeArray(value, Object.class);
+        } else if (arrayType.isArray()) {
+            return (T) toTypeArray(value, arrayType.getComponentType());
         }
-        Class componentType = arrayType == Array.class ? Object.class : arrayType.getComponentType();
-        return (T) toTypeArray(value, componentType);
+        return ThrowUtil.throwRuntime("Must an array type:" + arrayType);
     }
 
     /**
