@@ -44,8 +44,7 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
         if (stream != null) {
             if (val instanceof Collection) {
                 this.executePrintlnOutput(stream, JoinerUtil.join((Collection) val));
-            }
-            if (val == null) {
+            } else if (val == null) {
                 this.executePrintlnOutput(stream, null);
             } else {
                 Class clazz = val.getClass();

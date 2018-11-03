@@ -176,5 +176,7 @@ class RunnerUtilTestTest {
         res = ClassUtil.getClasses(1, 2.0);
         res = MethodUtil.getPublicStaticMethods(DoubleUtil.class, "requireGt", (Class[]) res);
         //res = RunnerUtil.run("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
+
+        assertions.assertSame(String.class.getPackage(), Class.class.getPackage());
     }
 }

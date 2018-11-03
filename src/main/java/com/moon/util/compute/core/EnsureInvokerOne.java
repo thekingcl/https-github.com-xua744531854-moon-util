@@ -43,18 +43,18 @@ class EnsureInvokerOne implements AsInvoker {
     public Method getMethod(Object data, final Class type) {
         Method m = this.method;
         if (m == null || !paramType.isInstance(data)) {
-            List<Method> methods = getMethods(type);
-            m = this.method = requireNonNull(methods.get(0));
+            m = this.method = getMethod(type);
         }
         return m;
     }
 
-    private List<Method> getMethods(final Class type) {
+    private Method getMethod(final Class type) {
+        Method method;
         List<Method> methods = getPublicStaticMethods(
             sourceType, name, type);
-        if (methods.size() > 0) {
+        if (methods.size() > 0 && (method=methods.get(0)).getName().equals(name)) {
             paramType = type;
-            return methods;
+            return method;
         }
         if (methods.isEmpty()) {
             Class type0 = ArraysEnum.OBJECTS.type();
@@ -63,7 +63,7 @@ class EnsureInvokerOne implements AsInvoker {
             if (methods.size() > 0) {
                 paramType = type0;
                 componentType = Object.class;
-                return methods;
+                return methods.get(0);
             }
         }
         if (methods.isEmpty()) {
@@ -72,7 +72,7 @@ class EnsureInvokerOne implements AsInvoker {
                 sourceType, name, type1);
             if (methods.size() > 0) {
                 componentType = type;
-                return methods;
+                return methods.get(0);
             }
         }
         if (methods.isEmpty()) {
@@ -88,7 +88,7 @@ class EnsureInvokerOne implements AsInvoker {
                 }, new ArrayList<>());
             if (methods.size() > 0) {
                 componentType = type.getComponentType();
-                return methods;
+                return methods.get(0);
             }
         }
         throw new IllegalArgumentException("Can not find method of: " + sourceType + "(" + name + ")");

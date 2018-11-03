@@ -117,7 +117,7 @@ class MethodUtilTestTest {
     @Test
     void testGetAllDeclaredMemberMethods() {
         type = User.class;
-        methods = MethodUtil.getAllDeclaredMemberMethods(type);
+        methods = MethodUtil.getAllMethods(type);
         IteratorUtil.forEach(methods, m -> {
             Console.out.println(m);
         });
@@ -129,7 +129,7 @@ class MethodUtilTestTest {
         }};
 
         type = data.getClass();
-        methods = MethodUtil.getAllDeclaredMemberMethods(type);
+        methods = MethodUtil.getAllMethods(type);
         IteratorUtil.forEach(methods, m -> {
             Console.out.println(m);
         });

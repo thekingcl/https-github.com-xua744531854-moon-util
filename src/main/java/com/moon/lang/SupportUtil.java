@@ -115,7 +115,7 @@ public final class SupportUtil {
         }
     }
 
-    public static <T> T matchOne(Collection<T> collection, Predicate<T> test) {
+    public static <T> T matchOne(Collection<T> collection, Predicate<? super T> test) {
         if (collection != null) {
             for (T t : collection) {
                 if (test.test(t)) {
