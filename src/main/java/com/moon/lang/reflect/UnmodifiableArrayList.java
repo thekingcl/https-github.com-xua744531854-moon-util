@@ -34,7 +34,7 @@ class UnmodifiableArrayList<T> extends ArrayList<T>
     }
 
     static <T> UnmodifiableArrayList<T> unmodifiable(T[] elementData) {
-        return new UnmodifiableArrayList(elementData).unmodifiable();
+        return new UnmodifiableArrayList(elementData).flipToNot();
     }
 
     static <T> UnmodifiableArrayList<T> ofCollect(Object collect) {
@@ -105,7 +105,7 @@ class UnmodifiableArrayList<T> extends ArrayList<T>
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        return new UnmodifiableArrayList<>(super.subList(fromIndex, toIndex)).unmodifiable();
+        return new UnmodifiableArrayList<>(super.subList(fromIndex, toIndex)).flipToNot();
     }
 
     @Override
@@ -181,7 +181,7 @@ class UnmodifiableArrayList<T> extends ArrayList<T>
     }
 
     @Override
-    public UnmodifiableArrayList unmodifiable() {
+    public UnmodifiableArrayList flipToNot() {
         this.canModify = false;
         return this;
     }

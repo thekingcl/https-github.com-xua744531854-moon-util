@@ -44,19 +44,19 @@ public final class AccessorUtil {
         return IntAccessor.of(value);
     }
 
-    public static LongAccessor ofLong() {
+    public final static LongAccessor ofLong() {
         return LongAccessor.of();
     }
 
-    public static LongAccessor ofLong(long value) {
+    public final static LongAccessor ofLong(long value) {
         return LongAccessor.of(value);
     }
 
-    public static DoubleAccessor ofDouble() {
+    public final static DoubleAccessor ofDouble() {
         return DoubleAccessor.of();
     }
 
-    public static DoubleAccessor ofDouble(double value) {
+    public final static DoubleAccessor ofDouble(double value) {
         return DoubleAccessor.of(value);
     }
 }

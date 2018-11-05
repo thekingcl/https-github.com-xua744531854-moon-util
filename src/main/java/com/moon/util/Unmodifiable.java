@@ -8,5 +8,5 @@ package com.moon.util;
 @FunctionalInterface
 public interface Unmodifiable<T> {
 
-    Unmodifiable<T> unmodifiable();
+    Unmodifiable<T> flipToNot();
 }

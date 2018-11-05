@@ -123,7 +123,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.PUBLIC_MEMBER, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isMember);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -137,7 +137,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.PUBLIC_STATIC, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isStatic);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -179,7 +179,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.DECLARED_MEMBER, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isMember);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -193,7 +193,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.DECLARED_STATIC, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isStatic);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -243,7 +243,7 @@ public final class FieldUtil {
             Class currCls = clazz;
             while (true) {
                 if ((currCls = currCls.getSuperclass()) == null) {
-                    return new UnmodifiableArrayList(superFields.values()).unmodifiable();
+                    return new UnmodifiableArrayList(superFields.values()).flipToNot();
                 } else {
                     List<Field> fields = getDeclaredFields(currCls);
                     IteratorUtil.forEach(fields, field ->
@@ -263,7 +263,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.SUPER_MEMBER, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isMember);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -277,7 +277,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.SUPER_STATIC, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isStatic);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -294,7 +294,7 @@ public final class FieldUtil {
             while (true) {
                 Class current = currCls;
                 if (current == null) {
-                    return new UnmodifiableArrayList(cacheFields.values()).unmodifiable();
+                    return new UnmodifiableArrayList(cacheFields.values()).flipToNot();
                 } else {
                     IteratorUtil.forEach(getDeclaredFields(current), field ->
                         cacheFields.putIfAbsent(field.getName(), field));
@@ -314,7 +314,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.ALL_MEMBER, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isMember);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 
@@ -328,7 +328,7 @@ public final class FieldUtil {
         return WEAK.get(clazz, TypeEnum.ALL_STATIC, () -> {
             UnmodifiableArrayList<Field> fields = new UnmodifiableArrayList<>();
             ReflectionSupport.filter(getDeclaredFields(clazz), fields, AssertModifier.isStatic);
-            return fields.unmodifiable();
+            return fields.flipToNot();
         });
     }
 

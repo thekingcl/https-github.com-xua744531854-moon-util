@@ -48,7 +48,7 @@ public final class OptionalUtil {
         return obj == null ? elseVal : function.apply(obj);
     }
 
-    public static <T, R> R computOrGet(T obj, Function<T, R> function, Supplier<R> supplier) {
+    public static <T, R> R computeOrGet(T obj, Function<T, R> function, Supplier<R> supplier) {
         return obj == null ? supplier.get() : function.apply(obj);
     }
 

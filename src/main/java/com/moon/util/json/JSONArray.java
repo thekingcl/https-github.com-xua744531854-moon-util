@@ -84,6 +84,6 @@ public class JSONArray extends ArrayList<Object>
 
     @Override
     public String toString() {
-        return com.alibaba.fastjson.JSON.toJSONString(this);
+        return JSONCfg.WEAK.getOrReload().stringify(this);
     }
 }

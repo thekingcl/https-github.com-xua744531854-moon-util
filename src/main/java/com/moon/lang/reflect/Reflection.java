@@ -90,12 +90,12 @@ final class Reflection {
         if (length > 0) {
             int len = (methods = FilterUtil.filter(methods, m -> m.getParameterCount() == length)).size();
             if (len > 0) {
-                return doMatching(methods, types, length).unmodifiable();
+                return doMatching(methods, types, length).flipToNot();
             } else {
-                return get().unmodifiable();
+                return get().flipToNot();
             }
         } else {
-            return FilterUtil.filter(methods, Asserts.noParams, get()).unmodifiable();
+            return FilterUtil.filter(methods, Asserts.noParams, get()).flipToNot();
         }
     }
 
@@ -142,7 +142,7 @@ final class Reflection {
         strong.addAll(soft);
         strong.addAll(weak);
 
-        return strong.unmodifiable();
+        return strong.flipToNot();
     }
 
     private final static boolean isMatchSoft(Class type1, Class type2) {

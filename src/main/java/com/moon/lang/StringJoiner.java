@@ -1,18 +1,17 @@
 package com.moon.lang;
 
+import com.moon.enums.ArraysEnum;
 import com.moon.enums.Const;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static com.moon.lang.SupportUtil.ensureToLength;
 import static com.moon.lang.SupportUtil.safeGetChars;
 import static com.moon.util.IteratorUtil.forEach;
 import static java.lang.System.arraycopy;
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author benshaoye
@@ -23,8 +22,8 @@ public class StringJoiner {
     public final static String EMPTY = Const.EMPTY;
 
     private String delimiter;
-    private final String prefix;
-    private final String suffix;
+    private String prefix;
+    private String suffix;
 
     private int itemCount;
     private boolean skipNulls;
@@ -33,6 +32,8 @@ public class StringJoiner {
 
     private char[] value;
     private int length;
+
+    private Function<Object, String> stringer;
 
     /*
      * 构造函数
@@ -44,8 +45,7 @@ public class StringJoiner {
 
     public StringJoiner(CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
         this.delimiter = emptyIfNull(delimiter);
-        this.prefix = emptyIfNull(prefix);
-        this.suffix = emptyIfNull(suffix);
+        this.setPrefix(prefix).setSuffix(suffix).setStringer().reset();
     }
 
     private String emptyIfNull(CharSequence seq) {
@@ -82,13 +82,9 @@ public class StringJoiner {
             val = this.value;
         }
 
-        val = safeGetChars(val, length, sequence);
-        length += sequence.length();
-        itemCount++;
-
-        this.value = val;
-        this.length = length;
-        this.itemCount = itemCount;
+        this.value = safeGetChars(val, length, sequence);
+        this.length = length + sequence.length();
+        this.itemCount = itemCount + 1;
         return this;
     }
 
@@ -113,6 +109,78 @@ public class StringJoiner {
                 this.value = ensureToLength(chars, len + 8, length);
             }
             forEach(arr, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(boolean[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(char[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(byte[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(short[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(int[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(long[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(float[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
+        }
+        return this;
+    }
+
+    public <T> StringJoiner join(double[] values) {
+        testRequiredNonNull(values);
+        if (values != null) {
+            this.value = ensure(values.length * 5 + length);
+            forEach(values, item -> addStr(testAndGetString(item)));
         }
         return this;
     }
@@ -148,6 +216,12 @@ public class StringJoiner {
         return this;
     }
 
+    public <K, V> StringJoiner join(Map<K, V> map, BiFunction<K, V, String> converter) {
+        testRequiredNonNull(map);
+        forEach(map, (key, value) -> addStr(testAndGetString(converter.apply(key, value))));
+        return this;
+    }
+
     /*
      * merge
      */
@@ -163,6 +237,31 @@ public class StringJoiner {
     /*
      * defaults
      */
+
+    public StringJoiner reset() {
+        this.value = ArraysEnum.CHARS.empty();
+        this.itemCount = 0;
+        return this;
+    }
+
+    public StringJoiner setStringer(Function<Object, String> stringer) {
+        this.stringer = Objects.requireNonNull(stringer);
+        return this;
+    }
+
+    public StringJoiner setStringer() {
+        return this.setStringer(String::valueOf);
+    }
+
+    public StringJoiner setPrefix(CharSequence prefix) {
+        this.prefix = emptyIfNull(prefix);
+        return this;
+    }
+
+    public StringJoiner setSuffix(CharSequence suffix) {
+        this.suffix = emptyIfNull(suffix);
+        return this;
+    }
 
     public StringJoiner skipNulls() {
         return skipNulls(true);
@@ -247,13 +346,21 @@ public class StringJoiner {
         return new String(chars, 0, length);
     }
 
+    public int length() {
+        return this.length + this.suffix.length();
+    }
+
     /*
      * tools
      */
 
+    private char[] ensure(int newLength) {
+        return ensureToLength(this.value, newLength, length);
+    }
+
     private String testAndGetString(Object o) {
         o = testRequiredNonNull(o);
-        return o == null ? (skipNulls ? null : defaultIfNull) : String.valueOf(o);
+        return o == null ? (skipNulls ? null : defaultIfNull) : stringer.apply(o);
     }
 
     private <T> T testRequiredNonNull(T o) {

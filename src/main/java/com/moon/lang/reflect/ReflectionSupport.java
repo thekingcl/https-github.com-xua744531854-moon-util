@@ -82,7 +82,7 @@ final class ReflectionSupport {
         }
         strong.addAll(soft);
         strong.addAll(weak);
-        return strong.unmodifiable();
+        return strong.flipToNot();
     }
 
     static MatchLevel checkMatchLevel(Class[] types1, Class[] types2) {
@@ -152,18 +152,6 @@ final class ReflectionSupport {
         if (collect != null) {
             for (E e : collect) {
                 if (predicate.test(e)) {
-                    resultContainer.add(e);
-                }
-            }
-        }
-        return resultContainer;
-    }
-
-    static <P, E extends P, C extends Collection<E>> C filter(
-        C collect, C resultContainer, Predicate<P> predicate1, Predicate<P> predicate2) {
-        if (collect != null) {
-            for (E e : collect) {
-                if (predicate1.test(e) && predicate2.test(e)) {
                     resultContainer.add(e);
                 }
             }

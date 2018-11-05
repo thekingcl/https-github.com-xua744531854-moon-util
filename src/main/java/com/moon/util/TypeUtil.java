@@ -25,7 +25,7 @@ public final class TypeUtil {
     private final static WeakAccessor<TypeConverter> accessor = WeakAccessor.of(UnmodifiableTypeConverter::new);
 
     /**
-     * return a unmodifiable type converter
+     * return a flipToNot type converter
      *
      * @return
      */

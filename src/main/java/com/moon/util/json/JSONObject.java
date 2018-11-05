@@ -85,6 +85,6 @@ public class JSONObject extends HashMap<String, Object>
 
     @Override
     public String toString() {
-        return com.alibaba.fastjson.JSON.toJSONString(this);
+        return JSONCfg.WEAK.getOrReload().stringify(this);
     }
 }

@@ -59,6 +59,19 @@ class StringJoinerTestTest {
 
     @Test
     void testMerge() {
+        Object obj = null;
+        List<String> list = new ArrayList() {{
+            add("aaaa");
+            add("bbbb");
+            add(null);
+            add("cccc");
+            add("dddd");
+            add("eeee");
+        }};
+        JoinerUtil.of(";").join(list);
+        assertEquals("aaaa;bbbb;null;cccc;dddd;eeee", JoinerUtil.of(";").join(list).toString());
+
+        assertEquals("aaaa;bbbb;cccc;dddd;eeee", JoinerUtil.of(";").skipNulls().join(list).toString());
     }
 
     @Test

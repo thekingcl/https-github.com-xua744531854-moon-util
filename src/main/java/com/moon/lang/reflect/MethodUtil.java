@@ -39,32 +39,32 @@ public final class MethodUtil {
 
     public final static List<Method> getPublicMethods(Class type) {
         return WEAK.get(type, TypeEnum.PUBLIC, (clazz, n) ->
-            get(clazz.getMethods()).unmodifiable());
+            get(clazz.getMethods()).flipToNot());
     }
 
     public final static List<Method> getPublicStaticMethods(Class type) {
         return WEAK.get(type, TypeEnum.PUBLIC_STATIC, (clazz, n) ->
-            FilterUtil.filter(getPublicMethods(clazz), Asserts.isStatic, get()).unmodifiable());
+            FilterUtil.filter(getPublicMethods(clazz), Asserts.isStatic, get()).flipToNot());
     }
 
     public final static List<Method> getPublicMemberMethods(Class type) {
         return WEAK.get(type, TypeEnum.PUBLIC_STATIC, (clazz, n) ->
-            FilterUtil.filter(getPublicMethods(clazz), Asserts.isMember, get()).unmodifiable());
+            FilterUtil.filter(getPublicMethods(clazz), Asserts.isMember, get()).flipToNot());
     }
 
     // 返回所有符合名字的 public 方法
 
     public final static List<Method> getPublicMethods(Class type, String methodName) {
         return WEAK.get(type, methodName, (clazz, name) ->
-            FilterUtil.filter(getPublicMethods(clazz), nameTester(name), get()).unmodifiable());
+            FilterUtil.filter(getPublicMethods(clazz), nameTester(name), get()).flipToNot());
     }
 
     public final static List<Method> getPublicStaticMethods(Class type, String methodName) {
-        return FilterUtil.filter(getPublicMethods(type, methodName), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getPublicMethods(type, methodName), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getPublicMemberMethods(Class type, String methodName) {
-        return FilterUtil.filter(getPublicMethods(type, methodName), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getPublicMethods(type, methodName), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getPublicMethod(Class type, String methodName) {
@@ -80,16 +80,16 @@ public final class MethodUtil {
 
     public final static List<Method> getPublicMethods(Class type, String methodName, Class... parameterTypes) {
         return FilterUtil.filter(WEAK.get(type, Arrays.hashCode(parameterTypes),
-            () -> matching(getPublicMethods(type, methodName), parameterTypes).unmodifiable()),
-            nameTester(methodName), get()).unmodifiable();
+            () -> matching(getPublicMethods(type, methodName), parameterTypes).flipToNot()),
+            nameTester(methodName), get()).flipToNot();
     }
 
     public final static List<Method> getPublicStaticMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getPublicMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getPublicMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getPublicMemberMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getPublicMethods(type, methodName, parameterTypes), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getPublicMethods(type, methodName, parameterTypes), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getPublicMethod(Class type, String methodName, Class... parameterTypes) {
@@ -116,27 +116,27 @@ public final class MethodUtil {
 
     public final static List<Method> getDeclaredStaticMethods(Class type) {
         return WEAK.get(type, TypeEnum.DECLARED_STATIC, (clazz, n) ->
-            FilterUtil.filter(getDeclaredMethods(clazz), Asserts.isStatic, get()).unmodifiable());
+            FilterUtil.filter(getDeclaredMethods(clazz), Asserts.isStatic, get()).flipToNot());
     }
 
     public final static List<Method> getDeclaredMemberMethods(Class type) {
         return WEAK.get(type, TypeEnum.DECLARED_STATIC, (clazz, n) ->
-            FilterUtil.filter(getDeclaredMethods(clazz), Asserts.isMember, get()).unmodifiable());
+            FilterUtil.filter(getDeclaredMethods(clazz), Asserts.isMember, get()).flipToNot());
     }
 
     // 返回所有符合名字的 declared 方法
 
     public final static List<Method> getDeclaredMethods(Class type, String methodName) {
         return WEAK.get(type, methodName, (clazz, name) ->
-            FilterUtil.filter(getDeclaredMethods(clazz), nameTester(name), get()).unmodifiable());
+            FilterUtil.filter(getDeclaredMethods(clazz), nameTester(name), get()).flipToNot());
     }
 
     public final static List<Method> getDeclaredStaticMethods(Class type, String methodName) {
-        return FilterUtil.filter(getDeclaredMethods(type, methodName), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getDeclaredMethods(type, methodName), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getDeclaredMemberMethods(Class type, String methodName) {
-        return FilterUtil.filter(getDeclaredMethods(type, methodName), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getDeclaredMethods(type, methodName), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getDeclaredMethod(Class type, String methodName) {
@@ -151,16 +151,16 @@ public final class MethodUtil {
 
     public final static List<Method> getDeclaredMethods(Class type, String methodName, Class... parameterTypes) {
         return FilterUtil.filter(WEAK.get(type, Arrays.hashCode(parameterTypes),
-            () -> matching(getDeclaredMethods(type, methodName), parameterTypes).unmodifiable()),
-            nameTester(methodName), get()).unmodifiable();
+            () -> matching(getDeclaredMethods(type, methodName), parameterTypes).flipToNot()),
+            nameTester(methodName), get()).flipToNot();
     }
 
     public final static List<Method> getDeclaredStaticMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getDeclaredMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getDeclaredMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getDeclaredMemberMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getDeclaredMethods(type, methodName, parameterTypes), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getDeclaredMethods(type, methodName, parameterTypes), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getDeclaredMethod(Class type, String methodName, Class... parameterTypes) {
@@ -179,32 +179,32 @@ public final class MethodUtil {
 
     public final static List<Method> getAllMethods(Class type) {
         return WEAK.get(type, TypeEnum.ALL, (clazz, n) ->
-            unmodify(getPublicMethods(type), getDeclaredMethods(type), type).unmodifiable());
+            unmodify(getPublicMethods(type), getDeclaredMethods(type), type).flipToNot());
     }
 
     public final static List<Method> getAllStaticMethods(Class type) {
         return WEAK.get(type, TypeEnum.ALL_STATIC, (clazz, n) ->
-            FilterUtil.filter(getAllMethods(clazz), Asserts.isStatic, get()).unmodifiable());
+            FilterUtil.filter(getAllMethods(clazz), Asserts.isStatic, get()).flipToNot());
     }
 
     public final static List<Method> getAllMemberMethods(Class type) {
         return WEAK.get(type, TypeEnum.ALL_STATIC, (clazz, n) ->
-            FilterUtil.filter(getAllMethods(clazz), Asserts.isMember, get()).unmodifiable());
+            FilterUtil.filter(getAllMethods(clazz), Asserts.isMember, get()).flipToNot());
     }
 
     // 返回所有符合名字的所有方法
 
     public final static List<Method> getAllMethods(Class type, String methodName) {
         return WEAK.get(type, methodName, (clazz, name) ->
-            FilterUtil.filter(getAllMethods(clazz), nameTester(name), get()).unmodifiable());
+            FilterUtil.filter(getAllMethods(clazz), nameTester(name), get()).flipToNot());
     }
 
     public final static List<Method> getAllStaticMethods(Class type, String methodName) {
-        return FilterUtil.filter(getAllMethods(type, methodName), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getAllMethods(type, methodName), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getAllMemberMethods(Class type, String methodName) {
-        return FilterUtil.filter(getAllMethods(type, methodName), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getAllMethods(type, methodName), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getAccessibleMethod(Class type, String methodName) {
@@ -219,16 +219,16 @@ public final class MethodUtil {
 
     public final static List<Method> getAllMethods(Class type, String methodName, Class... parameterTypes) {
         return FilterUtil.filter(WEAK.get(type, Arrays.hashCode(parameterTypes),
-            () -> matching(getAllMethods(type, methodName), parameterTypes).unmodifiable()),
-            nameTester(methodName), get()).unmodifiable();
+            () -> matching(getAllMethods(type, methodName), parameterTypes).flipToNot()),
+            nameTester(methodName), get()).flipToNot();
     }
 
     public final static List<Method> getAllStaticMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getAllMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).unmodifiable();
+        return FilterUtil.filter(getAllMethods(type, methodName, parameterTypes), Asserts.isStatic, get()).flipToNot();
     }
 
     public final static List<Method> getAllMemberMethods(Class type, String methodName, Class... parameterTypes) {
-        return FilterUtil.filter(getAllMethods(type, methodName, parameterTypes), Asserts.isMember, get()).unmodifiable();
+        return FilterUtil.filter(getAllMethods(type, methodName, parameterTypes), Asserts.isMember, get()).flipToNot();
     }
 
     public final static Method getAccessibleMethod(Class type, String methodName, Class... parameterTypes) {

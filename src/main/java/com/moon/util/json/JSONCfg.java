@@ -7,7 +7,7 @@ import com.moon.lang.ref.WeakAccessor;
  * @date 2018/9/14
  */
 class JSONCfg {
-    final static WeakAccessor<JSONStringBuilder> WEAK = WeakAccessor.of(JSONStringBuilder::new);
+    final static WeakAccessor<JSONStringer> WEAK = WeakAccessor.of(JSONStringer::new);
 
     final static char[][] ESCAPES = {
         {'b', '\b'},

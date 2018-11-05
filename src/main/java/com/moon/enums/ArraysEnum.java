@@ -43,6 +43,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         public boolean test(Object data) {
             return data instanceof Object[];
         }
+
+        public int length(Object arr) {
+            return to(arr).length;
+        }
     },
     BOOLEANS(new boolean[0]) {
         @Override
@@ -68,6 +72,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         @Override
         public boolean test(Object data) {
             return data instanceof boolean[];
+        }
+
+        public int length(Object arr) {
+            return to(arr).length;
         }
     },
     DOUBLES(new double[0]) {
@@ -95,6 +103,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         public boolean test(Object data) {
             return data instanceof double[];
         }
+
+        public int length(Object arr) {
+            return to(arr).length;
+        }
     },
     FLOATS(new float[0]) {
         @Override
@@ -120,6 +132,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         @Override
         public boolean test(Object data) {
             return data instanceof float[];
+        }
+
+        public int length(Object arr) {
+            return to(arr).length;
         }
     },
     LONGS(new long[0]) {
@@ -147,6 +163,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         public boolean test(Object data) {
             return data instanceof long[];
         }
+
+        public int length(Object arr) {
+            return to(arr).length;
+        }
     },
     INTS(new int[0]) {
         @Override
@@ -172,6 +192,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         @Override
         public boolean test(Object data) {
             return data instanceof int[];
+        }
+
+        public int length(Object arr) {
+            return to(arr).length;
         }
     },
     SHORTS(new short[0]) {
@@ -199,6 +223,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         public boolean test(Object data) {
             return data instanceof short[];
         }
+
+        public int length(Object arr) {
+            return to(arr).length;
+        }
     },
     BYTES(new byte[0]) {
         @Override
@@ -224,6 +252,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         @Override
         public boolean test(Object data) {
             return data instanceof byte[];
+        }
+
+        public int length(Object arr) {
+            return to(arr).length;
         }
     },
     CHARS(new char[0]) {
@@ -253,6 +285,10 @@ public enum ArraysEnum implements StringifyAble, IteratorAble, IntBiFunction, Pr
         @Override
         public boolean test(Object data) {
             return data instanceof char[];
+        }
+
+        public int length(Object arr) {
+            return to(arr).length;
         }
     };
 
