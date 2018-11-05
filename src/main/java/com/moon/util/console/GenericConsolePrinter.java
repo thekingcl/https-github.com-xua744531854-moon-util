@@ -137,14 +137,15 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
 
     private StringBuilder timerBuilder;
     private long previousTiming;
+    private String template;
+    private boolean contains = false;
 
     /**
      * 开始计时
      */
     @Override
     public void time() {
-        previousTiming = timing();
-        throw new UnsupportedOperationException();
+        this.time(null);
     }
 
     /**
@@ -154,8 +155,9 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
      */
     @Override
     public void time(String template) {
+        timerBuilder = new StringBuilder();
+        this.setTemplate(template);
         previousTiming = timing();
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -163,8 +165,9 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
      */
     @Override
     public void timeNext() {
+        long current = timing();
+        append(this.template, current);
         previousTiming = timing();
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -174,8 +177,10 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
      */
     @Override
     public void timeNext(String template) {
+        long current = timing();
+        append(this.template, current);
+        this.setTemplate(template);
         previousTiming = timing();
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -183,11 +188,30 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
      */
     @Override
     public void timeEnd() {
-        previousTiming = timing();
-        throw new UnsupportedOperationException();
+        long current = timing();
+        append(this.template, current);
+        StringBuilder timer = this.timerBuilder;
+        timer.setCharAt(timer.length() - 1, (char) 0);
+        this.debug(timer);
     }
 
     private long timing() {
-        return System.nanoTime();
+        return System.currentTimeMillis();
+    }
+
+    private void setTemplate(String template) {
+        this.template = template = (template == null ? "{} ms" : template);
+        contains = template.contains("{}");
+    }
+
+    private void append(String old, long current) {
+        // double value = (current - previousTiming) / 1000.0;
+        long value = (current - previousTiming);
+        if (contains) {
+            timerBuilder.append(StringUtil.format(old, value));
+        } else {
+            timerBuilder.append(old).append(value).append(" ms");
+        }
+        timerBuilder.append('\n');
     }
 }

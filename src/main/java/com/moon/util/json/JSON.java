@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.moon.util.IteratorUtil.of;
+import static com.moon.util.IteratorUtil.ofLines;
 import static com.moon.util.JSONUtil.readJsonString;
 import static com.moon.util.TypeUtil.cast;
 
@@ -32,13 +32,11 @@ public interface JSON<KEY> extends Cloneable, Serializable {
      * @return
      */
     static JSON parse(String jsonText) {
-        if (jsonText == null) {
-            return JSONNull.NULL;
-        }
-        if (jsonText.startsWith("classpath:")) {
-            jsonText = readJsonString(jsonText.substring(10));
-        }
-        return new JSONParser(jsonText).toJSON();
+        return jsonText == null
+            ? JSONNull.NULL
+            : new JSONParser(jsonText.startsWith("classpath:")
+            ? readJsonString(jsonText.substring(10))
+            : jsonText).toJSON();
     }
 
     /**
@@ -62,7 +60,7 @@ public interface JSON<KEY> extends Cloneable, Serializable {
     }
 
     static JSON parse(Reader jsonReader) {
-        return new JSONParser(readJsonString(of(jsonReader))).toJSON();
+        return new JSONParser(readJsonString(ofLines(jsonReader))).toJSON();
     }
 
     static JSON parse(URL url) {

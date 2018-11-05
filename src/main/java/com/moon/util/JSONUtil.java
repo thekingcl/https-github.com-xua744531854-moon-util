@@ -57,31 +57,31 @@ public final class JSONUtil {
     }
 
     public static String readJsonString(File file) {
-        return readJsonString(IteratorUtil.of(file));
+        return readJsonString(IteratorUtil.ofLines(file));
     }
 
     public static String readJsonString(URL url) {
         try {
-            return readJsonString(IteratorUtil.of(url.openStream()));
+            return readJsonString(IteratorUtil.ofLines(url.openStream()));
         } catch (IOException e) {
             return wrapAndThrow(e);
         }
     }
 
     public static String readJsonString(InputStream is) {
-        return readJsonString(IteratorUtil.of(is));
+        return readJsonString(IteratorUtil.ofLines(is));
     }
 
     public static String readJsonString(URL url, Charset charset) {
         try {
-            return readJsonString(IteratorUtil.of(url.openStream(), charset));
+            return readJsonString(IteratorUtil.ofLines(url.openStream(), charset));
         } catch (IOException e) {
             return wrapAndThrow(e);
         }
     }
 
     public static String readJsonString(InputStream is, Charset charset) {
-        return readJsonString(IteratorUtil.of(is, charset));
+        return readJsonString(IteratorUtil.ofLines(is, charset));
     }
 
     public static String readJsonString(Iterator<String> iterator) {

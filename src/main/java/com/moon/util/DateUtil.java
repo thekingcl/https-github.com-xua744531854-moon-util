@@ -62,7 +62,6 @@ public final class DateUtil {
         return System.currentTimeMillis();
     }
 
-
     /*
      * -------------------------------------------------------------------------
      * parsers

@@ -128,7 +128,7 @@ public final class IteratorUtil {
      */
 
     /**
-     * 返回字符串的迭代器，在这儿会检测字符串的规则是否符合系统或本地资源文件系统目录，如存在会返回一个读取资源文件的迭代器
+     * 返回字符串的字符迭代器
      *
      * @param string
      */
@@ -137,15 +137,12 @@ public final class IteratorUtil {
     }
 
     /**
-     * 返回字符串的迭代器;
-     * 如果 isString == true ;则认为 string 是一个普通字符串
-     * 如果 isString == false ;则认为 string 是指向一个文件的完整路径，可以是系统资源文件，也可以是硬盘资源
+     * 返回文本行迭代器
      *
      * @param string
-     * @param isString
      */
-    public static Iterator of(CharSequence string, boolean isString) {
-        return isString ? new CharsIterator(string) : new TextReaderIterator(string);
+    public static Iterator ofLines(CharSequence string) {
+        return string == null ? Null : new TextReaderIterator(string);
     }
 
     /*
@@ -160,7 +157,7 @@ public final class IteratorUtil {
      * @param reader
      * @return
      */
-    public static Iterator<String> of(Reader reader) {
+    public static Iterator<String> ofLines(Reader reader) {
         return reader == null ? Null : new TextReaderIterator(reader);
     }
 
@@ -170,7 +167,7 @@ public final class IteratorUtil {
      * @param is
      * @return
      */
-    public static Iterator<String> of(InputStream is) {
+    public static Iterator<String> ofLines(InputStream is) {
         return is == null ? Null : new TextReaderIterator(is);
     }
 
@@ -181,7 +178,7 @@ public final class IteratorUtil {
      * @param charset
      * @return
      */
-    public static Iterator<String> of(InputStream is, String charset) {
+    public static Iterator<String> ofLines(InputStream is, String charset) {
         return is == null ? Null : new TextReaderIterator(is, charset);
     }
 
@@ -192,7 +189,7 @@ public final class IteratorUtil {
      * @param charset
      * @return
      */
-    public static Iterator<String> of(InputStream is, Charset charset) {
+    public static Iterator<String> ofLines(InputStream is, Charset charset) {
         return is == null ? Null : new TextReaderIterator(is, charset);
     }
 
@@ -208,7 +205,7 @@ public final class IteratorUtil {
      *
      * @param file
      */
-    public static Iterator<String> of(File file) {
+    public static Iterator<String> ofLines(File file) {
         return file == null ? Null : new TextReaderIterator(file);
     }
 
@@ -707,7 +704,7 @@ public final class IteratorUtil {
      * @param file
      */
     public static void forEach(File file, Consumer<String> consumer) {
-        of(file).forEachRemaining(consumer);
+        ofLines(file).forEachRemaining(consumer);
     }
 
     /**
@@ -733,9 +730,7 @@ public final class IteratorUtil {
     }
 
     public static void forEach(Reader reader, Consumer<String> consumer) {
-        if (reader != null) {
-            new TextReaderIterator(reader).forEachRemaining(consumer);
-        }
+        ofLines(reader).forEachRemaining(consumer);
     }
 
     public static void forEach(Reader reader, char[] buffer, Consumer<Integer> consumer) {

@@ -21,7 +21,7 @@ public final class Base64Util {
         return new BASE64Encoder().encode(normal.getBytes());
     }
 
-    public static String toNormal(String base64) {
+    public static String toString(String base64) {
         try {
             return new String(new BASE64Decoder().decodeBuffer(base64));
         } catch (IOException e) {

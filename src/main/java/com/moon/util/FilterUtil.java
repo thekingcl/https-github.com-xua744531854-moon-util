@@ -2,10 +2,7 @@ package com.moon.util;
 
 import com.moon.enums.CollectionEnum;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -250,7 +247,8 @@ public final class FilterUtil {
      * --------------------------------------------------------------
      */
 
-    public final static <E, C extends Collection<? super E>> C filterTo(E[] es, Predicate<? super E> tester, C container) {
+    public final static <E, C extends Collection<? super E>> C
+    filterTo(E[] es, Predicate<? super E> tester, C container) {
         if (es != null) {
             for (int i = 0, len = es.length; i < len; i++) {
                 if (tester.test(es[i])) {
