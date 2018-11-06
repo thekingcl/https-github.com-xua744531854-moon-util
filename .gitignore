@@ -3,6 +3,7 @@
 .idea
 /.idea
 target
+moon-annotations
 
 # Log file
 *.log

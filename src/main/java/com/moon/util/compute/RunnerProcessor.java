@@ -1,7 +1,6 @@
 package com.moon.util.compute;
 
-import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableSet;
+import com.moon.util.SetUtil;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -11,12 +10,9 @@ import java.util.Set;
 /**
  * @author benshaoye
  */
-@AutoService(Processor.class)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("com.moon.util.compute.Runner")
 public class RunnerProcessor extends AbstractProcessor {
 
-    private final static Set<String> SUPPORTED_TYPES = ImmutableSet.of(Runner.class.getName());
+    private final static Set<String> SUPPORTED_TYPES = SetUtil.ofHashSet(Runner.class.getName());
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
