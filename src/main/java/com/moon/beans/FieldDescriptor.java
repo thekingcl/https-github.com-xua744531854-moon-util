@@ -325,10 +325,19 @@ public final class FieldDescriptor {
         if (propertyType == null) {
             synchronized (LOCK) {
                 if (propertyType == null) {
+                    if (isSetterPresent()) {
+                        Class[] types = this.setterMethod.getParameterTypes();
+                        if (types.length == 1) {
+                            this.propertyType = types[0];
+                            return propertyType;
+                        } else {
+                            ThrowUtil.throwRuntime("Property isn't present of: " + name);
+                        }
+                    }
                     if (isFieldPresent()) {
                         this.propertyType = this.field.getType();
                     } else {
-                        return ThrowUtil.throwRuntime("Property isn't present of: " + name);
+                        ThrowUtil.throwRuntime("Property isn't present of: " + name);
                     }
                 }
             }
