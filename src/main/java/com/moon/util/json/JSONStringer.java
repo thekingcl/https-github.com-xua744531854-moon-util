@@ -1,7 +1,7 @@
 package com.moon.util.json;
 
 import com.moon.beans.BeanInfoUtil;
-import com.moon.util.able.StringifyAble;
+import com.moon.util.able.Stringify;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author benshaoye
  * @date 2018/9/14
  */
-class JSONStringer implements StringifyAble {
+class JSONStringer implements Stringify {
 
     JSONStringer() {
     }

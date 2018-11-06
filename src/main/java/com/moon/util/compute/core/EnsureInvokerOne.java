@@ -57,7 +57,7 @@ class EnsureInvokerOne implements AsInvoker {
             return method;
         }
         if (methods.isEmpty()) {
-            Class type0 = ArraysEnum.OBJECTS.type();
+            Class type0 = ArraysEnum.OBJECTS.TYPE;
             methods = getPublicStaticMethods(
                 sourceType, name, type0);
             if (methods.size() > 0) {
@@ -98,7 +98,7 @@ class EnsureInvokerOne implements AsInvoker {
     public Object createParams(Object data, Class type) {
         if (paramType == type) {
             return data;
-        } else if (paramType == ArraysEnum.OBJECTS.type()) {
+        } else if (paramType == ArraysEnum.OBJECTS.TYPE) {
             return new Object[]{data};
         } else if (componentType.isAssignableFrom(type)) {
             Object arr = Array.newInstance(componentType, 1);

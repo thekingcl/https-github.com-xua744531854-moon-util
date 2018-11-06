@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.beans.BeanInfoUtil;
 import com.moon.beans.FieldDescriptor;
+import com.moon.enums.ArrayOperators;
 import com.moon.enums.ArraysEnum;
 import com.moon.lang.BooleanUtil;
 import com.moon.util.ListUtil;
@@ -172,7 +173,7 @@ class DataGetterOrdinary implements AsGetter {
     private static class ArrayGetter implements AsGetter {
         final int index;
         final String message;
-        ArraysEnum getter;
+        ArrayOperators getter;
 
         ArrayGetter(int index) {
             this.index = index;
@@ -191,10 +192,10 @@ class DataGetterOrdinary implements AsGetter {
             if (getter == null || getter.test(data)) {
                 getter = reset(data);
             }
-            return getter.apply(index, data);
+            return getter.get(data,index);
         }
 
-        private ArraysEnum reset(Object data) {
+        private ArrayOperators reset(Object data) {
             return getter = ArraysEnum.getOrObjects(data.getClass());
         }
 

@@ -1,12 +1,13 @@
 package com.moon.util.compute.core;
 
+import com.moon.enums.ArrayOperators;
 import com.moon.enums.ArraysEnum;
 
 /**
  * @author benshaoye
  */
 class IGetArray implements IGetter {
-    ArraysEnum getter;
+    ArrayOperators getter;
 
     public boolean sourceTest(Object data) {
         return data.getClass().isArray();
@@ -22,11 +23,11 @@ class IGetArray implements IGetter {
     @Override
     public Object apply(Object o, Object o2) {
         return getter == null || !test(o)
-            ? reset(o).apply(((Number) o2).intValue(), o)
-            : getter.apply(((Number) o2).intValue(), o);
+            ? reset(o).get(o, ((Number) o2).intValue())
+            : getter.get(o, ((Number) o2).intValue());
     }
 
-    ArraysEnum reset(Object data) {
+    ArrayOperators reset(Object data) {
         getter = ArraysEnum.getOrObjects(data.getClass());
         return getter;
     }

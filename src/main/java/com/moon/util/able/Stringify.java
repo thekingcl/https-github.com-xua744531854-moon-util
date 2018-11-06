@@ -4,7 +4,7 @@ package com.moon.util.able;
  * @author benshaoye
  */
 @FunctionalInterface
-public interface StringifyAble<T> {
+public interface Stringify<T> {
     /**
      * 字符串化对象
      *

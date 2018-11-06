@@ -1,5 +1,6 @@
 package com.moon.util.compute;
 
+import com.moon.lang.ThrowUtil;
 import com.moon.util.compute.core.ParseUtil;
 
 /**
@@ -117,11 +118,11 @@ public final class RunnerUtil extends ParseUtil {
      * @throws Throwable 如果字符串表达式中包含变量
      */
     public final static Object run(String expression) {
-        return run(expression, null);
+        return run0(expression, null);
     }
 
     /**
-     * 计算复杂表达式，形如：
+     * 计算带有变量复杂表达式，可接受一个参数，形如：
      * <p>
      * 1 + 2 + key1[0].name      ==> key1 可以是 Map 的 key 或一个实体对象的字段
      * <p>
@@ -138,6 +139,23 @@ public final class RunnerUtil extends ParseUtil {
      */
     public final static Object run(String expression, Object data) {
         return run0(expression, data);
+    }
+
+    /**
+     * 计算带有变量复杂表达式，可接受多个参数，主要与{@link #run(String, Object)}的区别；
+     * <p>
+     * 这儿带有的参数可以是 map、collection、数组、Java bean 对象；
+     * <p>
+     * 如果存在相同键名，后出现的将会覆盖之前出现的值
+     * <p>
+     * 如果数据是 Iterator 对象，可作为字段传入，不可作为直接量传入
+     *
+     * @param expression
+     * @param data
+     * @return
+     */
+    public final static Object run(String expression, Object... data) {
+        return run(expression, new RunnerDataMap(data));
     }
 
     /**
@@ -267,5 +285,15 @@ public final class RunnerUtil extends ParseUtil {
      */
     public final static Object parseRun(String expression, String[] delimiters, Object data) {
         return parseRun0(expression, delimiters, data);
+    }
+
+    /**
+     * 获取一个运算接口实例
+     *
+     * @param interfaceClass
+     * @return
+     */
+    public final static <T> T get(Class<T> interfaceClass) {
+        return ThrowUtil.rejectAccessError();
     }
 }

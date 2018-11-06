@@ -1,5 +1,7 @@
 package com.moon.time;
 
+import com.moon.util.function.IntBiFunction;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -48,11 +50,51 @@ public final class TimeUtil {
         return toDateTime(calendar);
     }
 
-    public final static boolean isBefore(LocalDate date1, LocalDate date2) {
-        return date1 == null || date2 == null ? false : date1.isBefore(date2);
+    /*
+     * ----------------------------------------------------------------------------------
+     * for each
+     * ----------------------------------------------------------------------------------
+     */
+
+    public final static void forEachYears(LocalDate begin, LocalDate end, IntBiFunction<LocalDate, Boolean> consumer) {
+        for (; begin.isBefore(end) && consumer.apply(begin.getYear(), begin); begin = begin.plusYears(1)) {
+        }
     }
 
-    public final static boolean isAfter(LocalDate date1, LocalDate date2) {
-        return date1 == null || date2 == null ? false : date1.isAfter(date2);
+    public final static void forEachMonths(LocalDate begin, LocalDate end, IntBiFunction<LocalDate, Boolean> consumer) {
+        for (; begin.isBefore(end) && consumer.apply(begin.getMonthValue(), begin); begin = begin.plusMonths(1)) {
+        }
+    }
+
+    public final static void forEachDays(LocalDate begin, LocalDate end, IntBiFunction<LocalDate, Boolean> consumer) {
+        for (; begin.isBefore(end) && consumer.apply(begin.getDayOfMonth(), begin); begin = begin.plusDays(1)) {
+        }
+    }
+
+    public final static void forEachHours(LocalTime begin, LocalTime end, IntBiFunction<LocalTime, Boolean> consumer) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime last = begin.isBefore(end) ? LocalDateTime.of(now, end) : LocalDateTime.of(now.plusDays(1), end);
+        for (LocalDateTime start = LocalDateTime.of(now, begin);
+             start.isBefore(last) && consumer.apply(start.getHour(), start.toLocalTime());
+             start = start.plusHours(1)) {
+        }
+    }
+
+    public final static void forEachMinutes(LocalTime begin, LocalTime end, IntBiFunction<LocalTime, Boolean> consumer) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime last = begin.isBefore(end) ? LocalDateTime.of(now, end) : LocalDateTime.of(now.plusDays(1), end);
+        for (LocalDateTime start = LocalDateTime.of(now, begin);
+             start.isBefore(last) && consumer.apply(start.getMinute(), start.toLocalTime());
+             start = start.plusMinutes(1)) {
+        }
+    }
+
+    public final static void forEachSeconds(LocalTime begin, LocalTime end, IntBiFunction<LocalTime, Boolean> consumer) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime last = begin.isBefore(end) ? LocalDateTime.of(now, end) : LocalDateTime.of(now.plusDays(1), end);
+        for (LocalDateTime start = LocalDateTime.of(now, begin);
+             start.isBefore(last) && consumer.apply(start.getSecond(), start.toLocalTime());
+             start = start.plusSeconds(1)) {
+        }
     }
 }

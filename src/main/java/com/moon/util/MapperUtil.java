@@ -27,12 +27,15 @@ public final class MapperUtil {
      */
 
     public final static Map<String, Object> toMap(Object bean) {
-        Map<String, Object> map = new HashMap<>();
+        return toMap(bean, new HashMap(16));
+    }
+
+    public final static Map<String, Object> toMap(Object bean, Map container) {
         if (bean != null) {
             getFieldDescriptorsMap(bean.getClass()).forEach((name, d) ->
-                map.put(name, d.getValueIfPresent(bean, true)));
+                container.put(name, d.getValueIfPresent(bean, true)));
         }
-        return map;
+        return container;
     }
 
     public final static <T> T toInstance(Map<String, ?> data, Class<T> type) {
@@ -73,7 +76,7 @@ public final class MapperUtil {
         return result;
     }
 
-    public final static <T, E> List<T> forEachToOtherInstance(List<E> dataList, Class<T> type) {
+    public final static <T, E> List<T> forEachToOther(List<E> dataList, Class<T> type) {
         List<T> result = new ArrayList<>();
         IteratorUtil.forEach(dataList, item -> result.add(toInstance(item, type)));
         return result;
