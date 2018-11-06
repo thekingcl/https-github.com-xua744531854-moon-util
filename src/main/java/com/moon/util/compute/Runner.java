@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author benshaoye
  */
 @Target(ElementType.METHOD)
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 public @interface Runner {
     String value() default "null";
 }

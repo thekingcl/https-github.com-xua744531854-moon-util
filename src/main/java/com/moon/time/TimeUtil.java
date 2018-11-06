@@ -1,10 +1,12 @@
 package com.moon.time;
 
+import com.moon.lang.SupportUtil;
 import com.moon.util.function.IntBiFunction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,18 +20,25 @@ public final class TimeUtil {
         noInstanceError();
     }
 
+    /*
+     * ----------------------------------------------------------------------------------
+     * converters
+     * ----------------------------------------------------------------------------------
+     */
+
     public final static LocalDate toDate(Calendar calendar) {
         return LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     public final static LocalTime toTime(Calendar calendar) {
-        return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+            calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
     }
 
     public final static LocalDateTime toDateTime(Calendar calendar) {
-        return LocalDateTime.of(
-            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+        return LocalDateTime.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
+            calendar.get(Calendar.MILLISECOND));
     }
 
     public final static LocalDate toDate(Date date) {
@@ -48,6 +57,177 @@ public final class TimeUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return toDateTime(calendar);
+    }
+
+    public final static LocalDate toDate(CharSequence date) {
+        return LocalDate.parse(date);
+    }
+
+    public final static LocalTime toTime(CharSequence date) {
+        return LocalTime.parse(date);
+    }
+
+    public final static LocalDateTime toDateTime(CharSequence date) {
+        return LocalDateTime.parse(date);
+    }
+
+    public final static LocalDate toDate(long milliseconds) {
+        return toDate(new Date(milliseconds));
+    }
+
+    public final static LocalTime toTime(long milliseconds) {
+        return toTime(new Date(milliseconds));
+    }
+
+    public final static LocalDateTime toDateTime(long milliseconds) {
+        return toDateTime(new Date(milliseconds));
+    }
+
+    public final static LocalDate toDate(int... ints) {
+        int i = 0, len = ints.length, max = 3;
+        switch (len) {
+            case 1:
+                return LocalDate.of(ints[i++], 1, 1);
+            case 2:
+                return LocalDate.of(ints[i++], ints[i++], 1);
+            default:
+                if (len > max) {
+                    return LocalDate.of(ints[i++], ints[i++], ints[i++]);
+                }
+                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(ints));
+        }
+    }
+
+    public final static LocalTime toTime(int... ints) {
+        int i = 0, len = ints.length, max = 3;
+        switch (len) {
+            case 0:
+                return LocalTime.of(0, 0);
+            case 1:
+                return LocalTime.of(ints[i++], 0);
+            case 2:
+                return LocalTime.of(ints[i++], ints[i++]);
+            case 3:
+                return LocalTime.of(ints[i++], ints[i++], ints[i++]);
+            default:
+                if (len > max) {
+                    return LocalTime.of(ints[i++], ints[i++], ints[i++], ints[i++]);
+                }
+                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(ints));
+        }
+    }
+
+    public final static LocalDateTime toDateTime(int... values) {
+        int i = 0, len = values.length, max = 6;
+        switch (len) {
+            case 1:
+                return LocalDateTime.of(values[i++], 1, 1, 0, 0);
+            case 2:
+                return LocalDateTime.of(values[i++], values[i++], 1, 0, 0);
+            case 3:
+                return LocalDateTime.of(values[i++], values[i++], values[i++], 0, 0);
+            case 4:
+                return LocalDateTime.of(values[i++], values[i++], values[i++], values[i++], 0);
+            case 5:
+                return LocalDateTime.of(values[i++], values[i++], values[i++], values[i++], values[i++]);
+            case 6:
+                return LocalDateTime.of(values[i++], values[i++], values[i++], values[i++], values[i++], values[i++]);
+            default:
+                if (len > max) {
+                    return LocalDateTime.of(values[i++], values[i++], values[i++],
+                        values[i++], values[i++], values[i++], values[i++]);
+                }
+                throw new IllegalArgumentException(
+                    "Can not cast to LocalTime of values: " + Arrays.toString(values)
+                );
+        }
+    }
+
+    public final static LocalDate toDate(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof CharSequence) {
+            return toDate((CharSequence) obj);
+        }
+        if (obj instanceof Number) {
+            if (obj instanceof Long || obj instanceof Double) {
+                return toDate(((Number) obj).longValue());
+            }
+            return toDate(new int[]{((Integer) obj).intValue()});
+        }
+        if (obj instanceof int[]) {
+            return toDate((int[]) obj);
+        }
+        if (obj instanceof Date) {
+            return toDate((Date) obj);
+        }
+        if (obj instanceof Calendar) {
+            return toDate((Calendar) obj);
+        }
+        try {
+            return toDate(SupportUtil.onlyOneItemOrSize(obj));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format("Can not cast to LocalDate of: %s", obj.toString()), e);
+        }
+    }
+
+    public final static LocalTime toTime(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof CharSequence) {
+            return toTime((CharSequence) obj);
+        }
+        if (obj instanceof Number) {
+            if (obj instanceof Long || obj instanceof Double) {
+                return toTime(((Number) obj).longValue());
+            }
+            return toTime(new int[]{((Integer) obj).intValue()});
+        }
+        if (obj instanceof int[]) {
+            return toTime((int[]) obj);
+        }
+        if (obj instanceof Date) {
+            return toTime((Date) obj);
+        }
+        if (obj instanceof Calendar) {
+            return toTime((Calendar) obj);
+        }
+        try {
+            return toTime(SupportUtil.onlyOneItemOrSize(obj));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format("Can not cast to LocalTime of: %s", obj.toString()), e);
+        }
+    }
+
+    public final static LocalDateTime toDateTime(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof CharSequence) {
+            return toDateTime((CharSequence) obj);
+        }
+        if (obj instanceof Number) {
+            if (obj instanceof Long || obj instanceof Double) {
+                return toDateTime(((Number) obj).longValue());
+            }
+            return toDateTime(new int[]{((Integer) obj).intValue()});
+        }
+        if (obj instanceof int[]) {
+            return toDateTime((int[]) obj);
+        }
+        if (obj instanceof Date) {
+            return toDateTime((Date) obj);
+        }
+        if (obj instanceof Calendar) {
+            return toDateTime((Calendar) obj);
+        }
+        try {
+            return toDateTime(SupportUtil.onlyOneItemOrSize(obj));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(String.format("Can not cast to LocalDateTime of: %s", obj.toString()), e);
+        }
     }
 
     /*

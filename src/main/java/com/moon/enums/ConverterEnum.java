@@ -3,14 +3,23 @@ package com.moon.enums;
 import com.moon.lang.*;
 import com.moon.math.BigDecimalUtil;
 import com.moon.math.BigIntegerUtil;
+import com.moon.time.TimeUtil;
 import com.moon.util.DateUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author benshaoye
@@ -115,13 +124,13 @@ public enum ConverterEnum implements
             return DoubleUtil.toDouble(o);
         }
     },
-    toBigInteger(BigInteger .class) {
+    toBigInteger(BigInteger.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return BigIntegerUtil.toBigInteger(o);
         }
     },
-    toBigDecimal(BigDecimal .class) {
+    toBigDecimal(BigDecimal.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return BigDecimalUtil.toBigDecimal(o);
@@ -146,25 +155,43 @@ public enum ConverterEnum implements
             return new StringBuilder(String.valueOf(o));
         }
     },
-    toDate(Date .class) {
+    toDate(Date.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return DateUtil.toDate(o);
         }
     },
-    toTime(Time .class) {
+    toTime(Time.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return DateUtil.toTime(o);
         }
     },
-    toCalendar(Calendar .class) {
+    toCalendar(Calendar.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return DateUtil.toCalendar(o);
         }
     },
-    toTimestamp(Timestamp .class) {
+    toLocalDate(LocalDate.class) {
+        @Override
+        public Object apply(Object o, Class aClass) {
+            return TimeUtil.toDate(o);
+        }
+    },
+    toLocalTime(LocalTime.class) {
+        @Override
+        public Object apply(Object o, Class aClass) {
+            return TimeUtil.toTime(o);
+        }
+    },
+    toLocalDateTime(LocalDateTime.class) {
+        @Override
+        public Object apply(Object o, Class aClass) {
+            return TimeUtil.toDateTime(o);
+        }
+    },
+    toTimestamp(Timestamp.class) {
         @Override
         public Object apply(Object o, Class aClass) {
             return DateUtil.toTimestamp(o);
@@ -181,24 +208,20 @@ public enum ConverterEnum implements
         public Object apply(Object o, Class type) {
             return EnumUtil.toEnum(o, type);
         }
-    },;
+    },
+    ;
 
-    private final Class type;
+    public final Class TYPE;
 
     private static class Cached {
         final static Map<Class, ConverterEnum> CACHE = new HashMap();
     }
 
     ConverterEnum(Class type) {
-        Cached.CACHE.put(this.type = type, this);
-    }
-
-    public Class type() {
-        return type;
+        Cached.CACHE.put(this.TYPE = type, this);
     }
 
     public static <T> T to(Object o, Class type) {
-        ConverterEnum converter = Objects.requireNonNull(Cached.CACHE.get(type));
-        return (T) converter.apply(o, type);
+        return (T) requireNonNull(Cached.CACHE.get(type)).apply(o, type);
     }
 }

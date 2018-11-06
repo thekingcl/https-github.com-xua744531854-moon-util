@@ -1,37 +1,46 @@
 package com.moon.util.compute;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * @author benshaoye
  */
-@AutoService(RunnerProcessor.class)
+@AutoService(Processor.class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("com.moon.util.compute.Runner")
 public class RunnerProcessor extends AbstractProcessor {
+
+    private final static Set<String> SUPPORTED_TYPES = ImmutableSet.of(Runner.class.getName());
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+    }
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        System.out.println("==========================================");
+        System.out.println("==========================================");
+        System.out.println("==========================================");
+        System.out.println("==========================================");
+        System.out.println("==========================================");
+        System.out.println("==========================================");
         return false;
     }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_8;
+        return SourceVersion.latestSupported();
     }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return new HashSet() {{
-            add(Runner.class.getName());
-        }};
+        return SUPPORTED_TYPES;
     }
 }

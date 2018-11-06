@@ -36,12 +36,10 @@ public class GenericTypeConverter implements TypeConverter {
      * 注册默认转换器
      */
     private void registerDefaultConverter() {
-
         for (ConverterEnum value : ConverterEnum.values()) {
             BiFunction converter = value;
-            add(value.type(), converter);
+            add(value.TYPE, converter);
         }
-
         // Collection convert
         add(Collection.class, (value, toType) -> {
             if (value == null || toType == null) {
@@ -77,7 +75,6 @@ public class GenericTypeConverter implements TypeConverter {
             }
             return builder.toCollection(value, toType);
         });
-
         // List convert
         add(List.class, (value, toType) -> {
             if (value == null || toType == null) {
@@ -114,9 +111,17 @@ public class GenericTypeConverter implements TypeConverter {
             }
             return builder.toList(value, toType);
         });
+        add(Map.class, converterOfMap());
+    }
 
-        // Map convert
-        add(Map.class, (value, toType) -> {
+    /**
+     * Map convert
+     *
+     * @param <C>
+     * @return
+     */
+    private <C> BiFunction<Object, Class<C>, C> converterOfMap() {
+        return (value, toType) -> {
             if (value == null || toType == null) {
                 return null;
             }
@@ -148,7 +153,7 @@ public class GenericTypeConverter implements TypeConverter {
             } else {
                 return builder.toMap(value, toType);
             }
-        });
+        };
     }
 
     /**

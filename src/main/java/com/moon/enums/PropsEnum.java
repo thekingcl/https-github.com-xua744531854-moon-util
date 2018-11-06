@@ -1,9 +1,5 @@
 package com.moon.enums;
 
-import com.moon.lang.EnumUtil;
-
-import java.util.Comparator;
-
 /**
  * @author benshaoye
  * @date 2018/9/11

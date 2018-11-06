@@ -378,10 +378,7 @@ public enum ArraysEnum implements ArrayOperators {
 
         @Override
         public String stringify(Object o) {
-            if (o == null) {
-                return null;
-            }
-            return new String(to(o));
+            return o == null ? null : new String(to(o));
         }
 
         @Override
