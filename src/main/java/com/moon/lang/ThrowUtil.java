@@ -79,15 +79,15 @@ public final class ThrowUtil {
     /**
      * 不能访问指定位置
      */
-    public final static void rejectAccessError() {
-        rejectAccessError("Refuse to execute. \n\tLocation: " + StackTraceUtil.getPrevTraceOfSteps(1));
+    public final static <T> T rejectAccessError() {
+        return rejectAccessError("Refuse to execute. \n\tLocation: " + StackTraceUtil.getPrevTraceOfSteps(1));
     }
 
     /***
      * 不能访问指定位置
      * @param message
      */
-    public final static void rejectAccessError(String message) {
+    public final static <T> T rejectAccessError(String message) {
         throw new IllegalAccessError(message);
     }
 }

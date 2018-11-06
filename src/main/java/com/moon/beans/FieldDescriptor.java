@@ -3,6 +3,7 @@ package com.moon.beans;
 import com.moon.lang.StringUtil;
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.reflect.FieldUtil;
+import com.moon.util.TypeConverter;
 import com.moon.util.TypeUtil;
 
 import java.beans.PropertyDescriptor;
@@ -391,9 +392,21 @@ public final class FieldDescriptor {
      * @return
      */
     public Object setValue(Object obj, Object value, boolean accessible) {
+        return setValue(obj, value, accessible, TypeUtil.cast());
+    }
+
+    /**
+     * 给执行对象的属性设置值
+     *
+     * @param obj
+     * @param value
+     * @param accessible
+     * @param converter
+     * @return
+     */
+    public Object setValue(Object obj, Object value, boolean accessible, TypeConverter converter) {
         try {
-            value = TypeUtil.cast().toType(value, getPropertyType());
-            return getSetterExecutor().execute(obj, value, accessible);
+            return getSetterExecutor().execute(obj, converter.toType(value, getPropertyType()), accessible);
         } catch (InvocationTargetException | IllegalAccessException e) {
             return ThrowUtil.throwRuntime(e);
         }

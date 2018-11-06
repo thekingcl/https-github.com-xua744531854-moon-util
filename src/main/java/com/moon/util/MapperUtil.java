@@ -1,6 +1,7 @@
 package com.moon.util;
 
 import com.moon.beans.BeanInfoUtil;
+import com.moon.lang.ThrowUtil;
 import com.moon.lang.reflect.ConstructorUtil;
 
 import java.util.ArrayList;
@@ -76,6 +77,14 @@ public final class MapperUtil {
         List<T> result = new ArrayList<>();
         IteratorUtil.forEach(dataList, item -> result.add(toInstance(item, type)));
         return result;
+    }
+
+    private final static Object mapper(Class type) {
+        return ThrowUtil.rejectAccessError();
+    }
+
+    private final static Object mapper(Class type, TypeConverter converter) {
+        return ThrowUtil.rejectAccessError();
     }
 
     /*
