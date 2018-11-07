@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.util.Calendar.*;
 
 /**
  * @author benshaoye
@@ -35,8 +36,8 @@ public final class DateUtil {
     public final static String yyyy_MM = "yyyy-MM";
     public final static String yyyy = "yyyy";
 
-    private final static int[] PARSE_FIELD_OF_CALENDAR = {Calendar.YEAR, Calendar.MONTH, Calendar.DAY_OF_MONTH,
-        Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND};
+    private final static int[] PARSE_FIELD_OF_CALENDAR = {YEAR, MONTH, DAY_OF_MONTH,
+        HOUR_OF_DAY, MINUTE, SECOND, MILLISECOND};
 
     private DateUtil() {
         noInstanceError();
@@ -70,7 +71,26 @@ public final class DateUtil {
 
     /*
      * -------------------------------------------------------------------------
-     * next and previous
+     * clears
+     * -------------------------------------------------------------------------
+     */
+
+    public final static Calendar clearTime(Calendar value) {
+        Calendar current = copy(value);
+        current.set(HOUR_OF_DAY, 0);
+        current.set(MINUTE, 0);
+        current.set(SECOND, 0);
+        current.set(MILLISECOND, 0);
+        return current;
+    }
+
+    public final static Calendar clearMilliseconds(Calendar calendar) {
+        return setMillisecond(calendar, 0);
+    }
+
+    /*
+     * -------------------------------------------------------------------------
+     * next and prev
      * -------------------------------------------------------------------------
      */
 
@@ -102,31 +122,31 @@ public final class DateUtil {
         return plusMilliSeconds(value, 1);
     }
 
-    public final static Calendar previousYear(Calendar value) {
+    public final static Calendar prevYear(Calendar value) {
         return minusYears(value, 1);
     }
 
-    public final static Calendar previousMonth(Calendar value) {
+    public final static Calendar prevMonth(Calendar value) {
         return minusMonths(value, 1);
     }
 
-    public final static Calendar previousDay(Calendar value) {
+    public final static Calendar prevDay(Calendar value) {
         return minusDays(value, 1);
     }
 
-    public final static Calendar previousHour(Calendar value) {
+    public final static Calendar prevHour(Calendar value) {
         return minusHours(value, 1);
     }
 
-    public final static Calendar previousMinute(Calendar value) {
+    public final static Calendar prevMinute(Calendar value) {
         return minusMinutes(value, 1);
     }
 
-    public final static Calendar previousSecond(Calendar value) {
+    public final static Calendar prevSecond(Calendar value) {
         return minusSeconds(value, 1);
     }
 
-    public final static Calendar previousMillisecond(Calendar value) {
+    public final static Calendar prevMillisecond(Calendar value) {
         return minusMilliSeconds(value, 1);
     }
 
@@ -199,70 +219,69 @@ public final class DateUtil {
      */
 
     public final static Calendar setYear(Calendar value, int amount) {
-        return set(value, Calendar.YEAR, amount);
+        return set(value, YEAR, amount);
     }
 
     public final static Calendar setMonth(Calendar value, int amount) {
-        return set(value, Calendar.MONTH, amount);
+        return set(value, MONTH, amount);
     }
 
     public final static Calendar setDayOfMonth(Calendar value, int amount) {
-        return set(value, Calendar.DAY_OF_MONTH, amount);
+        return set(value, DAY_OF_MONTH, amount);
     }
 
     public final static Calendar setHour(Calendar value, int amount) {
-        return set(value, Calendar.HOUR_OF_DAY, amount);
+        return set(value, HOUR_OF_DAY, amount);
     }
 
     public final static Calendar setMinute(Calendar value, int amount) {
-        return set(value, Calendar.MINUTE, amount);
+        return set(value, MINUTE, amount);
     }
 
     public final static Calendar setSecond(Calendar value, int amount) {
-        return set(value, Calendar.SECOND, amount);
+        return set(value, SECOND, amount);
     }
 
     public final static Calendar setMillisecond(Calendar value, int amount) {
-        return set(value, Calendar.MILLISECOND, amount);
+        return set(value, MILLISECOND, amount);
     }
 
     public final static Calendar set(Calendar value, int field, int amount) {
         Calendar current = copy(value);
-        current.set(field, field == Calendar.MONTH ? amount - 1 : amount);
+        current.set(field, field == MONTH ? amount - 1 : amount);
         return current;
     }
 
     public final static int getYear(Calendar value) {
-        return get(value, Calendar.YEAR);
+        return get(value, YEAR);
     }
 
     public final static int getMonth(Calendar value) {
-        return get(value, Calendar.MONTH);
+        return get(value, MONTH);
     }
 
     public final static int getDayOfMonth(Calendar value) {
-        return get(value, Calendar.DAY_OF_MONTH);
+        return get(value, DAY_OF_MONTH);
     }
 
     public final static int getHour(Calendar value) {
-        return get(value, Calendar.HOUR_OF_DAY);
+        return get(value, HOUR_OF_DAY);
     }
 
     public final static int getMinute(Calendar value) {
-        return get(value, Calendar.MINUTE);
+        return get(value, MINUTE);
     }
 
     public final static int getSecond(Calendar value) {
-        return get(value, Calendar.SECOND);
+        return get(value, SECOND);
     }
 
     public final static int getMillisecond(Calendar value) {
-        return get(value, Calendar.MILLISECOND);
+        return get(value, MILLISECOND);
     }
 
-    public final static int get(Calendar value, int field) {
-        int val = value.get(field);
-        return field == Calendar.MONTH ? val + 1 : val;
+    public final static int get(Calendar cal, int field) {
+        return field == MONTH ? cal.get(field) + 1 : cal.get(field);
     }
 
     /*
@@ -367,7 +386,7 @@ public final class DateUtil {
 
             for (int i = 0; i < length; i++) {
                 int currField = PARSE_FIELD_OF_CALENDAR[i];
-                if (currField == Calendar.MONTH) {
+                if (currField == MONTH) {
                     calendar.set(currField, Integer.parseInt(fieldsValue.get(i)) - 1);
                 } else {
                     calendar.set(currField, Integer.parseInt(fieldsValue.get(i)));
@@ -514,7 +533,7 @@ public final class DateUtil {
         int i = 0;
         for (; i < size; i++) {
             int currField = PARSE_FIELD_OF_CALENDAR[i];
-            if (currField == Calendar.MONTH) {
+            if (currField == MONTH) {
                 calendar.set(currField, Integer.parseInt(arguments[i]) - 1);
             } else {
                 calendar.set(currField, Integer.parseInt(arguments[i]));
@@ -522,7 +541,7 @@ public final class DateUtil {
         }
         for (; i < length; i++) {
             int currField = PARSE_FIELD_OF_CALENDAR[i];
-            if (currField == Calendar.DAY_OF_MONTH) {
+            if (currField == DAY_OF_MONTH) {
                 calendar.set(currField, 1);
             } else {
                 calendar.set(currField, 0);
@@ -561,19 +580,19 @@ public final class DateUtil {
             case 0:
                 return calendar;
             case 1:
-                calendar.set(Calendar.YEAR, values[i++]);
+                calendar.set(YEAR, values[i++]);
                 break;
             case 2:
-                calendar.set(Calendar.YEAR, values[i++]);
-                calendar.set(Calendar.MONTH, values[i++] - 1);
+                calendar.set(YEAR, values[i++]);
+                calendar.set(MONTH, values[i++] - 1);
                 break;
             case 3:
                 calendar.set(values[i++], values[i++] - 1, values[i++]);
                 break;
             case 4:
-                int minutes = calendar.get(Calendar.MINUTE);
+                int minutes = calendar.get(MINUTE);
                 calendar.set(values[i++], values[i++] - 1, values[i++], values[i++], 0);
-                calendar.set(Calendar.MINUTE, minutes);
+                calendar.set(MINUTE, minutes);
                 break;
             case 5:
                 calendar.set(values[i++], values[i++] - 1, values[i++], values[i++], values[i++]);
@@ -582,7 +601,7 @@ public final class DateUtil {
                 calendar.set(values[i++], values[i++] - 1, values[i++], values[i++], values[i++], values[i++]);
             default:
                 if (len > max) {
-                    calendar.set(Calendar.MILLISECOND, values[i++]);
+                    calendar.set(MILLISECOND, values[i++]);
                 }
                 break;
         }

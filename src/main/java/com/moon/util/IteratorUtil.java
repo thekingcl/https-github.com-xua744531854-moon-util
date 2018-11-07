@@ -648,10 +648,8 @@ public final class IteratorUtil {
 
     public static <T> void forEach(Iterator<T> i, IntBiConsumer<T> consumer) {
         if (i != null) {
-            int idx = 0;
-            while (i.hasNext()) {
+            for (int idx = 0; i.hasNext(); idx++) {
                 consumer.accept(i.next(), idx);
-                idx++;
             }
         }
     }
