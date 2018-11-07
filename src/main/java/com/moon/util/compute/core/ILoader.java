@@ -32,6 +32,7 @@ final class ILoader {
 
         "com.moon.math.",
         "com.moon.net.",
+        "com.moon.time.",
 
         "com.moon.util.",
         "com.moon.util.able.",

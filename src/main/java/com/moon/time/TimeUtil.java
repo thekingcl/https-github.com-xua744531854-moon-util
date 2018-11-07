@@ -20,6 +20,22 @@ public final class TimeUtil {
         noInstanceError();
     }
 
+    public final static long now() {
+        return System.currentTimeMillis();
+    }
+
+    public final static LocalDate nowDate() {
+        return LocalDate.now();
+    }
+
+    public final static LocalTime nowTime() {
+        return LocalTime.now();
+    }
+
+    public final static LocalDateTime nowDateTime() {
+        return LocalDateTime.now();
+    }
+
     /*
      * ----------------------------------------------------------------------------------
      * converters
@@ -83,37 +99,37 @@ public final class TimeUtil {
         return toDateTime(new Date(milliseconds));
     }
 
-    public final static LocalDate toDate(int... ints) {
-        int i = 0, len = ints.length, max = 3;
+    public final static LocalDate toDate(int... values) {
+        int i = 0, len = values.length, max = 3;
         switch (len) {
             case 1:
-                return LocalDate.of(ints[i++], 1, 1);
+                return LocalDate.of(values[i++], 1, 1);
             case 2:
-                return LocalDate.of(ints[i++], ints[i++], 1);
+                return LocalDate.of(values[i++], values[i++], 1);
             default:
                 if (len > max) {
-                    return LocalDate.of(ints[i++], ints[i++], ints[i++]);
+                    return LocalDate.of(values[i++], values[i++], values[i++]);
                 }
-                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(ints));
+                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(values));
         }
     }
 
-    public final static LocalTime toTime(int... ints) {
-        int i = 0, len = ints.length, max = 3;
+    public final static LocalTime toTime(int... values) {
+        int i = 0, len = values.length, max = 3;
         switch (len) {
             case 0:
                 return LocalTime.of(0, 0);
             case 1:
-                return LocalTime.of(ints[i++], 0);
+                return LocalTime.of(values[i++], 0);
             case 2:
-                return LocalTime.of(ints[i++], ints[i++]);
+                return LocalTime.of(values[i++], values[i++]);
             case 3:
-                return LocalTime.of(ints[i++], ints[i++], ints[i++]);
+                return LocalTime.of(values[i++], values[i++], values[i++]);
             default:
                 if (len > max) {
-                    return LocalTime.of(ints[i++], ints[i++], ints[i++], ints[i++]);
+                    return LocalTime.of(values[i++], values[i++], values[i++], values[i++]);
                 }
-                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(ints));
+                throw new IllegalArgumentException("Can not cast to LocalTime of values: " + Arrays.toString(values));
         }
     }
 

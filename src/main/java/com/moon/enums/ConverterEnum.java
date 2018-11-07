@@ -164,7 +164,7 @@ public enum ConverterEnum implements
     toTime(Time.class) {
         @Override
         public Object apply(Object o, Class aClass) {
-            return DateUtil.toTime(o);
+            return DateUtil.toSqlTime(o);
         }
     },
     toCalendar(Calendar.class) {

@@ -8,6 +8,7 @@ import com.moon.util.compute.Runner;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -28,6 +29,9 @@ class TimeUtilTestTest {
             assertions.assertEquals(localDate, LocalDate.of(yearValue + interDate.getAndAdd(), monthValue, dayValue));
             return true;
         });
+        LocalTime time = LocalTime.now();
+        time.getHour();
+        LocalDateTime dateTime = LocalDateTime.now();
     }
 
     @Test
