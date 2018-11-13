@@ -31,8 +31,8 @@
 - 数组，实际上是 ArrayList
 > 示例：
 <br>RunnerUtil.run("{}"); // 返回一个空 ArrayList
-<br>RunnerUtil.run("{1,,2,}"); // 返回包含 1、null、2 共三项的 ArrayList
-<br>RunnerUtil.run("{1,,2,null,false,true}");
+<br>RunnerUtil.run("{1, , 2 , }"); // 返回包含 1、null、2 共三项的 ArrayList
+<br>RunnerUtil.run("{1, , 2 , null, false, true }");
 
 - Map，实际上是 HashMap
 
@@ -41,9 +41,9 @@
 表示值的字符串必须用单引号或双引号包裹；（与 JavaScript 的对象相似，不同的是 js 的所有键均是字符串）
 无论键或者值均不能省略（与数组不同，两个连续逗号中间没有任何字符会默认插入一个 null 值）
 > 示例：
-<br>RunnerUtil.run("{:}"); // 返回一个空 HashMap
-<br>RunnerUtil.run("{key:''}"); // 包含一个值是空字符串，键是字符串 "key" 的映射
-<br>RunnerUtil.run("{'':null, true: '今天天气很棒', 'name': '张三', age: 23, 36.5: ''}");
+<br>RunnerUtil.run("{:}"); // 返回一个空 HashMap，注意与空 ArrayList 区别，这儿多一个冒号，否则程序会识别成 List
+<br>RunnerUtil.run("{key : ''}"); // 包含一个值是空字符串，键是字符串 "key" 的映射
+<br>RunnerUtil.run("{'': null, true: '今天天气很棒', 'name': '张三', age: 23, 36.5: ''}");
 分别包含："" - null，true - "今天天气很棒"，"name" - "张三"，"age" - 23，36.5 - "" 这些键值对
 
 #### 运算类型
@@ -74,7 +74,6 @@
 > 示例：
 <br>HashMap data = new HashMap();
 <br>data.put("name", "张三");
-<br>
 <br>RunnerUtil.run("name + '学习成绩优异，一直在班上名列前茅！'", data); // "张三学习成绩优异，一直在班上名列前茅！"
 
 - 链式取值：链式取值可以是数组、List、Map、JavaBean、ResultSet
@@ -86,12 +85,10 @@
 <br>list.add(25);
 <br>list.add('隔壁老王');
 <br>data.put("list", list);
-<br>
 <br>HashMap map = new HashMap();
 <br>map.put("name", "小四");
 <br>map.put("index", 2);
 <br>data.put("map", map);
-<br>
 <br>RunnerUtil.run("map.name", data); // "小四"
 <br>RunnerUtil.run("list[ 2 ]", data); // 25 （索引取值需要用方括号包裹）
 <br>RunnerUtil.run("list[3]", data); // "隔壁老王" （索引取值需要用方括号包裹）
@@ -100,7 +97,6 @@
 - 运行简单成员方法：目前可以运行无参和包括一个参数的方法
 > 示例：
 <br>RunnerUtil.run("'name'.length()"); // 4
-<br>
 <br>HashMap data = new HashMap();
 <br>ArrayList list = new ArrayList();
 <br>list.add(true);
@@ -120,7 +116,6 @@
 - 综合运算，对上面所列出的运算汇总
 > 示例：
 <br>RunnerUtil.run("@System.currentTimeMillis() + ' 36 ' + @Objects.toString(25)"); // "15369548 36 25",前面的毫秒数就意思意思
-<br>
 <br>HashMap data = new HashMap();
 <br>ArrayList list = new ArrayList();
 <br>list.add(true);
@@ -128,12 +123,10 @@
 <br>list.add(25);
 <br>list.add('隔壁老王');
 <br>data.put("list", list);
-<br>
 <br>HashMap map = new HashMap();
 <br>map.put("name", "小四");
 <br>map.put("index", 2);
 <br>data.put("map", map);
-<br>
 <br>RunnerUtil.run("list.get(2) + 36 + map.name + map.name.length()"); // "61小四4"
 
 综上就是 RunnerUtil 所支持的功能，以后将进一步完成多参数方法的调用。
