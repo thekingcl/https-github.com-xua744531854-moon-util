@@ -9,7 +9,7 @@ import com.moon.util.compute.RunnerUtil;
 final class TrueSheetRenderer extends AbstractRenderer<TableSheet> {
     private final String sheetName;
 
-    protected TrueSheetRenderer(TableSheet annotation, Renderer[] children, String[] formatted) {
+    protected TrueSheetRenderer(TableSheet annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.sheetName = annotation.sheetName();
     }

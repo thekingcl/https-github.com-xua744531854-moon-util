@@ -11,20 +11,20 @@ import java.util.function.BiConsumer;
 /**
  * @author benshaoye
  */
-abstract class AbstractRenderer<T extends Annotation> implements Renderer {
+abstract class AbstractRenderer<T extends Annotation> implements CenterRenderer {
 
     protected final static int NOT_INIT = -1;
     protected final static int MINUS = '-';
 
     final T annotation;
-    final Renderer[] children;
+    final CenterRenderer[] children;
     private final String[] delimiters;
     private final int length;
     final VarSetter setter;
 
     protected int skips = NOT_INIT;
 
-    protected AbstractRenderer(T annotation, Renderer[] children, String var, String[] delimiters) {
+    protected AbstractRenderer(T annotation, CenterRenderer[] children, String var, String[] delimiters) {
         this.annotation = annotation;
         this.delimiters = delimiters;
         this.children = children;
@@ -45,7 +45,7 @@ abstract class AbstractRenderer<T extends Annotation> implements Renderer {
     }
 
     @Override
-    public final Renderer[] getChildren() {
+    public final CenterRenderer[] getChildren() {
         return children;
     }
 

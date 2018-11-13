@@ -4,11 +4,11 @@ package com.moon.office.excel.renderers;
  * @author benshaoye
  */
 interface VarSetter {
-    default WorkCenterMap setVarAndRender(WorkCenterMap centerMap, Renderer target) {
+    default WorkCenterMap setVarAndRender(WorkCenterMap centerMap, CenterRenderer target) {
         beforeSetAndRender(centerMap, target);
         if (target.isWhen(centerMap)) {
             target.beforeRender(centerMap);
-            Renderer[] children = target.getChildren();
+            CenterRenderer[] children = target.getChildren();
             for (int i = 0, len = children.length; i < len; i++) {
                 children[i].render(centerMap);
             }
@@ -17,7 +17,7 @@ interface VarSetter {
         return centerMap;
     }
 
-    default void beforeSetAndRender(WorkCenterMap centerMap, Renderer target) {
+    default void beforeSetAndRender(WorkCenterMap centerMap, CenterRenderer target) {
     }
 
     default boolean isIn() {

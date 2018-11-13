@@ -33,6 +33,18 @@ enum DataComputes implements AsCompute {
         }
     },
 
+    BIT_LEFT(ConstPriorities.BIT_LEFT) {
+        @Override
+        public Object handle(Object o2, Object o1) {
+            return ((Number) o1).intValue() << ((Number) o2).intValue();
+        }
+    },
+    BIT_RIGHT(ConstPriorities.BIT_RIGHT) {
+        @Override
+        public Object handle(Object o2, Object o1) {
+            return ((Number) o1).intValue() >> ((Number) o2).intValue();
+        }
+    },
     BIT_AND(ConstPriorities.BIT_AND) {
         @Override
         public Object handle(Object o2, Object o1) {

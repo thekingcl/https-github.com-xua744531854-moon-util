@@ -3,10 +3,10 @@ package com.moon.office.excel.renderers;
 /**
  * @author benshaoye
  */
-enum TrueNull implements Renderer {
+enum TrueNull implements CenterRenderer {
     NULL;
 
-    private final Renderer[] children = new Renderer[0];
+    private final CenterRenderer[] children = new CenterRenderer[0];
 
     @Override
     public WorkCenterMap render(WorkCenterMap centerMap) {
@@ -14,7 +14,7 @@ enum TrueNull implements Renderer {
     }
 
     @Override
-    public Renderer[] getChildren() {
+    public CenterRenderer[] getChildren() {
         return children;
     }
 }

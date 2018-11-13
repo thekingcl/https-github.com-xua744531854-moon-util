@@ -19,42 +19,42 @@ final class ParseUtil {
         noInstanceError();
     }
 
-    final static Renderer parseExcel(TableExcel annotation) {
+    final static CenterRenderer parseExcel(TableExcel annotation) {
         return new TrueExcelRenderer(annotation, parseSheets(annotation));
     }
 
-    private final static Renderer[] parseSheets(TableExcel annotation) {
+    private final static CenterRenderer[] parseSheets(TableExcel annotation) {
         TableSheet[] sheets = annotation.value();
         final int length = sheets.length;
-        Renderer[] children = new Renderer[length];
+        CenterRenderer[] children = new CenterRenderer[length];
         for (int i = 0; i < length; i++) {
             children[i] = parseItems(sheets[i], Handlers.SHEET);
         }
         return children;
     }
 
-    private final static Renderer[] parseRows(TableSheet annotation) {
+    private final static CenterRenderer[] parseRows(TableSheet annotation) {
         TableRow[] rows = annotation.value();
         final int length = rows.length;
-        Renderer[] children = new Renderer[length];
+        CenterRenderer[] children = new CenterRenderer[length];
         for (int i = 0; i < length; i++) {
             children[i] = parseItems(rows[i], Handlers.ROW);
         }
         return children;
     }
 
-    private final static Renderer[] parseCells(TableRow annotation) {
+    private final static CenterRenderer[] parseCells(TableRow annotation) {
         TableCell[] cells = annotation.value();
         final int length = cells.length;
-        Renderer[] children = new Renderer[length];
+        CenterRenderer[] children = new CenterRenderer[length];
         for (int i = 0; i < length; i++) {
             children[i] = parseItems(cells[i], Handlers.CELL);
         }
         return children;
     }
 
-    private final static Renderer[] parseValues(TableCell cell) {
-        return Renderer.EMPTY;
+    private final static CenterRenderer[] parseValues(TableCell cell) {
+        return CenterRenderer.EMPTY;
     }
 
     private interface AnnotationHandler {
@@ -64,9 +64,9 @@ final class ParseUtil {
 
         String[] delimiters(Annotation annotation);
 
-        Renderer renderTrue(Annotation annotation, String[] formatted);
+        CenterRenderer renderTrue(Annotation annotation, String[] formatted);
 
-        Renderer renderTable(Annotation annotation, String[] formatted);
+        CenterRenderer renderTable(Annotation annotation, String[] formatted);
     }
 
     private enum Handlers implements AnnotationHandler {
@@ -87,13 +87,13 @@ final class ParseUtil {
             }
 
             @Override
-            public Renderer renderTrue(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTrue(Annotation annotation, String[] formatted) {
                 TableSheet current = to(annotation);
                 return new TrueSheetRenderer(current, parseRows(current), formatted);
             }
 
             @Override
-            public Renderer renderTable(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTable(Annotation annotation, String[] formatted) {
                 TableSheet current = to(annotation);
                 return new WhenSheetRenderer(current, parseRows(current), formatted);
             }
@@ -115,13 +115,13 @@ final class ParseUtil {
             }
 
             @Override
-            public Renderer renderTrue(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTrue(Annotation annotation, String[] formatted) {
                 TableRow current = to(annotation);
                 return new TrueRowRenderer(current, parseCells(current), formatted);
             }
 
             @Override
-            public Renderer renderTable(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTable(Annotation annotation, String[] formatted) {
                 TableRow current = to(annotation);
                 return new WhenRowRenderer(current, parseCells(current), formatted);
             }
@@ -143,15 +143,15 @@ final class ParseUtil {
             }
 
             @Override
-            public Renderer renderTrue(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTrue(Annotation annotation, String[] formatted) {
                 TableCell current = to(annotation);
-                return new TrueCellRenderer(current, Renderer.EMPTY, formatted);
+                return new TrueCellRenderer(current, CenterRenderer.EMPTY, formatted);
             }
 
             @Override
-            public Renderer renderTable(Annotation annotation, String[] formatted) {
+            public CenterRenderer renderTable(Annotation annotation, String[] formatted) {
                 TableCell current = to(annotation);
-                return new WhenCellRenderer(current, Renderer.EMPTY, formatted);
+                return new WhenCellRenderer(current, CenterRenderer.EMPTY, formatted);
             }
         },
     }
@@ -160,7 +160,7 @@ final class ParseUtil {
     private final static String FALSE = Boolean.FALSE.toString();
     private final static int TWO = 2;
 
-    private final static <T extends Annotation> Renderer parseItems(T annotation, AnnotationHandler handler) {
+    private final static <T extends Annotation> CenterRenderer parseItems(T annotation, AnnotationHandler handler) {
         String[] delimiters = handler.delimiters(annotation);
         String when = handler.when(annotation).trim();
         if (delimiters.length < TWO) {

@@ -10,7 +10,7 @@ final class WhenSheetRenderer extends AbstractRenderer<TableSheet> {
     private final String sheetName;
     private final String when;
 
-    protected WhenSheetRenderer(TableSheet annotation, Renderer[] children, String[] formatted) {
+    protected WhenSheetRenderer(TableSheet annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.sheetName = annotation.sheetName();
         this.when = annotation.when().trim();

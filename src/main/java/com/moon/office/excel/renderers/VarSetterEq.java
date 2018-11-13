@@ -34,7 +34,7 @@ class VarSetterEq implements VarSetter {
     }
 
     @Override
-    public void beforeSetAndRender(WorkCenterMap centerMap, Renderer target) {
+    public void beforeSetAndRender(WorkCenterMap centerMap, CenterRenderer target) {
         setVar(centerMap, keys, RunnerUtil.run(expression, centerMap));
     }
 }

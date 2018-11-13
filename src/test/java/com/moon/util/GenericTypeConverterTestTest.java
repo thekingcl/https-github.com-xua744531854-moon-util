@@ -160,14 +160,14 @@ class GenericTypeConverterTestTest {
         type = ArrayList.class;
         res = TypeUtil.cast().toCollection(0, type);
         assertions.assertInstanceOf(res, type);
-        assertions.assertEq(CollectionUtil.sizeByObject(res), 1);
+        assertions.assertEq(CollectUtil.sizeByObject(res), 1);
         assertions.assertTrue(SetUtil.contains((ArrayList) res, 0));
         assertions.assertEquals(ListUtil.getByObject(res, 0), 0);
 
         type = LinkedList.class;
         res = TypeUtil.cast().toCollection(0, type);
         assertions.assertInstanceOf(res, type);
-        assertions.assertEq(CollectionUtil.sizeByObject(res), 1);
+        assertions.assertEq(CollectUtil.sizeByObject(res), 1);
         assertions.assertTrue(SetUtil.contains((LinkedList) res, 0));
         assertions.assertEquals(ListUtil.getByObject(res, 0), 0);
 
@@ -175,7 +175,7 @@ class GenericTypeConverterTestTest {
         res = TypeUtil.cast().toCollection(0, type);
         assertions.assertInstanceOf(res, type);
         assertions.assertInstanceOf(res, ArrayList.class);
-        assertions.assertEq(CollectionUtil.sizeByObject(res), 1);
+        assertions.assertEq(CollectUtil.sizeByObject(res), 1);
         assertions.assertTrue(SetUtil.contains((ArrayList) res, 0));
         assertions.assertEquals(ListUtil.getByObject(res, 0), 0);
     }
@@ -188,13 +188,13 @@ class GenericTypeConverterTestTest {
         type = Collection.class;
         res = TypeUtil.cast().toCollection(0, type);
         assertions.assertInstanceOf(res, ArrayList.class);
-        assertions.assertEq(CollectionUtil.sizeByObject(res), 1);
+        assertions.assertEq(CollectUtil.sizeByObject(res), 1);
         assertions.assertTrue(SetUtil.contains((ArrayList) res, 0));
 
         type = HashSet.class;
         res = TypeUtil.cast().toCollection(0, type);
         assertions.assertInstanceOf(res, type);
-        assertions.assertEq(CollectionUtil.sizeByObject(res), 1);
+        assertions.assertEq(CollectUtil.sizeByObject(res), 1);
         assertions.assertTrue(SetUtil.contains((HashSet) res, 0));
     }
 }

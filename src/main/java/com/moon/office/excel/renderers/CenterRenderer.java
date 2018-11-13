@@ -3,12 +3,12 @@ package com.moon.office.excel.renderers;
 /**
  * @author benshaoye
  */
-interface Renderer {
-    Renderer[] EMPTY = new Renderer[0];
+interface CenterRenderer {
+    CenterRenderer[] EMPTY = new CenterRenderer[0];
 
     WorkCenterMap render(WorkCenterMap centerMap);
 
-    default Renderer[] getChildren() {
+    default CenterRenderer[] getChildren() {
         return EMPTY;
     }
 

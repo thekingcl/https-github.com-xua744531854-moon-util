@@ -13,9 +13,9 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
  * @author benshaoye
  * @date 2018/9/12
  */
-public class CollectionUtil extends BaseCollectUtil {
+public class CollectUtil extends BaseCollectUtil {
 
-    protected CollectionUtil() {
+    protected CollectUtil() {
         noInstanceError();
     }
 

@@ -9,7 +9,7 @@ import java.util.*;
  * @author benshaoye
  * @date 2018/9/11
  */
-public final class ListUtil extends CollectionUtil {
+public final class ListUtil extends CollectUtil {
     private ListUtil() {
         ThrowUtil.noInstanceError();
     }

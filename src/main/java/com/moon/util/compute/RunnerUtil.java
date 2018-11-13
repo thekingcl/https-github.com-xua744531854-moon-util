@@ -155,7 +155,7 @@ public final class RunnerUtil extends ParseUtil {
      * @param data
      * @return
      */
-    public final static Object run(String expression, Object... data) {
+    public final static Object runMulti(String expression, Object... data) {
         return run(expression, new RunnerDataMap(data));
     }
 
@@ -227,7 +227,7 @@ public final class RunnerUtil extends ParseUtil {
         return parseRun(expression, DELIMITERS, data);
     }
 
-    public final static Object parseRun(String expression, Object... data) {
+    public final static Object parseRunMulti(String expression, Object... data) {
         return parseRun(expression, DELIMITERS, new RunnerDataMap(data));
     }
 
@@ -292,7 +292,7 @@ public final class RunnerUtil extends ParseUtil {
         return parseRun0(expression, delimiters, data);
     }
 
-    public final static Object parseRun(String expression, String[] delimiters, Object... data) {
+    public final static Object parseRunMulti(String expression, String[] delimiters, Object... data) {
         return parseRun(expression, delimiters, new RunnerDataMap(data));
     }
 

@@ -17,6 +17,7 @@ import java.util.Set;
  * @author benshaoye
  */
 class VarSetterIn implements VarSetter {
+    private final static int NO_SIZE = -1;
     private final String[] keys;
     private final String expression;
 
@@ -38,7 +39,7 @@ class VarSetterIn implements VarSetter {
      * @return
      */
     @Override
-    public WorkCenterMap setVarAndRender(WorkCenterMap centerMap, Renderer target) {
+    public WorkCenterMap setVarAndRender(WorkCenterMap centerMap, CenterRenderer target) {
         Object data = RunnerUtil.run(expression, centerMap);
         if (data instanceof Collection) {
             renderCollect(centerMap, target, keys, data);
@@ -56,18 +57,31 @@ class VarSetterIn implements VarSetter {
             renderNumber(centerMap, target, keys, data);
         } else if (data instanceof ResultSet) {
             renderResultSet(centerMap, target, keys, data);
+        } else if (data instanceof CharSequence) {
+            renderSequence(centerMap, target, keys, data);
         } else {
             renderBean(centerMap, target, keys, data);
         }
         return centerMap;
     }
 
-    private final static void renderResultSet(WorkCenterMap center, Renderer target, String[] keys, Object data) {
+    private final static void renderSequence(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
+        char[] chars = data.toString().toCharArray();
+        CenterRenderer[] children = target.getChildren();
+        final int size = chars.length, length = children.length;
+        for (int i = 0; i < size; i++) {
+            setVars(center, keys, chars[i], i, i,
+                size, i == 0, i + 1 == size);
+            renderWhen(center, target, children, length);
+        }
+    }
+
+    private final static void renderResultSet(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
         try {
             ResultSet set = (ResultSet) data;
-            Renderer[] children = target.getChildren();
-            for (int i = 0, length = children.length; set.next(); i++) {
-                setVars(center, keys, set, i, i, -1, set.isFirst(), set.isLast());
+            CenterRenderer[] children = target.getChildren();
+            for (int i = 0, length = children.length, size = NO_SIZE; set.next(); i++) {
+                setVars(center, keys, set, i, i, size, set.isFirst(), set.isLast());
                 renderWhen(center, target, children, length);
             }
         } catch (SQLException e) {
@@ -75,9 +89,9 @@ class VarSetterIn implements VarSetter {
         }
     }
 
-    private final static void renderBean(WorkCenterMap center, Renderer target, String[] keys, Object data) {
+    private final static void renderBean(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
         Map<String, FieldDescriptor> descriptorMap = BeanInfoUtil.getFieldDescriptorsMap(data.getClass());
-        Renderer[] children = target.getChildren();
+        CenterRenderer[] children = target.getChildren();
         final int size = descriptorMap.size(), length = children.length;
         Set<Map.Entry<String, FieldDescriptor>> entries = descriptorMap.entrySet();
         int outerIndex = 0;
@@ -89,12 +103,12 @@ class VarSetterIn implements VarSetter {
         }
     }
 
-    private final static void renderNumber(WorkCenterMap center, Renderer target, String[] keys, Object data) {
-        Renderer[] children = target.getChildren();
+    private final static void renderNumber(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
+        CenterRenderer[] children = target.getChildren();
         final int length = children.length, max = ((Number) data).intValue();
         for (int index = 0; index < max; index++) {
             setVars(center, keys, index, index, index,
-                0, index == 0, false);
+                max, index == 0, false);
             renderWhen(center, target, children, length);
         }
     }
@@ -107,13 +121,13 @@ class VarSetterIn implements VarSetter {
      * @param keys
      * @param data
      */
-    private final static void renderIterator(WorkCenterMap center, Renderer target, String[] keys, Object data) {
+    private final static void renderIterator(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
         Iterator iterator = (Iterator) data;
-        Renderer[] children = target.getChildren();
+        CenterRenderer[] children = target.getChildren();
         final int length = children.length;
-        for (int index = 0; iterator.hasNext(); index++) {
+        for (int index = 0, size = NO_SIZE; iterator.hasNext(); index++) {
             setVars(center, keys, iterator.next(), index, index,
-                -1, index == 0, false);
+                size, index == 0, false);
             renderWhen(center, target, children, length);
         }
     }
@@ -126,21 +140,21 @@ class VarSetterIn implements VarSetter {
      * @param keys
      * @param data
      */
-    private final static void renderIterable(WorkCenterMap center, Renderer target, String[] keys, Object data) {
+    private final static void renderIterable(WorkCenterMap center, CenterRenderer target, String[] keys, Object data) {
         Iterable iterable = (Iterable) data;
-        Renderer[] children = target.getChildren();
-        final int length = children.length;
+        CenterRenderer[] children = target.getChildren();
+        final int length = children.length, size = NO_SIZE;
         int outerIndex = 0;
         for (Object item : iterable) {
             setVars(center, keys, item, outerIndex, outerIndex,
-                -1, outerIndex == 0, false);
+                size, outerIndex == 0, false);
             renderWhen(center, target, children, length);
         }
     }
 
-    private final static void renderArray(WorkCenterMap centerMap, Renderer target, String[] keys, Object data) {
+    private final static void renderArray(WorkCenterMap centerMap, CenterRenderer target, String[] keys, Object data) {
         ArrayOperators arrayType = ArraysEnum.getOrObjects(data);
-        Renderer[] children = target.getChildren();
+        CenterRenderer[] children = target.getChildren();
         final int size = arrayType.length(data), length = children.length;
         int index = 0;
         for (Object item; index < size; index++) {
@@ -151,9 +165,9 @@ class VarSetterIn implements VarSetter {
         }
     }
 
-    private final static void renderCollect(WorkCenterMap centerMap, Renderer target, String[] keys, Object data) {
+    private final static void renderCollect(WorkCenterMap centerMap, CenterRenderer target, String[] keys, Object data) {
         Collection collect = (Collection) data;
-        Renderer[] children = target.getChildren();
+        CenterRenderer[] children = target.getChildren();
         final int size = collect.size(), length = children.length;
         int index = 0;
         for (Object item : collect) {
@@ -164,10 +178,10 @@ class VarSetterIn implements VarSetter {
         }
     }
 
-    private final static void renderMap(WorkCenterMap centerMap, Renderer target, String[] keys, Object data) {
+    private final static void renderMap(WorkCenterMap centerMap, CenterRenderer target, String[] keys, Object data) {
         Map map = (Map) data;
         int outerIndex = 0;
-        Renderer[] children = target.getChildren();
+        CenterRenderer[] children = target.getChildren();
         final int size = map.size(), length = children.length;
         Set<Map.Entry> entries = map.entrySet();
         for (Map.Entry entry : entries) {
@@ -179,8 +193,8 @@ class VarSetterIn implements VarSetter {
     }
 
     private final static void renderWhen(
-        WorkCenterMap centerMap, Renderer target,
-        Renderer[] children, int length
+        WorkCenterMap centerMap, CenterRenderer target,
+        CenterRenderer[] children, int length
     ) {
         if (target.isWhen(centerMap)) {
             target.beforeRender(centerMap);

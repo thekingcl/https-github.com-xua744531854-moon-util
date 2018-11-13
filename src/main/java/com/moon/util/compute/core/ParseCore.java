@@ -126,13 +126,21 @@ class ParseCore {
                     break;
                 case GT:
                     // >、>=
-                    handler = toGtLtAndOr(chars, indexer, values, methods,
-                        EQ, DataComputes.GT_OR_EQ, DataComputes.GT);
+                    if (chars[indexer.get()] == GT) {
+                        handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_RIGHT);
+                    } else {
+                        handler = toGtLtAndOr(chars, indexer, values, methods,
+                            EQ, DataComputes.GT_OR_EQ, DataComputes.GT);
+                    }
                     break;
                 case LT:
                     // <、<=
-                    handler = toGtLtAndOr(chars, indexer, values, methods,
-                        EQ, DataComputes.LT_OR_EQ, DataComputes.LT);
+                    if (chars[indexer.get()] == LT) {
+                        handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_LEFT);
+                    } else {
+                        handler = toGtLtAndOr(chars, indexer, values, methods,
+                            EQ, DataComputes.LT_OR_EQ, DataComputes.LT);
+                    }
                     break;
                 case AND:
                     // && 、&

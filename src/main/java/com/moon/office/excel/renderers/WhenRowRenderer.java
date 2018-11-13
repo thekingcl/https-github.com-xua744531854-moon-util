@@ -11,7 +11,7 @@ final class WhenRowRenderer extends AbstractRenderer<TableRow> {
     private final String skipRows;
     private final String when;
 
-    protected WhenRowRenderer(TableRow annotation, Renderer[] children, String[] formatted) {
+    protected WhenRowRenderer(TableRow annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.skipRows = annotation.skipRows();
         this.when = annotation.when().trim();

@@ -17,7 +17,7 @@ final class WhenCellRenderer extends BaseCellRenderer<TableCell> {
     private final ValueType valueType;
     private final String styleId;
 
-    protected WhenCellRenderer(TableCell annotation, Renderer[] children, String[] formatted) {
+    protected WhenCellRenderer(TableCell annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.skipCells = annotation.skipCells();
         this.colspan = annotation.colspan();

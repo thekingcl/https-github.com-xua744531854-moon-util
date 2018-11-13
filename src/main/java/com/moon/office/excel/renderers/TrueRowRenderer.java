@@ -10,7 +10,7 @@ final class TrueRowRenderer extends AbstractRenderer<TableRow> {
     private final String className;
     private final String skipRows;
 
-    protected TrueRowRenderer(TableRow annotation, Renderer[] children, String[] formatted) {
+    protected TrueRowRenderer(TableRow annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.skipRows = annotation.skipRows();
 

@@ -14,7 +14,7 @@ import java.util.Map;
 class TrueExcelRenderer extends AbstractRenderer<TableExcel> {
     private final Map<String, CellStyleCreator> styleMaps;
 
-    protected TrueExcelRenderer(TableExcel annotation, Renderer[] children) {
+    protected TrueExcelRenderer(TableExcel annotation, CenterRenderer[] children) {
         super(annotation, children, annotation.var(), ArraysEnum.STRINGS.empty());
 
         Style[] styles = annotation.styles();

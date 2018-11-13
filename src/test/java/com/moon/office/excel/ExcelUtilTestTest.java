@@ -6,20 +6,21 @@ import com.moon.office.excel.enums.ValueType;
 import com.moon.util.Console;
 import com.moon.util.DateUtil;
 import com.moon.util.assertions.Assertions;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import static com.moon.util.assertions.Assertions.of;
 
 /**
  * @author benshaoye
  */
 class ExcelUtilTestTest {
 
-    static final Assertions assertions = Assertions.of();
+    static final Assertions assertions = of();
 
     Workbook result;
 
@@ -73,7 +74,7 @@ class ExcelUtilTestTest {
         Console.out.timeEnd();
         Console.out.println(DateUtil.format());
         Console.out.time();
-        // result.write(FileUtil.getFileOutputStream(path));
+        result.write(FileUtil.getFileOutputStream(path));
         Console.out.timeEnd();
         Console.out.println(DateUtil.format());
     }
@@ -126,6 +127,39 @@ class ExcelUtilTestTest {
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    @TableExcel({
+        @TableSheet(var = "$data = {name: '张三', age: 25, sex: '男', idCard: '100100199102025456'}", value = {
+            @TableRow({
+                @TableCell("'序号'"),
+                @TableCell("'姓名'"),
+                @TableCell("'年龄'"),
+                @TableCell("'性别'"),
+                @TableCell("'身份证号'"),
+            }),
+            @TableRow(var = "$var in 100", value = {
+                @TableCell("$var +         1"),
+                @TableCell("$data.name"),
+                @TableCell("$data.age"),
+                @TableCell("$data.sex"),
+                @TableCell("$data.idCard"),
+            })
+        })
+    })
+    @Test
+    void testInstance() throws IOException {
+        String path = "E:/test/test-" + DateUtil.now() + ".xls";
+        result = ExcelUtil.render();
+        assertions.assertInstanceOf(result, HSSFWorkbook.class);
+        int number = result.getNumberOfSheets();
+        assertions.assertEq(number, 1);
+        Sheet sheet = result.getSheetAt(0);
+        assertions.assertEq(sheet.getLastRowNum(), 100);
+        Row row = sheet.getRow(100);
+        assertions.assertNotNull(row);
+        Cell cell = row.getCell(1);
+        assertions.assertEquals(cell.getStringCellValue(), "张三");
     }
 
     public static class Employee {

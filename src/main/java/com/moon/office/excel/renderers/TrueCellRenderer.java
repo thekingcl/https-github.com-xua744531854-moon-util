@@ -16,7 +16,7 @@ final class TrueCellRenderer extends BaseCellRenderer<TableCell> {
     private final ValueType valueType;
     private final String styleId;
 
-    protected TrueCellRenderer(TableCell annotation, Renderer[] children, String[] formatted) {
+    protected TrueCellRenderer(TableCell annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
         this.skipCells = annotation.skipCells();
         this.colspan = annotation.colspan();

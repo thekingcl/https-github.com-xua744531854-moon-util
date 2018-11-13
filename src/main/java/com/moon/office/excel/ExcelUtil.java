@@ -15,14 +15,10 @@ public final class ExcelUtil extends RendererUtil {
     }
 
     public final static Workbook render(Object... data) {
-        return parseAndRenderTo(data);
+        return renderTo(null, data);
     }
 
     public final static Workbook renderTo(Workbook workbook, Object... data) {
         return parseAndRenderTo(workbook, data);
-    }
-
-    public final static void importFrom() {
-
     }
 }

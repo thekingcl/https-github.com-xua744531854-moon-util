@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
  * @author benshaoye
  */
 abstract class BaseCellRenderer<T extends Annotation> extends AbstractRenderer<T> {
-    protected BaseCellRenderer(T annotation, Renderer[] children, String var, String[] delimiters) {
+    protected BaseCellRenderer(T annotation, CenterRenderer[] children, String var, String[] delimiters) {
         super(annotation, children, var, delimiters);
     }
 

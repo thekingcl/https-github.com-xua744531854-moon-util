@@ -4,8 +4,10 @@ import com.moon.lang.ClassUtil;
 import com.moon.lang.annotation.AnnotatedUtil;
 import com.moon.lang.reflect.MethodUtil;
 import com.moon.office.excel.ExcelUtil;
+import com.moon.office.excel.Renderer;
 import com.moon.office.excel.annotations.TableExcel;
-import com.moon.util.CollectionUtil;
+import com.moon.util.CollectUtil;
+import com.moon.util.Console;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.lang.reflect.Method;
@@ -24,8 +26,9 @@ public class RendererUtil {
     }
 
     private final static String NAME = ExcelUtil.class.getName();
+    private final static String NAME0 = RendererUtil.class.getName();
 
-    private final static Map<TableExcel, Renderer> CACHE = new HashMap<>();
+    private final static Map<TableExcel, CenterRenderer> CACHE = new HashMap<>();
 
     private final static TableExcel getAnnotation() {
         int foundCount = 0;
@@ -38,7 +41,7 @@ public class RendererUtil {
                 if (foundCount == 1) {
                     foundName = className;
                 }
-                if (!className.equals(foundName)) {
+                if (TARGET_NAME.equals(className)) {
                     foundCount++;
                     continue;
                 }
@@ -48,7 +51,7 @@ public class RendererUtil {
                     continue;
                 }
                 List<Method> methods = MethodUtil.getAllMethods(ClassUtil.forName(className), methodName);
-                if (CollectionUtil.isNotEmpty(methods)) {
+                if (CollectUtil.isNotEmpty(methods)) {
                     Method method = methods.get(0);
                     TableExcel excel = AnnotatedUtil.get(method, TableExcel.class);
                     if (excel == null) {
@@ -64,8 +67,31 @@ public class RendererUtil {
         throw new NotExistTableExcelException(foundName);
     }
 
-    private final static Renderer getOrParse(TableExcel excel) {
-        Renderer renderer = CACHE.get(excel);
+    private final static TableExcel getInstanceAnnotation() {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < elements.length; i++) {
+            StackTraceElement elem = elements[i];
+            String className = elem.getClassName();
+            if (!NAME.equals(className) && !NAME0.equals(className)) {
+                String methodName = elem.getMethodName();
+                switch (methodName) {
+                    case "<init>":
+                        break;
+                    case "<clinit>":
+                        break;
+                    default:
+                        break;
+                }
+                Console.out.println(className + '.' + methodName);
+                break;
+            }
+        }
+
+        throw new NotExistTableExcelException("can not found Annotation of: " + NAME);
+    }
+
+    final static CenterRenderer getOrParse(TableExcel excel) {
+        CenterRenderer renderer = CACHE.get(excel);
         if (renderer == null) {
             renderer = ParseUtil.parseExcel(excel);
             synchronized (CACHE) {
@@ -77,13 +103,13 @@ public class RendererUtil {
         return renderer;
     }
 
-    protected final static Workbook parseAndRenderTo(Object... data) {
-        return parseAndRenderTo(null, data);
+    final static Renderer getInstance() {
+        return new GenericRenderer(getInstanceAnnotation());
     }
 
     protected final static Workbook parseAndRenderTo(Workbook workbook, Object... data) {
         TableExcel excel = getAnnotation();
-        Renderer renderer = getOrParse(excel);
+        CenterRenderer renderer = getOrParse(excel);
         WorkCenterMap centerMap = new WorkCenterMap(
             workbook == null ? excel.type().get() : workbook, data);
         return renderer.render(centerMap).get();
