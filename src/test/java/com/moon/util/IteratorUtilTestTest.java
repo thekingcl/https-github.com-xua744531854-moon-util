@@ -11,8 +11,6 @@ class IteratorUtilTestTest {
     void testForEach() {
         IteratorUtil.forEach(20, System.out::println);
         int[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        IteratorUtil.forEach(ints, (value, index) ->
-            System.out.println(String.format("index: %d, value: %d", index, value)));
         IteratorUtil.forEach(ints, System.out::println);
 
         String[] arr = {"111", "222", "333", "444", "555"};

@@ -178,5 +178,10 @@ class RunnerUtilTestTest {
         //res = RunnerUtil.run("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
 
         assertions.assertSame(String.class.getPackage(), Class.class.getPackage());
+        data = new HashMap(){{
+            put("arr", new Object[]{1,2,3});
+        }};
+        res = RunnerUtil.run("arr.length", data);
+        System.out.println(res);
     }
 }

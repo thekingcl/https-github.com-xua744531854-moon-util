@@ -8,6 +8,8 @@ import com.moon.lang.BooleanUtil;
 import com.moon.util.ListUtil;
 import com.moon.util.MapUtil;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -67,19 +69,26 @@ class DataGetterOrdinary implements AsGetter {
         return String.valueOf(key);
     }
 
+    private final static String ARR_LENGTH = "length";
+
     private AsGetter resetGetter(Object data) {
         Objects.requireNonNull(data, message);
         AsGetter getter;
         if (data instanceof Map) {
             getter = new MapGetter(key);
         } else if (data instanceof List) {
-            BooleanUtil.requireTrue(index >= 0, message);
+            BooleanUtil.requireFalse(index < 0, message);
             getter = new ListGetter(index);
         } else if (data.getClass().isArray()) {
-            BooleanUtil.requireTrue(index >= 0, message);
-            getter = new ArrayGetter(index);
+            if (index < 0 && ARR_LENGTH.equals(key)) {
+                getter = ArrayLenGetter.LENGTH;
+            } else {
+                BooleanUtil.requireFalse(index < 0, message);
+                getter = new ArrayGetter(index);
+            }
+        } else if (data instanceof ResultSet) {
+            getter = index < 0 ? new ResultLabelGetter(key) : new ResultIndexGetter(index);
         } else {
-            Objects.requireNonNull(data, message);
             BooleanUtil.requireTrue(key instanceof String, message);
             getter = new FieldGetter(key);
         }
@@ -107,6 +116,51 @@ class DataGetterOrdinary implements AsGetter {
      * classes
      * -------------------------------------------------------------
      */
+
+    private static class ResultIndexGetter implements AsGetter {
+        private final int index;
+
+        private ResultIndexGetter(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public Object use(Object data) {
+            try {
+                return ((ResultSet) data).getObject(index);
+            } catch (SQLException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        @Override
+        public boolean test(Object o) {
+            return o instanceof ResultSet;
+        }
+    }
+
+    private static class ResultLabelGetter implements AsGetter {
+        private final String label;
+
+        private ResultLabelGetter(Object label) {
+            BooleanUtil.requireTrue(label instanceof CharSequence);
+            this.label = label.toString();
+        }
+
+        @Override
+        public Object use(Object data) {
+            try {
+                return ((ResultSet) data).getObject(label);
+            } catch (SQLException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
+        @Override
+        public boolean test(Object o) {
+            return o instanceof ResultSet;
+        }
+    }
 
     private static class MapGetter implements AsGetter {
         final Object key;
@@ -170,6 +224,15 @@ class DataGetterOrdinary implements AsGetter {
         }
     }
 
+    private enum ArrayLenGetter implements AsGetter {
+        LENGTH;
+
+        @Override
+        public Object use(Object data) {
+            return ArraysEnum.getOrObjects(data).length(data);
+        }
+    }
+
     private static class ArrayGetter implements AsGetter {
         final int index;
         final String message;
@@ -192,7 +255,7 @@ class DataGetterOrdinary implements AsGetter {
             if (getter == null || getter.test(data)) {
                 getter = reset(data);
             }
-            return getter.get(data,index);
+            return getter.get(data, index);
         }
 
         private ArrayOperators reset(Object data) {

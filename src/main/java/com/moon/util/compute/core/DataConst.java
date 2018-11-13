@@ -1,9 +1,10 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.BooleanUtil;
+import com.moon.lang.ref.ReferenceUtil;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author benshaoye
@@ -14,7 +15,21 @@ abstract class DataConst<T> implements AsConst {
     final static AsConst TRUE = DataConstBoolean.TRUE;
     final static AsConst FALSE = DataConstBoolean.FALSE;
 
-    protected final static Map<Object, AsConst> CACHE = new HashMap<>();
+    private final static Map<Object, AsConst> CACHE = ReferenceUtil.manageMap();
+    private final static ReentrantLock LOCK = new ReentrantLock();
+
+    protected final static AsConst getValue(Object key) {
+        return CACHE.get(key);
+    }
+
+    protected final static void putValue(Object key, AsConst value) {
+        try {
+            LOCK.lock();
+            CACHE.put(key, value);
+        } finally {
+            LOCK.unlock();
+        }
+    }
 
     final T value;
 
@@ -66,6 +81,28 @@ abstract class DataConst<T> implements AsConst {
             return (AsConst) data;
         }
         return DataConstObj.valueOf(data);
+    }
+
+    public static final AsConst temp(Object data){
+        if (data == null) {
+            return DataConst.NULL;
+        }
+        if (data instanceof CharSequence) {
+            return DataConstString.tempStr(data.toString());
+        }
+        if (data instanceof Number) {
+            return DataConstNumber.tempNum((Number) data);
+        }
+        if (Boolean.TRUE.equals(data)) {
+            return DataConst.TRUE;
+        }
+        if (Boolean.FALSE.equals(data)) {
+            return DataConst.FALSE;
+        }
+        if (data instanceof AsConst) {
+            return (AsConst) data;
+        }
+        return DataConstObj.tempObj(data);
     }
 
     public static final AsConst getOpposite(DataConst data) {

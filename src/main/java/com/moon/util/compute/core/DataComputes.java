@@ -60,15 +60,6 @@ enum DataComputes implements AsCompute {
                     return ((Number) o1).intValue() + ((Number) o2).intValue();
                 }
                 return ((Number) o1).doubleValue() + ((Number) o2).doubleValue();
-                /*
-                if (o1 instanceof Double
-                    || o2 instanceof Double
-                    || o1 instanceof Float
-                    || o2 instanceof Float) {
-                    return ((Number) o1).doubleValue() + ((Number) o2).doubleValue();
-                }
-                return ((Number) o1).intValue() + ((Number) o2).intValue();
-                */
             }
             return String.valueOf(o1) + String.valueOf(o2);
         }

@@ -1,11 +1,11 @@
 package com.moon.util.compute.core;
 
+import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
 
 import java.util.LinkedList;
 import java.util.Objects;
 
-import static com.moon.lang.SupportUtil.setChar;
 import static com.moon.lang.ThrowUtil.noInstanceError;
 
 /**
@@ -26,14 +26,7 @@ final class ParseGetter {
      * @return
      */
     final static AsValuer parseVar(char[] chars, IntAccessor indexer, int len, int current) {
-        char curr = (char) current;
-        char[] value = {curr};
-        int index = value.length, i = indexer.get();
-        for (; i < len && ParseUtil.isVar(curr = chars[i]) || ParseUtil.isNum(curr); i++) {
-            value = setChar(value, index++, curr);
-        }
-        ParseUtil.setIndexer(indexer, i, len);
-        String str = ParseUtil.toStr(value, index);
+        String str = SupportUtil.parseVar(chars, indexer, len, current);
         switch (str) {
             case "null":
                 return DataConst.NULL;

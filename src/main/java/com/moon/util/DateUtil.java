@@ -84,8 +84,21 @@ public final class DateUtil {
         return current;
     }
 
+    public final static Date clearTime(Date value) {
+        Calendar current = toCalendar(value);
+        current.set(HOUR_OF_DAY, 0);
+        current.set(MINUTE, 0);
+        current.set(SECOND, 0);
+        current.set(MILLISECOND, 0);
+        return current.getTime();
+    }
+
     public final static Calendar clearMilliseconds(Calendar calendar) {
         return setMillisecond(calendar, 0);
+    }
+
+    public final static Date clearMilliseconds(Date value) {
+        return setMillisecond(toCalendar(value), 0).getTime();
     }
 
     /*
@@ -157,7 +170,7 @@ public final class DateUtil {
      */
 
     public final static Calendar plusYears(Calendar value, int amount) {
-        return setMonth(value, getYear(value) + amount);
+        return setYear(value, getYear(value) + amount);
     }
 
     public final static Calendar plusMonths(Calendar value, int amount) {
@@ -169,23 +182,23 @@ public final class DateUtil {
     }
 
     public final static Calendar plusHours(Calendar value, int amount) {
-        return setMonth(value, getHour(value) + amount);
+        return setHour(value, getHour(value) + amount);
     }
 
     public final static Calendar plusMinutes(Calendar value, int amount) {
-        return setMonth(value, getMinute(value) + amount);
+        return setMinute(value, getMinute(value) + amount);
     }
 
     public final static Calendar plusSeconds(Calendar value, int amount) {
-        return setDayOfMonth(value, getSecond(value) + amount);
+        return setSecond(value, getSecond(value) + amount);
     }
 
     public final static Calendar plusMilliSeconds(Calendar value, int amount) {
-        return setDayOfMonth(value, getMillisecond(value) + amount);
+        return setMillisecond(value, getMillisecond(value) + amount);
     }
 
     public final static Calendar minusYears(Calendar value, int amount) {
-        return setMonth(value, getYear(value) - amount);
+        return setYear(value, getYear(value) - amount);
     }
 
     public final static Calendar minusMonths(Calendar value, int amount) {
@@ -197,7 +210,7 @@ public final class DateUtil {
     }
 
     public final static Calendar minusHours(Calendar value, int amount) {
-        return setMonth(value, getHour(value) - amount);
+        return setHour(value, getHour(value) - amount);
     }
 
     public final static Calendar minusMinutes(Calendar value, int amount) {
@@ -205,11 +218,11 @@ public final class DateUtil {
     }
 
     public final static Calendar minusSeconds(Calendar value, int amount) {
-        return setDayOfMonth(value, getSecond(value) - amount);
+        return setSecond(value, getSecond(value) - amount);
     }
 
     public final static Calendar minusMilliSeconds(Calendar value, int amount) {
-        return setDayOfMonth(value, getMillisecond(value) - amount);
+        return setMillisecond(value, getMillisecond(value) - amount);
     }
 
     /*

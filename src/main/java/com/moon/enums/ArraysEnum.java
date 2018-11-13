@@ -43,6 +43,14 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Object set(Object arr, int index, Object value) {
+            Object[] data = to(arr);
+            Object old = data[index];
+            data[index] = value;
+            return old;
+        }
+
+        @Override
         public Object[] create(int length) {
             return new Object[length];
         }
@@ -55,6 +63,105 @@ public enum ArraysEnum implements ArrayOperators {
         @Override
         public void forEach(Object arr, IntBiConsumer consumer) {
             IteratorUtil.forEach(to(arr), consumer);
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null) {
+                return false;
+            }
+            Object[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            if (item == null) {
+                for (int i = 0; i < len; i++) {
+                    if (data[i] == null) {
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < len; i++) {
+                if (item.equals(data[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    },
+    STRINGS(new String[0]) {
+        @Override
+        public String[] to(Object o) {
+            return (String[]) o;
+        }
+
+        @Override
+        public Iterator iterator(Object o) {
+            return of(to(o));
+        }
+
+        @Override
+        public String stringify(Object o) {
+            return join(to(o), EMPTY);
+        }
+
+        @Override
+        public boolean test(Object data) {
+            return data instanceof String[];
+        }
+
+        @Override
+        public Object get(Object arr, int index) {
+            return to(arr)[index];
+        }
+
+        @Override
+        public String set(Object arr, int index, Object value) {
+            String[] data = to(arr);
+            String old = data[index];
+            data[index] = value == null ? null : value.toString();
+            return old;
+        }
+
+        @Override
+        public String[] create(int length) {
+            return new String[length];
+        }
+
+        @Override
+        public int length(Object arr) {
+            return to(arr).length;
+        }
+
+        @Override
+        public void forEach(Object arr, IntBiConsumer consumer) {
+            IteratorUtil.forEach(to(arr), consumer);
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || !(item instanceof String)) {
+                return false;
+            }
+            String[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            if (item == null) {
+                for (int i = 0; i < len; i++) {
+                    if (data[i] == null) {
+                        return true;
+                    }
+                }
+            }
+            for (int i = 0; i < len; i++) {
+                if (item.equals(data[i])) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     BOOLEANS(new boolean[0]) {
@@ -84,6 +191,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Boolean set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Boolean);
+            boolean[] data = to(arr);
+            boolean old = data[index];
+            data[index] = ((Boolean) value).booleanValue();
+            return old;
+        }
+
+        @Override
         public boolean[] create(int length) {
             return new boolean[length];
         }
@@ -99,6 +215,32 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Boolean)) {
+                return false;
+            }
+            boolean[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            if (((Boolean) item).booleanValue()) {
+                for (int i = 0; i < len; i++) {
+                    if (data[i]) {
+                        return true;
+                    }
+                }
+            } else {
+                for (int i = 0; i < len; i++) {
+                    if (!data[i]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     },
     DOUBLES(new double[0]) {
@@ -128,6 +270,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Double set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            double[] data = to(arr);
+            double old = data[index];
+            data[index] = ((Number) value).doubleValue();
+            return old;
+        }
+
+        @Override
         public double[] create(int length) {
             return new double[length];
         }
@@ -143,6 +294,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Double)) {
+                return false;
+            }
+            double[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            double value = ((Double) item).doubleValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     FLOATS(new float[0]) {
@@ -172,6 +342,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Float set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            float[] data = to(arr);
+            float old = data[index];
+            data[index] = ((Number) value).floatValue();
+            return old;
+        }
+
+        @Override
         public float[] create(int length) {
             return new float[length];
         }
@@ -187,6 +366,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Float)) {
+                return false;
+            }
+            float[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            float value = ((Float) item).floatValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     LONGS(new long[0]) {
@@ -221,6 +419,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Long set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            long[] data = to(arr);
+            long old = data[index];
+            data[index] = ((Number) value).longValue();
+            return old;
+        }
+
+        @Override
         public int length(Object arr) {
             return to(arr).length;
         }
@@ -231,6 +438,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Long)) {
+                return false;
+            }
+            long[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            long value = ((Long) item).longValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     INTS(new int[0]) {
@@ -260,6 +486,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Integer set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            int[] data = to(arr);
+            int old = data[index];
+            data[index] = ((Number) value).intValue();
+            return old;
+        }
+
+        @Override
         public int[] create(int length) {
             return new int[length];
         }
@@ -275,6 +510,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Integer)) {
+                return false;
+            }
+            int[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            int value = ((Integer) item).intValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     SHORTS(new short[0]) {
@@ -304,6 +558,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Short set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            short[] data = to(arr);
+            short old = data[index];
+            data[index] = ((Number) value).shortValue();
+            return old;
+        }
+
+        @Override
         public short[] create(int length) {
             return new short[length];
         }
@@ -319,6 +582,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Short)) {
+                return false;
+            }
+            short[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            int value = ((Short) item).shortValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     BYTES(new byte[0]) {
@@ -348,6 +630,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Byte set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Number);
+            byte[] data = to(arr);
+            byte old = data[index];
+            data[index] = ((Number) value).byteValue();
+            return old;
+        }
+
+        @Override
         public byte[] create(int length) {
             return new byte[length];
         }
@@ -363,6 +654,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Byte)) {
+                return false;
+            }
+            byte[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            int value = ((Byte) item).byteValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     CHARS(new char[0]) {
@@ -392,6 +702,15 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Character set(Object arr, int index, Object value) {
+            BooleanUtil.requireTrue(value instanceof Character);
+            char[] data = to(arr);
+            char old = data[index];
+            data[index] = ((Character) value).charValue();
+            return old;
+        }
+
+        @Override
         public char[] create(int length) {
             return new char[length];
         }
@@ -407,6 +726,25 @@ public enum ArraysEnum implements ArrayOperators {
             for (int i = 0, length = array.length; i < length; i++) {
                 consumer.accept(array[i], i);
             }
+        }
+
+        @Override
+        public boolean contains(Object arr, Object item) {
+            if (arr == null || item == null || !(item instanceof Character)) {
+                return false;
+            }
+            char[] data = to(arr);
+            int len = data.length;
+            if (len == 0) {
+                return false;
+            }
+            char value = ((Character) item).charValue();
+            for (int i = 0; i < len; i++) {
+                if (data[i] == value) {
+                    return true;
+                }
+            }
+            return false;
         }
     };
 

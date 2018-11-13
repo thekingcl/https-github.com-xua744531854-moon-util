@@ -52,7 +52,7 @@ class DataGetterCalculator implements AsGetter {
                 right = result.pollFirst();
                 left = result.pollFirst();
                 result.offerFirst(
-                    DataConst.get(
+                    DataConst.temp(
                         operator.handle(right, left, data)
                     )
                 );

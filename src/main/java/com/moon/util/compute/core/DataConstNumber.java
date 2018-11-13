@@ -13,13 +13,16 @@ class DataConstNumber extends DataConst {
         return true;
     }
 
-
     final static AsConst valueOf(Number str) {
-        AsConst CONST = CACHE.get(str);
+        AsConst CONST = getValue(str);
         if (CONST == null) {
             CONST = new DataConstNumber(str);
-            CACHE.put(str, CONST);
+            putValue(str, CONST);
         }
         return CONST;
+    }
+
+    final static AsConst tempNum(Number str) {
+        return new DataConstNumber(str);
     }
 }

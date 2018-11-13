@@ -1,17 +1,23 @@
 package com.moon.lang;
 
+import com.moon.enums.ArraysEnum;
+import com.moon.lang.ref.IntAccessor;
+
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.lang.Character.isWhitespace;
 
 /**
  * @author benshaoye
  * @date 2018/9/11
  */
 public final class SupportUtil {
+
+    private final static char DOT = '.';
 
     private SupportUtil() {
         noInstanceError("这个类不推荐任何形式调用");
@@ -59,28 +65,92 @@ public final class SupportUtil {
         return posBegin;
     }
 
-    /**
-     * 输入对象必须是一个数组、集合或 Map
-     *
-     * @param o
-     * @return
-     */
-    public static Object firstItem(Object o) {
-        if (o == null) {
-            return null;
+    public final static String parseVar(char[] chars, IntAccessor indexer, int len, int current) {
+        char curr = (char) current;
+        char[] value = {curr};
+        int index = value.length, i = indexer.get();
+        for (; i < len && (isVar(curr = chars[i]) || isNum(curr)); i++) {
+            value = setChar(value, index++, curr);
         }
-        if (o.getClass().isArray()) {
-            return Array.get(o, 0);
+        setIndexer(indexer, i, len);
+        return toStr(value, index);
+    }
+
+    public final static Number parseNum(char[] chars, IntAccessor indexer, int len, int current) {
+        char curr = (char) current;
+        char[] value = {curr};
+        int index = value.length, i = indexer.get();
+        final Number number;
+        for (; i < len && isNum(curr = chars[i]); i++) {
+            value = setChar(value, index++, curr);
         }
-        if (o instanceof Collection) {
-            Collection collection = (Collection) o;
-            return collection.iterator().next();
+        if (curr == DOT) {
+            final int cacheIndex = index, cacheI = i + 1;
+            value = setChar(value, index++, curr);
+            for (++i; i < len && isNum(curr = chars[i]); i++) {
+                value = setChar(value, index++, curr);
+            }
+            if (cacheI == i && isVar(curr)) {
+                i--;
+                number = Integer.parseInt(toStr(value, cacheIndex));
+            } else {
+                number = Double.parseDouble(toStr(value, index));
+            }
+        } else {
+            number = Integer.parseInt(toStr(value, index));
         }
-        if (o instanceof Map) {
-            Map map = (Map) o;
-            return map.values().iterator().next();
+        setIndexer(indexer, i, len);
+        return number;
+    }
+
+    public final static String parseStr(char[] chars, IntAccessor indexer, int endChar) {
+        char[] value = ArraysEnum.CHARS.empty();
+        int index = 0, i = indexer.get();
+        char ch;
+        for (; (ch = chars[i++]) != endChar; ) {
+            value = setChar(value, index++, ch);
         }
-        throw new IllegalArgumentException();
+        indexer.set(i);
+        return toStr(value, index);
+    }
+
+    public final static void setIndexer(IntAccessor indexer, int index, int len) {
+        indexer.set(index < len ? index : len);
+    }
+
+    public final static String toStr(char[] chars, int len) {
+        return new String(chars, 0, len);
+    }
+
+    public final static boolean isNum(int value) {
+        return value > 47 && value < 58;
+    }
+
+    public final static boolean isVar(int value) {
+        return CharUtil.isLetter(value)
+            || value == '$' || value == '_'
+            || CharUtil.isChinese(value);
+    }
+
+    public final static int skipWhitespaces(char[] chars, IntAccessor indexer, final int len) {
+        int index = indexer.get();
+        int ch = 0;
+        while (index < len && isWhitespace(ch = chars[index++])) {
+        }
+        indexer.set(index);
+        return ch;
+    }
+
+    public final static <T> T throwErr(char[] chars, IntAccessor indexer) {
+        int amount = 8, len = chars.length, index = indexer.get();
+        int end = index + amount < len ? index + amount : len;
+        int start = index < amount ? 0 : index - amount;
+        throw new IllegalArgumentException(
+            new StringBuilder((amount + 5) * 2)
+                .append(">>>>>")
+                .append(chars, start, end - start)
+                .append("<<<<<").toString()
+        );
     }
 
     /**
@@ -105,14 +175,6 @@ public final class SupportUtil {
             return (size = ((Map) o).size()) == 1 ? ((Map) o).values().iterator().next() : size;
         }
         throw new IllegalArgumentException();
-    }
-
-    public static void validateNumberArray(Object array) {
-        if (array == null) {
-            throw new NullPointerException("The array must not be null");
-        } else if (Array.getLength(array) == 0) {
-            throw new ArrayIndexOutOfBoundsException("The array must not be Empty, get out of range: 0");
-        }
     }
 
     public static <T> T matchOne(Collection<T> collection, Predicate<? super T> test) {

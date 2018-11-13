@@ -5,6 +5,7 @@ import com.moon.enums.Const;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -218,7 +219,8 @@ public class StringJoiner {
 
     public <K, V> StringJoiner join(Map<K, V> map, BiFunction<K, V, String> converter) {
         testRequiredNonNull(map);
-        forEach(map, (key, value) -> addStr(testAndGetString(converter.apply(key, value))));
+        // (key, value) -> addStr(testAndGetString(converter.apply(key, value)))
+        forEach(map, (k, v) -> converter.apply(k, v));
         return this;
     }
 

@@ -1,5 +1,6 @@
 package com.moon.util.compute;
 
+import com.moon.enums.ArraysEnum;
 import com.moon.lang.ThrowUtil;
 import com.moon.util.compute.core.ParseUtil;
 
@@ -226,6 +227,10 @@ public final class RunnerUtil extends ParseUtil {
         return parseRun(expression, DELIMITERS, data);
     }
 
+    public final static Object parseRun(String expression, Object... data) {
+        return parseRun(expression, DELIMITERS, new RunnerDataMap(data));
+    }
+
     /**
      * 可自定义分隔符，如：
      * <p>
@@ -253,7 +258,7 @@ public final class RunnerUtil extends ParseUtil {
      * @see #parseRun(String, String[], Object)
      */
     public final static Object parseRun(String expression, String[] delimiters) {
-        return parseRun(expression, delimiters, null);
+        return parseRun(expression, delimiters, ArraysEnum.OBJECTS.empty());
     }
 
     /**
@@ -285,6 +290,10 @@ public final class RunnerUtil extends ParseUtil {
      */
     public final static Object parseRun(String expression, String[] delimiters, Object data) {
         return parseRun0(expression, delimiters, data);
+    }
+
+    public final static Object parseRun(String expression, String[] delimiters, Object... data) {
+        return parseRun(expression, delimiters, new RunnerDataMap(data));
     }
 
     /**

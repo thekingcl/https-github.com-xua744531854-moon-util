@@ -5,6 +5,7 @@ import com.moon.util.able.Stringify;
 import com.moon.util.function.IntBiConsumer;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -30,6 +31,17 @@ public interface ArrayOperators extends IteratorAble, Predicate, Stringify {
     <T> T empty();
 
     /**
+     * 默认空数组
+     *
+     * @param arr
+     * @param <T>
+     * @return
+     */
+    default <T> T emptyIfNull(Object arr) {
+        return arr == null ? empty() : (T) arr;
+    }
+
+    /**
      * 创建一个指定长度数组
      *
      * @param length
@@ -47,6 +59,20 @@ public interface ArrayOperators extends IteratorAble, Predicate, Stringify {
      */
     default <T> T get(Object arr, int index) {
         return (T) Array.get(arr, index);
+    }
+
+    /**
+     * 设置值
+     *
+     * @param arr
+     * @param index
+     * @param value
+     * @return
+     */
+    default Object set(Object arr, int index, Object value) {
+        Object old = Array.get(arr, index);
+        Array.set(arr, index, value);
+        return old;
     }
 
     /**
@@ -69,5 +95,35 @@ public interface ArrayOperators extends IteratorAble, Predicate, Stringify {
         for (int i = 0, len = length(arr); i < len; i++) {
             consumer.accept(get(arr, i), i);
         }
+    }
+
+    /**
+     * 数组是否包含某一项
+     *
+     * @param arr
+     * @param item
+     * @return
+     */
+    default boolean contains(Object arr, Object item) {
+        if (arr == null) {
+            return false;
+        }
+        int len = length(arr);
+        if (len == 0) {
+            return false;
+        }
+        if (item == null) {
+            for (int i = 0; i < len; i++) {
+                if (get(arr, i) == null) {
+                    return true;
+                }
+            }
+        }
+        for (int i = 0; i < len; i++) {
+            if (Objects.equals(item, get(arr, i))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

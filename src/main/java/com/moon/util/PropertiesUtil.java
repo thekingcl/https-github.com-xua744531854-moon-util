@@ -104,7 +104,7 @@ public final class PropertiesUtil {
      * -----------------------------------------------------------
      */
 
-    public static final String getString(String path, String... keys) {
-        return get(path).get(JoinerUtil.join(keys, "."));
+    public static final String getString(String path, String... vars) {
+        return get(path).get(JoinerUtil.join(vars, "."));
     }
 }

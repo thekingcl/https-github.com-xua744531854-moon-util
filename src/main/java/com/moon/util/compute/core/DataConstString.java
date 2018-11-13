@@ -14,11 +14,15 @@ class DataConstString extends DataConst {
     }
 
     final static AsConst valueOf(String str) {
-        AsConst CONST = CACHE.get(str);
+        AsConst CONST = getValue(str);
         if (CONST == null) {
             CONST = new DataConstString(str);
-            CACHE.put(str, CONST);
+            putValue(str, CONST);
         }
         return CONST;
+    }
+
+    final static AsConst tempStr(String str) {
+        return new DataConstString(str);
     }
 }

@@ -2,9 +2,11 @@ package com.moon.util;
 
 import com.moon.beans.BeanInfoUtil;
 import com.moon.beans.FieldDescriptor;
+import com.moon.enums.ArraysEnum;
 import com.moon.enums.CollectionEnum;
 import com.moon.lang.EnumUtil;
 import com.moon.lang.ThrowUtil;
+import com.moon.lang.ref.IntAccessor;
 import com.moon.util.function.*;
 import com.moon.util.iterators.*;
 
@@ -322,6 +324,45 @@ public final class IteratorUtil {
      */
     public static <T extends Enum<T>> Iterator<T> of(Class<T> clazz) {
         return clazz != null && clazz.isEnum() ? new ObjectsIterator(clazz.getEnumConstants()) : Null;
+    }
+
+    /*
+     * -----------------------------------------------------------------------------------------------------------
+     * for each(object)
+     * -----------------------------------------------------------------------------------------------------------
+     */
+
+
+    public final static void forEachAll(Object data, IntBiConsumer consumer) {
+        if (data instanceof Iterable) {
+            forEach((Iterable) data, consumer);
+        } else if (data instanceof Map) {
+            forEach(((Map) data).entrySet(), consumer);
+        } else if (data instanceof Iterator) {
+            forEach((Iterator) data, consumer);
+        } else if (data == null) {
+            return;
+        }
+        Class type = data.getClass();
+        if (type.isArray()) {
+            ArraysEnum.getOrObjects(data).forEach(data, consumer);
+        } else {
+            forEachBean(data, consumer);
+        }
+    }
+
+    /*
+     * -----------------------------------------------------------------------------------------------------------
+     * for each(JavaBean)
+     * -----------------------------------------------------------------------------------------------------------
+     */
+
+    public final static void forEachBean(Object bean, IntBiConsumer consumer) {
+        if (bean != null) {
+            IntAccessor indexer = IntAccessor.of();
+            BeanInfoUtil.getFieldDescriptorsMap(bean.getClass()).forEach((name, desc) ->
+                consumer.accept(desc.getValueIfPresent(bean, true), indexer.getAndAdd()));
+        }
     }
 
     /*

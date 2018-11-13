@@ -1,12 +1,12 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.CharUtil;
+import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.DOUBLE_QUOTE;
 import static com.moon.util.compute.core.Constants.SINGLE_QUOTE;
-import static java.lang.Character.isWhitespace;
 
 /**
  * @author benshaoye
@@ -64,12 +64,7 @@ public class ParseUtil {
      * @return
      */
     final static int skipWhitespaces(char[] chars, IntAccessor indexer, final int len) {
-        int index = indexer.get();
-        int ch = 0;
-        while (index < len && isWhitespace(ch = chars[index++])) {
-        }
-        indexer.set(index);
-        return ch;
+        return SupportUtil.skipWhitespaces(chars, indexer, len);
     }
 
     /*
@@ -79,15 +74,7 @@ public class ParseUtil {
      */
 
     final static <T> T throwErr(char[] chars, IntAccessor indexer) {
-        int amount = 8, len = chars.length, index = indexer.get();
-        int end = index + amount < len ? index + amount : len;
-        int start = index < amount ? 0 : index - amount;
-        throw new IllegalArgumentException(
-            new StringBuilder((amount + 5) * 2)
-                .append(">>>>>")
-                .append(chars, start, end - start)
-                .append("<<<<<").toString()
-        );
+        return SupportUtil.throwErr(chars, indexer);
     }
 
     final static void assertTrue(boolean value, char[] chars, IntAccessor indexer) {

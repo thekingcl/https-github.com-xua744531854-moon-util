@@ -15,7 +15,6 @@ import static com.moon.lang.reflect.Reflection.*;
 
 /**
  * @author ZhangDongMin
- * @date 2018/1/30 9:39
  */
 public final class MethodUtil {
 
