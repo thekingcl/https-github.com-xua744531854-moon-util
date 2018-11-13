@@ -146,42 +146,45 @@
 它内部核心是采用了上面的 RunnerUtil 能运行表达式的功能，当初写 RunnerUtil 的初衷就是为了这个导出，
 如果采用 Java 内置脚本引擎会“卡死的”，但 RunnerUtil 的功能相对完善，完全可单独使用。下面介绍一下 ExcelUtil 的使用方法：
 > 使用 ExcelUtil.render(/* data */) 时需要在调用位置的方法用 @TableExcel 注解（名字上也体现了灵感的来源）
-// 可用 type 指定生成的 excel 类型
+<br>// 可用 type 指定生成的 excel 类型
 <br>@TableExcel(type = TableExcel.Type.XLSX, value = { 
-// 可用指定 sheet 名，注意由于 RunnerUtil 运行，所以用单引号包裹的才是字符串
-<br>&ngsp;&ngsp;@TableSheet(sheetName = "'新建 Sheet 页'", value = {
-// 相对 html 的 table，sheet 可认为有无限列，所以下一行不会“自动换行”，需要手动“跳过”行
-<br>&ngsp;&ngsp;&ngsp;&ngsp;@TableRow(skipRows = "0", value = {
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'序号'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'姓名'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'年龄'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'性别'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'地址'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;}),
+<br>// 可用指定 sheet 名，由 [RunnerUtil](#RunnerUtil) 运行，单引号包裹的才是字符串
+<br>  @TableSheet(sheetName = "'新建 Sheet 页'", value = {
+<br>// 相对 html 的 table，sheet 可认为有无限列，所以下一行不会“自动换行”，需要手动“跳过”行
+<br>    @TableRow(skipRows = "0", value = {
+<br>      @TableCell("'序号'"),
+<br>      @TableCell("'姓名'"),
+<br>      @TableCell("'年龄'"),
+<br>      @TableCell("'性别'"),
+<br>      @TableCell("'地址'"),
+<br>    }),
 <br>// skipRows 默认是 0，可不写。注意这儿的 var 参数，在注解中引入的作用域的概念，sheet、row、cell 均有自己的作用域，
 <br>// 下层作用域不影响上层作用域的数据，但是相同变量名下层作用域会优先于上层作用域
-<br>// var 有四种表示方式：
+<br>// var 有一下表示方式：
 <br>// 1、var = "";  var = "   " 等，空白字符串，没有任何意义；
 <br>// 2、var = "$varName = expression"; 这个表达式表示用 expression 代表的表达式从上层作用域取得对应的值，并命别名为 $varName，供下层作用域使用，相当于声明一个变量；
 <br>// 3、var = "$varName in 100"; 这是用了 in 表达式，代表一个迭代器，可迭代以下数据：Iterable、Iterator、String、int、Map、数组、JavaBean 按字段迭代；
 <br>// 4、var = "$varName:100";这儿将 in 替换成了英文冒号，实际上作用完全一样，只是 in 的两端需要各有一个空格；
 <br>// 通常 Iterator 可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
-<br>&ngsp;&ngsp;&ngsp;&ngsp;@TableRow(var = "$var in 100", {
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("$var + 1"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'张三'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'25'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'男'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;&ngsp;@TableCell("'杭州西湖美景'"),
-<br>&ngsp;&ngsp;&ngsp;&ngsp;}),
-<br>&ngsp;&ngsp;})
+<br>// 5、var = "($item, $key, $index, $size, $isFirst, $isLase) in collectExpression";可获取迭代项、键名、索引、size、是否第一项、是否最后一项
+<br>    @TableRow(var = "$var in 100", {
+<br>      @TableCell("$var + 1"),
+<br>      @TableCell("'张三'"),
+<br>      @TableCell("'25'"),
+<br>      @TableCell("'男'"),
+<br>      @TableCell("'杭州西湖美景'", when="!$isFirst"),//不生成第一行最后一个cell
+<br>    }),
+<br>  })
 <br>})
 <br>public Workbook exportExcel(Object data){
-<br>&ngsp;&ngsp;return ExcelUtil.render();// 运行将生成一个包含一行标题，共 100 行数据的 Workbook 文档，然后可进行进一步操作
-<br>&ngsp;&ngsp;// 也可以使用 ExcelUtil.renderTo(workbook); 方法，将以上数据生成到指定的 Workbook 文档；
+<br>  return ExcelUtil.render();// 运行将生成一个包含一行标题，共 100 行数据的 Workbook 文档，然后可进行进一步操作
+<br>  // 也可以使用 ExcelUtil.renderTo(workbook); 方法，将以上数据生成到指定的 Workbook 文档；
 <br>}
 <br>
 
-下列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
+- 下面列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
+150 万行以上就不能用 xls 格式了，500 万行以上建议 TableExcel 的 type 值为 SUPER；
+
 |行数（万行）|生成数据耗时（ms）|write到文件耗时（ms）|总耗时（ms）|
 |-----------:|-----------------:|--------------------:|-----------:|
 |  100 |   6,182 |   5,565 |    11,747 |
@@ -192,3 +195,9 @@
 | 4000 | 240,453 | 271,832 |   512,285 |
 | 6000 | 366,987 | 423,351 |   790,338 |
 | 8000 | 528,654 | 498,490 | 1,027,144 |
+
+从上面的数据看出，数据量和时间呈正相关性，接近线性关系，100 万行数据生成数据耗时 6s，总耗时 12s，
+大多数业务场景下可以做到“瞬间”生成表格，没有太明显的延迟，还是可以接受的！哈哈哈哈.
+
+更多功能：
+- 可以为 TableCell 指定合并行列（用 colspan、rowspan 属性，注意只能返回数字）
