@@ -1,7 +1,7 @@
 # 介绍
 此工具类主要为 JDK 常用操作提供便利。
 写这个工具类是为了解决工作中的一些操作在已有的工具类（如：commons）
-不能完全满足需求的问题，比如类型转换，CollectionUtil.isNotEmpty() 等，
+不能完全满足需求的问题，比如类型转换，CollectUtil.isNotEmpty() 等，
 直到在一次阅读 fastjson 源码时惊喜的看到了 TypeUtils 这个类
 提供了强大的类型转换，便开始了自己写一个更贴合日常开发需求的行动……
 
@@ -132,12 +132,12 @@
 <br>data.put("map", map);
 <br>RunnerUtil.run("list.get(2) + 36 + map.name + map.name.length()"); // "61小四4"
 
-综上就是 RunnerUtil 所支持的功能，以后将进一步完成多参数方法的调用。
+以上就是 RunnerUtil 所支持的功能，以后将进一步完成多参数方法的调用。
 在开发这个计算器过程中层考虑过 Java 内置的脚本引擎，但经过测试，脚本引擎的功能虽然强大，
-但是采用脚本引擎运算这些简单表达式的性能却很低，希望此工具类能对用户有所帮助。
+但是采用脚本引擎运算这些简单表达式的性能却很低，并且不能直接与 Java 对象交互，希望此工具类能对使用者有所帮助。
 
 ### ExcelUtil:
-这是一个 Excel 导出工具，这个导出灵感来自于 html 的 table，同时采用了目前流行前端框架 angularJs 1.x 的思想
+这是一个 Excel 导出工具，这个导出灵感来自于 html 的 table，同时借鉴了流行前端框架 angularJs 1.x 的思想
 （其实现在 vue 更流行，不过当初写 ExcelUtil 的时候还不会 vue），
 它内部核心是采用了上面的 RunnerUtil 能运行表达式的功能，当初写 RunnerUtil 的初衷就是为了这个导出，
 如果采用 Java 内置脚本引擎会“卡死的”，但 RunnerUtil 的功能相对完善，完全可单独使用。下面介绍一下 ExcelUtil 的使用方法：
@@ -171,13 +171,17 @@
 
 - 说明一下：
 TableRow 的 skipRows 属性默认是 0，可不写。注意这儿的 var 参数，在注解中引入的作用域的概念，sheet、row、cell 均有自己的作用域，
-下层作用域不影响上层作用域的数据，但是相同变量名下层作用域会优先于上层作用域
+下层作用域不影响上层作用域的数据，但是相同变量名下层作用域会优先于上层作用域。
+
 var 有以下表示方式：
 1. var = "";  var = "   " 等，空白字符串，没有任何意义；
 2. var = "$varName = expression"; 这个表达式表示用 expression 代表的表达式从上层作用域取得对应的值，并命别名为 $varName，供下层作用域使用，相当于声明一个变量；
 3. var = "$varName in 100"; 这是用了 in 表达式，代表一个迭代器，可迭代以下数据：Iterable、Iterator、String、int、Map、数组、JavaBean 按字段迭代；
-4. var = "$varName:100";这儿将 in 替换成了英文冒号，实际上作用完全一样，只是 in 的两端需要各有一个空格；
-通常 Iterator （迭代器模式）可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
+> 但是 in 并不是关键字，仍然可以是变量名，如：var = "in in in.employee"
+
+4. var = "$varName:100";这儿将 in 替换成了英文冒号，实际上作用完全一样，只是 in 的两端需要各有一个空格，因为参考的 JavaScript 是用 in 迭代，而 Java 是用“:”迭代；
+> 通常 Iterator （迭代器模式）可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
+
 5. var = "($item, $key, $index, $size, $isFirst, $isLase) in collectExpression";可获取迭代项、键名、索引、size、是否第一项、是否最后一项
 - 下面列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
 150 万行以上不建议能用 xls 格式了（180 万行直接 OOM），500 万行以上 TableExcel 的 type 值应为 SUPER；
