@@ -11,7 +11,6 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
 
 /**
- * 负数还未支持，
  * 可能出现的位置：
  * 普通表达式、Map 或 List 的项、方法参数、方法执行对象
  *
@@ -28,11 +27,10 @@ class ParseCore {
         AsRunner handler = CACHE.get(expression);
         if (handler == null) {
             if (expression == null) {
-                handler = DataConst.NULL;
-            } else {
-                char[] chars = expression.trim().toCharArray();
-                handler = parse(chars, IntAccessor.of(), chars.length);
+                return DataConst.NULL;
             }
+            char[] chars = expression.trim().toCharArray();
+            handler = parse(chars, IntAccessor.of(), chars.length);
             synchronized (CACHE) {
                 if (CACHE.get(expression) == null) {
                     CACHE.put(expression, handler);

@@ -105,10 +105,13 @@ public final class SupportUtil {
 
     public final static String parseStr(char[] chars, IntAccessor indexer, int endChar) {
         char[] value = ArraysEnum.CHARS.empty();
-        int index = 0, i = indexer.get();
-        char ch;
-        for (; (ch = chars[i++]) != endChar; ) {
-            value = setChar(value, index++, ch);
+        int index = 0, pr = -1, es = '\\', i = indexer.get();
+        for (char ch; (ch = chars[i++]) != endChar || pr == es; pr = ch) {
+            if (ch == endChar && pr == es) {
+                value[index - 1] = ch;
+            } else {
+                value = setChar(value, index++, ch);
+            }
         }
         indexer.set(i);
         return toStr(value, index);

@@ -195,7 +195,7 @@ class RunnerUtilTestTest {
         System.out.println(RunnerUtil.run("1+1"));
         Runner runner = RunnerUtil.parse("1+1");
 
-        int count = 1000000000;
+        int count = 1000000;
         Console.out.time();
         for (int i = 0; i < count; i++) {
             res = engine.eval("1+1");
