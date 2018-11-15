@@ -19,9 +19,9 @@ final class DataInvokeOne extends DataInvokeBase {
     }
 
     @Override
-    public Object use(Object data) {
-        Object source = prevValuer.use(data);
-        Object params = valuer.use(data);
+    public Object run(Object data) {
+        Object source = prevValuer.run(data);
+        Object params = valuer.run(data);
         return MethodUtil.invoke(true, getMethod(source, params), source, params);
     }
 }

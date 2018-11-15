@@ -17,7 +17,7 @@ final class EnsureInvokerEmpty  implements AsInvoker {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         return MethodUtil.invokeStatic(method);
     }
 }

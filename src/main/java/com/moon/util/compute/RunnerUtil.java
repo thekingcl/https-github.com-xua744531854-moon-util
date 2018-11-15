@@ -1,7 +1,5 @@
 package com.moon.util.compute;
 
-import com.moon.enums.ArraysEnum;
-import com.moon.lang.ThrowUtil;
 import com.moon.util.compute.core.ParseUtil;
 
 /**
@@ -119,7 +117,7 @@ public final class RunnerUtil extends ParseUtil {
      * @throws Throwable 如果字符串表达式中包含变量
      */
     public final static Object run(String expression) {
-        return run0(expression, null);
+        return parse(expression).run();
     }
 
     /**
@@ -139,7 +137,7 @@ public final class RunnerUtil extends ParseUtil {
      * @throws NullPointerException 如果字符串表达式中包含 data 中没有的变量
      */
     public final static Object run(String expression, Object data) {
-        return run0(expression, data);
+        return parse(expression).run(data);
     }
 
     /**
@@ -156,7 +154,7 @@ public final class RunnerUtil extends ParseUtil {
      * @return
      */
     public final static Object runMulti(String expression, Object... data) {
-        return run(expression, new RunnerDataMap(data));
+        return parse(expression).runMulti(data);
     }
 
     /**
@@ -195,7 +193,7 @@ public final class RunnerUtil extends ParseUtil {
      * @throws Throwable 如果字符串表达式中包含变量
      */
     public final static Object parseRun(String expression) {
-        return parseRun(expression, DELIMITERS);
+        return parse(expression, DELIMITERS).run();
     }
 
     /**
@@ -224,11 +222,11 @@ public final class RunnerUtil extends ParseUtil {
      * @see #parseRun(String)
      */
     public final static Object parseRun(String expression, Object data) {
-        return parseRun(expression, DELIMITERS, data);
+        return parse(expression, DELIMITERS).run(data);
     }
 
     public final static Object parseRunMulti(String expression, Object... data) {
-        return parseRun(expression, DELIMITERS, new RunnerDataMap(data));
+        return parse(expression, DELIMITERS).runMulti(data);
     }
 
     /**
@@ -258,7 +256,7 @@ public final class RunnerUtil extends ParseUtil {
      * @see #parseRun(String, String[], Object)
      */
     public final static Object parseRun(String expression, String[] delimiters) {
-        return parseRun(expression, delimiters, ArraysEnum.OBJECTS.empty());
+        return parse(expression, delimiters).run();
     }
 
     /**
@@ -289,20 +287,10 @@ public final class RunnerUtil extends ParseUtil {
      * @see #parseRun(String)
      */
     public final static Object parseRun(String expression, String[] delimiters, Object data) {
-        return parseRun0(expression, delimiters, data);
+        return parse(expression, delimiters).run(data);
     }
 
     public final static Object parseRunMulti(String expression, String[] delimiters, Object... data) {
-        return parseRun(expression, delimiters, new RunnerDataMap(data));
-    }
-
-    /**
-     * 获取一个运算接口实例
-     *
-     * @param interfaceClass
-     * @return
-     */
-    public final static <T> T get(Class<T> interfaceClass) {
-        return ThrowUtil.rejectAccessError();
+        return parse(expression, delimiters).runMulti(data);
     }
 }

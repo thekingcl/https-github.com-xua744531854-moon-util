@@ -16,8 +16,7 @@ class DataConstNumber extends DataConst {
     final static AsConst valueOf(Number str) {
         AsConst CONST = getValue(str);
         if (CONST == null) {
-            CONST = new DataConstNumber(str);
-            putValue(str, CONST);
+            CONST = putValue(str, new DataConstNumber(str));
         }
         return CONST;
     }

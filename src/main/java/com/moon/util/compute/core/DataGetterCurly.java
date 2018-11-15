@@ -17,7 +17,7 @@ final class DataGetterCurly implements AsGetter {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         Object result = creator.get();
         BiConsumer[] consumers = this.consumers;
         int length = consumers.length;

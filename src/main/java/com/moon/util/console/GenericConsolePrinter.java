@@ -190,7 +190,7 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
     public void timeEnd() {
         long current = timing();
         append(this.template, current);
-        StringBuilder timer = this.timerBuilder;
+        StringBuilder timer = this.getTimerBuilder();
         timer.setCharAt(timer.length() - 1, (char) 0);
         this.debug(timer);
     }
@@ -207,11 +207,20 @@ public class GenericConsolePrinter extends BaseConsolePrinter {
     private void append(String old, long current) {
         // double value = (current - previousTiming) / 1000.0;
         long value = (current - previousTiming);
+        StringBuilder timer = this.getTimerBuilder();
         if (contains) {
-            timerBuilder.append(StringUtil.format(old, value));
+            timer.append(StringUtil.format(old, value));
         } else {
-            timerBuilder.append(old).append(value).append(" ms");
+            timer.append(old).append(value).append(" ms");
         }
-        timerBuilder.append('\n');
+        timer.append('\n');
+    }
+
+    private StringBuilder getTimerBuilder() {
+        StringBuilder timer = this.timerBuilder;
+        if (timer == null) {
+            timerBuilder = timer = new StringBuilder();
+        }
+        return timer;
     }
 }

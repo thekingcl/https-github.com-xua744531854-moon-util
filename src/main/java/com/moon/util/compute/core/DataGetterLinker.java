@@ -17,10 +17,8 @@ final class DataGetterLinker implements AsGetter {
     }
 
     @Override
-    public Object use(Object data) {
-        Object prevData = prevGetter.use(data);
-        prevData = valuer.use(prevData);
-        return prevData;
+    public Object run(Object data) {
+        return valuer.run(prevGetter.run(data));
     }
 
     /**

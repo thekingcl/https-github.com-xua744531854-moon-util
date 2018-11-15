@@ -16,8 +16,7 @@ class DataConstObj extends DataConst {
     final static AsConst valueOf(Object str) {
         AsConst CONST = getValue(str);
         if (CONST == null) {
-            CONST = new DataConstObj(str);
-            putValue(str, CONST);
+            CONST = putValue(str, new DataConstObj(str));
         }
         return CONST;
     }

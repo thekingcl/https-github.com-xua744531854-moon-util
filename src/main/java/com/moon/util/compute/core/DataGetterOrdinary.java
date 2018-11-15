@@ -28,9 +28,9 @@ class DataGetterOrdinary implements AsGetter {
     private AsGetter getter;
 
     DataGetterOrdinary(Object key) {
-        BooleanUtil.requireFalse(key instanceof AsHandler);
+        BooleanUtil.requireFalse(key instanceof AsRunner);
         this.key = key;
-        this.message = "Variable of name: " + String.valueOf(key);
+        this.message = "Variable of: " + String.valueOf(key);
         if (key instanceof Integer) {
             index = ((Number) key).intValue();
         } else {
@@ -52,11 +52,11 @@ class DataGetterOrdinary implements AsGetter {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         try {
-            return getGetter(data).use(data);
+            return getGetter(data).run(data);
         } catch (Exception e) {
-            return resetGetter(data).use(data);
+            return resetGetter(data).run(data);
         }
     }
 
@@ -125,7 +125,7 @@ class DataGetterOrdinary implements AsGetter {
         }
 
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             try {
                 return ((ResultSet) data).getObject(index);
             } catch (SQLException e) {
@@ -148,7 +148,7 @@ class DataGetterOrdinary implements AsGetter {
         }
 
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             try {
                 return ((ResultSet) data).getObject(label);
             } catch (SQLException e) {
@@ -176,7 +176,7 @@ class DataGetterOrdinary implements AsGetter {
          * @return
          */
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             return MapUtil.getByObject(data, key);
         }
 
@@ -207,7 +207,7 @@ class DataGetterOrdinary implements AsGetter {
          * @return
          */
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             return ListUtil.getByObject(data, index);
         }
 
@@ -228,7 +228,7 @@ class DataGetterOrdinary implements AsGetter {
         LENGTH;
 
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             return ArraysEnum.getOrObjects(data).length(data);
         }
     }
@@ -250,7 +250,7 @@ class DataGetterOrdinary implements AsGetter {
          * @return
          */
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             Objects.requireNonNull(data, message);
             if (getter == null || getter.test(data)) {
                 getter = reset(data);
@@ -293,7 +293,7 @@ class DataGetterOrdinary implements AsGetter {
          * @return
          */
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             Objects.requireNonNull(data, field);
             if (getter == null) {
                 getter = BeanInfoUtil.getFieldDescriptor(data.getClass(), field);

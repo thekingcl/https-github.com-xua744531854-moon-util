@@ -618,6 +618,26 @@ public final class StringUtil {
         return null;
     }
 
+    public final static String onlyWhitespace(String str) {
+        char[] chars = toCharArray(str), value = ArraysEnum.CHARS.empty();
+        boolean isNotWhitespace = true;
+        int i = 0, idx = 0, len = chars.length;
+        char curr;
+        for (; i < len; i++) {
+            curr = chars[i];
+            if (Character.isWhitespace(curr)) {
+                if (isNotWhitespace) {
+                    isNotWhitespace = false;
+                    value = SupportUtil.setChar(value, idx++, curr);
+                }
+            } else {
+                isNotWhitespace = true;
+                value = SupportUtil.setChar(value, idx++, curr);
+            }
+        }
+        return SupportUtil.toStr(value, idx);
+    }
+
     /**
      * 去掉字符串中重复字符
      *

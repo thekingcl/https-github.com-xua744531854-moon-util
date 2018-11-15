@@ -110,8 +110,8 @@ class EnsureInvokerOne implements AsInvoker {
     }
 
     @Override
-    public Object use(Object data) {
-        data = valuer.use(data);
+    public Object run(Object data) {
+        data = valuer.run(data);
         Class type = data.getClass();
         return MethodUtil.invokeStatic(getMethod(data, type), createParams(data, type));
     }

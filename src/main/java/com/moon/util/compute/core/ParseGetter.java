@@ -53,16 +53,16 @@ final class ParseGetter {
         return parseVar(chars, indexer, len, curr);
     }
 
-    final static AsHandler parseDot(char[] chars, IntAccessor indexer, int len, AsHandler prevHandler) {
+    final static AsRunner parseDot(char[] chars, IntAccessor indexer, int len, AsRunner prevHandler) {
         AsValuer prevValuer = (AsValuer) prevHandler;
-        AsHandler handler = parseDot(chars, indexer, len);
+        AsRunner handler = parseDot(chars, indexer, len);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        AsHandler invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, handler.toString(), prevValuer);
+        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, handler.toString(), prevValuer);
         return invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
     }
 
-    final static AsHandler parseNot(char[] chars, IntAccessor indexer, int len) {
-        AsHandler valuer, parsed;
+    final static AsRunner parseNot(char[] chars, IntAccessor indexer, int len) {
+        AsRunner valuer, parsed;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case Constants.FANG_LEFT:
@@ -96,9 +96,9 @@ final class ParseGetter {
             : new DataGetterNot(parsed);
     }
 
-    final static AsHandler tryParseLinked(char[] chars, IntAccessor indexer, int len, AsHandler valuer) {
+    final static AsRunner tryParseLinked(char[] chars, IntAccessor indexer, int len, AsRunner valuer) {
         final int index = indexer.get();
-        AsHandler next = valuer;
+        AsRunner next = valuer;
         for (int curr; ; ) {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == Constants.DOT) {
@@ -123,13 +123,13 @@ final class ParseGetter {
      * @return
      */
     final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len) {
-        AsHandler handler = ParseCore.parse(chars, indexer, len, Constants.FANG_RIGHT);
+        AsRunner handler = ParseCore.parse(chars, indexer, len, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
     }
 
     /**
-     * 参考{@link ParseCore#core(char[], IntAccessor, int, int, LinkedList, LinkedList, AsHandler)}
+     * 参考{@link ParseCore#core(char[], IntAccessor, int, int, LinkedList, LinkedList, AsRunner)}
      * case FANG_LEFT: 的详细步骤
      *
      * @param chars
@@ -138,19 +138,19 @@ final class ParseGetter {
      * @param prevHandler
      * @return
      */
-    private final static AsHandler parseFangToComplex(char[] chars, IntAccessor indexer, int len, AsHandler prevHandler) {
-        AsHandler handler = ParseGetter.parseFang(chars, indexer, len);
+    private final static AsRunner parseFangToComplex(char[] chars, IntAccessor indexer, int len, AsRunner prevHandler) {
+        AsRunner handler = ParseGetter.parseFang(chars, indexer, len);
         ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
         return ((DataGetterFang) handler).toComplex(prevHandler);
     }
 
-    final static AsHandler parseYuan(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len) {
         return ParseCore.parse(chars, indexer, len, Constants.YUAN_RIGHT);
     }
 
-    final static AsHandler parseCaller(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parseCaller(char[] chars, IntAccessor indexer, int len) {
         int curr = chars[indexer.get()];
-        AsHandler handler;
+        AsRunner handler;
         if (curr == Constants.CALLER) {
             // 为自定义静态类留位置，调用方式是两个‘@’：@@CustomType.method()
             throw new UnsupportedOperationException("@@");

@@ -22,10 +22,11 @@ abstract class DataConst<T> implements AsConst {
         return CACHE.get(key);
     }
 
-    protected final static void putValue(Object key, AsConst value) {
+    protected final static AsConst putValue(Object key, AsConst value) {
         try {
             LOCK.lock();
             CACHE.put(key, value);
+            return value;
         } finally {
             LOCK.unlock();
         }
@@ -38,7 +39,7 @@ abstract class DataConst<T> implements AsConst {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         return value;
     }
 
@@ -107,7 +108,7 @@ abstract class DataConst<T> implements AsConst {
 
     public static final AsConst getOpposite(DataConst data) {
         BooleanUtil.requireTrue(data instanceof DataConstNumber);
-        Number num = (Number) data.use(), value;
+        Number num = (Number) data.run(), value;
         if (num instanceof Double || num instanceof Float) {
             value = -num.doubleValue();
         } else if (num instanceof Long) {

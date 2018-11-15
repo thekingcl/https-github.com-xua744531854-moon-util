@@ -33,9 +33,9 @@ class DataGetterComplex implements AsGetter {
     }
 
     @Override
-    public Object use(Object data) {
-        Object prevData = beforeItem.use(data);
-        Object afterData = afterItem.use(data);
+    public Object run(Object data) {
+        Object prevData = beforeItem.run(data);
+        Object afterData = afterItem.run(data);
         IGetter getter = this.getter;
         if (getter == null) {
             this.getter = getter = IGetter.reset(prevData, afterData);

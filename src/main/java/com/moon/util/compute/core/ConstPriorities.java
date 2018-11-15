@@ -30,4 +30,6 @@ final class ConstPriorities {
     final static int LT = 3;
     final static int GT_OR_EQ = 3;
     final static int LT_OR_EQ = 3;
+
+    final static int MAX = 99;
 }

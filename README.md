@@ -16,7 +16,10 @@
 - 等。
 
 ### RunnerUtil:
-此类是用于运行一个字符串表达式（如：1+1，2+5 等）的工具类，经过大约两个星期的实现，目前包括以下数据类型和运算
+此类是用于运行一个字符串表达式（如：1+1，2+5 等）的工具类，
+语法上较大程度参考了 JavaScript 语法，如在表达一个对象时，键名不用像 JSON 文件那样必须加双引号，
+也舍弃 Java 内多数用 “${/*..*/}” 取值的语法，详情下面介绍，
+经过大约两个星期的实现，目前包括以下数据类型和运算
 
 #### 数据类型
 - 关键字：null、true、false；（boolean 型数据）
@@ -144,21 +147,21 @@
 <br>// 可用指定 sheet 名，由 [RunnerUtil](#RunnerUtil) 运行，单引号包裹的才是字符串
 <br>  @TableSheet(sheetName = "'新建 Sheet 页'", value = {
 <br>// 相对 html 的 table，sheet 可认为有无限列，所以下一行不会“自动换行”，需要手动“跳过”行
-<br>-   @TableRow(skipRows = "0", value = {
-<br>-     @TableCell("'序号'"),
-<br>-     @TableCell("'姓名'"),
-<br>-     @TableCell("'年龄'"),
-<br>-     @TableCell("'性别'"),
-<br>-     @TableCell("'地址'"),
-<br>-   }),
-<br>-   @TableRow(var = "$var in 100", {
-<br>-     @TableCell("$var + 1"),
-<br>-     @TableCell("'张三'"),
-<br>-     @TableCell("'25'"),
-<br>-     @TableCell("'男'"),
-<br>-     @TableCell("'杭州西湖美景'", when="!$isFirst"),//不生成第一行最后一个cell
-<br>-   }),
-<br>- })
+<br>   @TableRow(skipRows = "0", value = {
+<br>     @TableCell("'序号'"),
+<br>     @TableCell("'姓名'"),
+<br>     @TableCell("'年龄'"),
+<br>     @TableCell("'性别'"),
+<br>     @TableCell("'地址'"),
+<br>   }),
+<br>   @TableRow(var = "$var in 100", {
+<br>     @TableCell("$var + 1"),
+<br>     @TableCell("'张三'"),
+<br>     @TableCell("'25'"),
+<br>     @TableCell("'男'"),
+<br>     @TableCell("'杭州西湖美景'", when="!$isFirst"),//不生成第一行最后一个cell
+<br>   }),
+<br> })
 <br>})
 <br>public Workbook exportExcel(Object data){
 <br>  return ExcelUtil.render();// 运行将生成一个包含一行标题，共 100 行数据的 Workbook 文档，然后可进行进一步操作
@@ -174,10 +177,10 @@ var 有以下表示方式：
 2. var = "$varName = expression"; 这个表达式表示用 expression 代表的表达式从上层作用域取得对应的值，并命别名为 $varName，供下层作用域使用，相当于声明一个变量；
 3. var = "$varName in 100"; 这是用了 in 表达式，代表一个迭代器，可迭代以下数据：Iterable、Iterator、String、int、Map、数组、JavaBean 按字段迭代；
 4. var = "$varName:100";这儿将 in 替换成了英文冒号，实际上作用完全一样，只是 in 的两端需要各有一个空格；
-通常 Iterator 可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
+通常 Iterator （迭代器模式）可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
 5. var = "($item, $key, $index, $size, $isFirst, $isLase) in collectExpression";可获取迭代项、键名、索引、size、是否第一项、是否最后一项
 - 下面列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
-150 万行以上就不能用 xls 格式了，500 万行以上建议 TableExcel 的 type 值为 SUPER；
+150 万行以上不建议能用 xls 格式了（180 万行直接 OOM），500 万行以上 TableExcel 的 type 值应为 SUPER；
 
 |行数（万行）|生成数据耗时（ms）|write到文件耗时（ms）|总耗时（ms）|
 |-----------:|-----------------:|--------------------:|-----------:|
@@ -191,7 +194,9 @@ var 有以下表示方式：
 | 8000 | 528,654 | 498,490 | 1,027,144 |
 
 从上面的数据看出，数据量和时间呈正相关性，接近线性关系，100 万行数据生成数据耗时 6s，总耗时 12s，
-大多数业务场景下可以做到“瞬间”生成表格，没有太明显的延迟，还是可以接受的！哈哈哈哈.
+绝大多数业务场景下可以做到“瞬间”生成表格，没有太明显的延迟，还是可以接受的！哈哈哈哈.
 
 更多功能：
 - 可以为 TableCell 指定合并行列（用 colspan、rowspan 属性，注意只能返回数字）
+
+一点坑：估计是 poi 的问题，前段时间在导出 100 列，105 万行 excel 时，打开文件只有 105 行，列数少的条件下，不会出现数据缺失。

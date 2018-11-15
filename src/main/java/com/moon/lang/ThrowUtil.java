@@ -1,5 +1,7 @@
 package com.moon.lang;
 
+import com.moon.exception.WrappedException;
+
 /**
  * @author benshaoye
  * @date 2018/9/11
@@ -12,14 +14,6 @@ public final class ThrowUtil {
 
     public static <T> T throwRuntime() {
         throw new IllegalArgumentException();
-    }
-
-    public static <T> T throwRuntime(String msg) {
-        if (msg == null) {
-            throw new IllegalArgumentException();
-        } else {
-            throw new IllegalArgumentException(msg);
-        }
     }
 
     public static <T> T throwRuntime(Object reason) {
@@ -51,15 +45,62 @@ public final class ThrowUtil {
         throw new IllegalArgumentException(msg, e);
     }
 
-    public static <EX extends Throwable> EX getCause(Throwable t, Class<EX> type) {
-        Throwable able = t;
-        while (!type.isInstance(able)) {
-            able = able.getCause();
-            if (able == null) {
+    /**
+     * 忽略指定类型异常
+     *
+     * @param t
+     * @param type
+     * @param <T>
+     * @param <EX>
+     * @return
+     */
+    public final static <T, EX extends Throwable> T ignoreAssignException(Throwable t, Class<EX> type) {
+        if (type.isInstance(t)) {
+            return null;
+        }
+        throw new WrappedException(t);
+    }
+
+    /**
+     * 忽略包含指定类型 cause 的异常，否则抛出异常
+     *
+     * @param t
+     * @param type
+     * @param <T>
+     * @param <EX>
+     * @return
+     */
+    public final static <T, EX extends Throwable> T ignoreAssignExceptionOfCause(Throwable t, Class<EX> type) {
+        for (Throwable ex = t; ex != null; ex = ex.getCause()) {
+            if (type.isInstance(ex)) {
                 return null;
             }
         }
-        return (EX) able;
+        throw new WrappedException(t);
+    }
+
+    /**
+     * 忽略自身或 cause 中包含指定方法抛出的异常，否则抛出异常
+     *
+     * @param t
+     * @param targetClass
+     * @param methodName
+     * @param <T>
+     * @return
+     */
+    public final static <T> T ignoreAssignPosition(Throwable t, Class targetClass, String methodName) {
+        String name = targetClass.getName();
+        StackTraceElement element;
+        for (Throwable th = t; th != null; th = th.getCause()) {
+            StackTraceElement[] elements = th.getStackTrace();
+            for (int i = 0; i < elements.length; i++) {
+                element = elements[i];
+                if (name.equals(element.getClassName()) && methodName.equals(element.getMethodName())) {
+                    return null;
+                }
+            }
+        }
+        throw new WrappedException(t);
     }
 
     /**

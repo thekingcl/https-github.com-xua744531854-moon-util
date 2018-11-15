@@ -13,8 +13,8 @@ final class ParseOpposite {
         noInstanceError();
     }
 
-    final static AsHandler parse(char[] chars, IntAccessor indexer, int len) {
-        AsHandler handler, linked;
+    final static AsRunner parse(char[] chars, IntAccessor indexer, int len) {
+        AsRunner handler, linked;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case YUAN_LEFT:

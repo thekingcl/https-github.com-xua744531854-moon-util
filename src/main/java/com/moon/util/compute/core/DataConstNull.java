@@ -23,7 +23,7 @@ enum DataConstNull implements AsConst {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         return null;
     }
 }

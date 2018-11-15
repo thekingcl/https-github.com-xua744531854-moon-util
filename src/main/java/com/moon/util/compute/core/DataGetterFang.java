@@ -14,7 +14,7 @@ final class DataGetterFang implements AsGetter {
         this.valuer = valuer;
     }
 
-    AsHandler toComplex(AsHandler beforeValuer) {
+    AsRunner toComplex(AsRunner beforeValuer) {
         return new DataGetterComplex((AsValuer) beforeValuer, this.valuer);
     }
 
@@ -28,8 +28,8 @@ final class DataGetterFang implements AsGetter {
     }
 
     @Override
-    public Object use(Object data) {
-        Object innerData = valuer.use(data);
+    public Object run(Object data) {
+        Object innerData = valuer.run(data);
         Object result = getGetter(data, innerData).apply(data, innerData);
         return result;
     }

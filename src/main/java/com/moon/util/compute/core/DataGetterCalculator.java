@@ -9,14 +9,14 @@ import java.util.List;
  * @author benshaoye
  */
 class DataGetterCalculator implements AsGetter {
-    final AsHandler[] handlers;
+    final AsRunner[] handlers;
 
-    private DataGetterCalculator(List<AsHandler> handlers) {
-        this.handlers = handlers.toArray(new AsHandler[handlers.size()]);
+    private DataGetterCalculator(List<AsRunner> handlers) {
+        this.handlers = handlers.toArray(new AsRunner[handlers.size()]);
     }
 
-    final static AsHandler valueOf(List<AsHandler> handlers) {
-        AsHandler handler;
+    final static AsRunner valueOf(List<AsRunner> handlers) {
+        AsRunner handler;
         int size = handlers.size();
         if (size == 0) {
             return DataConst.NULL;
@@ -25,25 +25,25 @@ class DataGetterCalculator implements AsGetter {
             return handler;
         }
         DataGetterCalculator calculator = new DataGetterCalculator(handlers);
-        for (AsHandler current : handlers) {
+        for (AsRunner current : handlers) {
             if (current.isValuer() && !current.isConst()) {
                 return calculator;
             }
         }
-        return DataConst.get(calculator.use());
+        return DataConst.get(calculator.run());
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         return use1(data);
     }
 
     private Object use1(Object data) {
-        Deque<AsHandler> result = new LinkedList();
-        AsHandler[] handlers = this.handlers;
+        Deque<AsRunner> result = new LinkedList();
+        AsRunner[] handlers = this.handlers;
         final int length = handlers.length;
-        AsHandler right, left;
-        AsHandler operator;
+        AsRunner right, left;
+        AsRunner operator;
         for (int i = 0; i < length; i++) {
             operator = handlers[i];
             if (operator.isValuer()) {
@@ -62,19 +62,19 @@ class DataGetterCalculator implements AsGetter {
                 );
             }
         }
-        return result.pollFirst().use();
+        return result.pollFirst().run();
     }
 
     private Object use0(Object data) {
-        AsHandler[] handlers = this.handlers;
+        AsRunner[] handlers = this.handlers;
         final int length = handlers.length;
         Deque result = new LinkedList();
-        AsHandler operator;
+        AsRunner operator;
         Object right, left;
         for (int i = 0; i < length; i++) {
             operator = handlers[i];
             if (operator.isValuer()) {
-                result.offerFirst(operator.use(data));
+                result.offerFirst(operator.run(data));
             } else if (operator.isHandler()) {
                 right = result.pollFirst();
                 left = result.pollFirst();

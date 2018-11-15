@@ -1,6 +1,7 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.StringUtil;
+import com.moon.lang.ref.ReferenceUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,10 +18,10 @@ final class ParseDelimiters {
         noInstanceError();
     }
 
-    private final static Map<String, AsHandler> CACHE = new HashMap<>();
+    private final static Map<String, AsRunner> CACHE = ReferenceUtil.manageMap();
 
-    final static AsHandler parse(String expression, String[] delimiters) {
-        AsHandler parsed = CACHE.get(expression);
+    final static AsRunner parse(String expression, String[] delimiters) {
+        AsRunner parsed = CACHE.get(expression);
         if (parsed == null) {
             parsed = parseCore(expression, delimiters);
             synchronized (CACHE) {
@@ -32,7 +33,7 @@ final class ParseDelimiters {
         return parsed;
     }
 
-    private static AsHandler parseCore(String expression, String[] delimiters) {
+    private static AsRunner parseCore(String expression, String[] delimiters) {
         String begin = StringUtil.requireNotBlank(delimiters[0]);
         String ender = StringUtil.requireNotBlank(delimiters[1]);
         final int length = expression.length(),
@@ -44,7 +45,7 @@ final class ParseDelimiters {
         } else if (from < 0) {
             return DataConst.get(expression);
         } else {
-            List<AsHandler> list = new ArrayList<>();
+            List<AsRunner> list = new ArrayList<>();
             for (; from > 0; ) {
                 if (from > one) {
                     list.add(DataConst.get(expression.substring(one, from)));
@@ -62,32 +63,34 @@ final class ParseDelimiters {
             if ((size = list.size()) == 0) {
                 return DataConst.get(null);
             } else {
-                AsHandler[] arr = list.toArray(new AsHandler[size]);
-                AsHandler handler = new ParseRunAsHandler(arr);
-                for (AsHandler current : arr) {
+                AsRunner[] arr = list.toArray(new AsRunner[size]);
+                AsRunner handler = new ParseRunAsHandler(arr);
+                for (AsRunner current : arr) {
                     if (!current.isConst()) {
                         return handler;
                     }
                 }
-                return DataConst.get(handler.use());
+                return DataConst.get(handler.run());
             }
         }
     }
 
     private static class ParseRunAsHandler implements AsGetter {
-        final AsHandler[] getters;
+        final AsRunner[] getters;
 
-        private ParseRunAsHandler(AsHandler[] getters) {
+        private ParseRunAsHandler(AsRunner[] getters) {
             this.getters = getters;
         }
 
         @Override
-        public Object use(Object data) {
-            AsHandler[] getters = this.getters;
+        public Object run(Object data) {
+            AsRunner[] getters = this.getters;
             int length = getters.length;
             StringBuilder builder = new StringBuilder(length * 16);
+            Object item;
             for (int i = 0; i < length; i++) {
-                builder.append(getters[i].use(data));
+                item = getters[i].run(data);
+                builder.append(item);
             }
             return builder.toString();
         }

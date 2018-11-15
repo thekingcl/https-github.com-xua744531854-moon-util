@@ -3,6 +3,7 @@ package com.moon.util.compute;
 import com.moon.lang.ClassUtil;
 import com.moon.lang.DoubleUtil;
 import com.moon.lang.reflect.MethodUtil;
+import com.moon.script.ScriptUtil;
 import com.moon.util.Console;
 import com.moon.util.DateUtil;
 import com.moon.util.ListUtil;
@@ -10,6 +11,8 @@ import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -178,10 +181,43 @@ class RunnerUtilTestTest {
         //res = RunnerUtil.run("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
 
         assertions.assertSame(String.class.getPackage(), Class.class.getPackage());
-        data = new HashMap(){{
-            put("arr", new Object[]{1,2,3});
+        data = new HashMap() {{
+            put("arr", new Object[]{1, 2, 3});
         }};
         res = RunnerUtil.run("arr.length", data);
         System.out.println(res);
+    }
+
+    @Test
+    void testRunningTimes() throws ScriptException {
+        ScriptEngine engine = ScriptUtil.newJSEngine();
+        System.out.println(engine.eval("1+1"));
+        System.out.println(RunnerUtil.run("1+1"));
+        Runner runner = RunnerUtil.parse("1+1");
+
+        int count = 1000000000;
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            res = engine.eval("1+1");
+        }
+        Console.out.timeNext();
+        for (int i = 0; i < count; i++) {
+            res = RunnerUtil.run("1+1");
+        }
+        Console.out.timeNext();
+        for (int i = 0; i < count; i++) {
+            res = runner.run();
+        }
+        Console.out.timeNext();
+        for (int i = 0; i < count; i++) {
+            res = 1 + 1;
+        }
+        Console.out.timeEnd();
+    }
+
+    @Test
+    void testParseToRunner() {
+        Runner runner = RunnerUtil.parse("1+1");
+        res = runner.run();
     }
 }

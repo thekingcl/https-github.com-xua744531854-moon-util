@@ -56,7 +56,7 @@ class MethodUtilTestTest {
         assertions.assertEquals(m.getName(), name);
         assertions.assertEquals(m.getDeclaringClass(), Object.class);
 
-        name = "use";
+        name = "run";
         m = MethodUtil.getPublicMethod(type, name);
         assertions.assertNotNull(m);
         assertions.assertEquals(m.getName(), name);

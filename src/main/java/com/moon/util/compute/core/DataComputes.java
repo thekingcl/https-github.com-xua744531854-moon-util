@@ -6,32 +6,10 @@ import java.util.Objects;
  * @author benshaoye
  */
 enum DataComputes implements AsCompute {
-    YUAN_LEFT(10) {
-        /**
-         * 计算得到一个值
-         *
-         * @param o1  运算符左值
-         * @param o2 右值
-         * @return
-         */
-        @Override
-        public Object handle(Object o2, Object o1) {
-            throw new UnsupportedOperationException();
-        }
-
-        /**
-         * 计算
-         *
-         * @param left
-         * @param right
-         * @param data
-         * @return
-         */
-        @Override
-        public Object handle(AsHandler left, AsHandler right, Object data) {
-            throw new UnsupportedOperationException();
-        }
-    },
+    /**
+     * 这个符号仅用于提升优先级的标记，没有计算意义
+     */
+    YUAN_LEFT(ConstPriorities.MAX),
 
     BIT_LEFT(ConstPriorities.BIT_LEFT) {
         @Override
@@ -68,7 +46,7 @@ enum DataComputes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 instanceof Number && o2 instanceof Number) {
-                if (o1 instanceof Integer && o2 instanceof Integer){
+                if (o1 instanceof Integer && o2 instanceof Integer) {
                     return ((Number) o1).intValue() + ((Number) o2).intValue();
                 }
                 return ((Number) o1).doubleValue() + ((Number) o2).doubleValue();
@@ -127,8 +105,6 @@ enum DataComputes implements AsCompute {
     AND(ConstPriorities.AND) {
         @Override
         public Object handle(Object o2, Object o1) {
-            // return Boolean.valueOf(((Boolean) o1).booleanValue() && ((Boolean) o2).booleanValue());
-
             throw new UnsupportedOperationException();
         }
 
@@ -141,15 +117,13 @@ enum DataComputes implements AsCompute {
          * @return
          */
         @Override
-        public Object handle(AsHandler right, AsHandler left, Object data) {
-            return (Boolean) left.use(data) && (Boolean) right.use(data);
+        public Object handle(AsRunner right, AsRunner left, Object data) {
+            return (Boolean) left.run(data) && (Boolean) right.run(data);
         }
     },
     OR(ConstPriorities.OR) {
         @Override
         public Object handle(Object o2, Object o1) {
-            // return Boolean.valueOf(((Boolean) o1).booleanValue() || ((Boolean) o2).booleanValue());
-
             throw new UnsupportedOperationException();
         }
 
@@ -162,8 +136,8 @@ enum DataComputes implements AsCompute {
          * @return
          */
         @Override
-        public Object handle(AsHandler right, AsHandler left, Object data) {
-            return (Boolean) left.use(data) || (Boolean) right.use(data);
+        public Object handle(AsRunner right, AsRunner left, Object data) {
+            return (Boolean) left.run(data) || (Boolean) right.run(data);
         }
     },
     EQ(ConstPriorities.EQ) {
@@ -176,10 +150,10 @@ enum DataComputes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
-                return false;
+                return Boolean.FALSE;
             }
             if (o2 == null) {
-                return true;
+                return Boolean.TRUE;
             }
             return ((Comparable) o1).compareTo(o2) > 0;
         }
@@ -188,10 +162,10 @@ enum DataComputes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
-                return false;
+                return Boolean.FALSE;
             }
             if (o1 == null) {
-                return true;
+                return Boolean.TRUE;
             }
             return ((Comparable) o1).compareTo(o2) < 0;
         }
@@ -200,10 +174,10 @@ enum DataComputes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
-                return true;
+                return Boolean.TRUE;
             }
             if (o1 == null) {
-                return false;
+                return Boolean.FALSE;
             }
             return ((Comparable) o1).compareTo(o2) >= 0;
         }
@@ -212,14 +186,14 @@ enum DataComputes implements AsCompute {
         @Override
         public Object handle(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
-                return true;
+                return Boolean.TRUE;
             }
             if (o2 == null) {
-                return false;
+                return Boolean.FALSE;
             }
             return ((Comparable) o1).compareTo(o2) <= 0;
         }
-    },;
+    };
 
     private final int priority;
 

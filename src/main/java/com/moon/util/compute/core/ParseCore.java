@@ -1,8 +1,8 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
+import com.moon.lang.ref.ReferenceUtil;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.IntPredicate;
@@ -22,10 +22,10 @@ class ParseCore {
         noInstanceError();
     }
 
-    private final static Map<String, AsHandler> CACHE = new HashMap<>();
+    private final static Map<String, AsRunner> CACHE = ReferenceUtil.manageMap();
 
-    final static AsHandler parse(String expression) {
-        AsHandler handler = CACHE.get(expression);
+    final static AsRunner parse(String expression) {
+        AsRunner handler = CACHE.get(expression);
         if (handler == null) {
             if (expression == null) {
                 handler = DataConst.NULL;
@@ -42,29 +42,29 @@ class ParseCore {
         return handler;
     }
 
-    final static AsHandler parse(
+    final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len
     ) {
         return parse(chars, indexer, len, -1);
     }
 
-    final static AsHandler parse(
+    final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len, int end
     ) {
         return parse(chars, indexer, len, end, -1);
     }
 
-    final static AsHandler parse(
+    final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len, int end0, int end1
     ) {
         return parse(chars, indexer, len, end0, end1, IntTesters.FALSE);
     }
 
-    final static AsHandler parse(
+    final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len, int end0, int end1, IntPredicate tester
     ) {
-        AsHandler handler = null;
-        LinkedList<AsHandler> values = new LinkedList<>(), methods = new LinkedList();
+        AsRunner handler = null;
+        LinkedList<AsRunner> values = new LinkedList<>(), methods = new LinkedList();
         for (int curr; indexer.get() < len; ) {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == end0 || curr == end1 || tester.test(curr)) {
@@ -78,11 +78,11 @@ class ParseCore {
         return DataGetterCalculator.valueOf(cleanMethodsTo(values, methods, null));
     }
 
-    private final static AsHandler core(
+    private final static AsRunner core(
         char[] chars, IntAccessor indexer, int len, int curr,
-        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, AsHandler prevHandler
+        LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsRunner prevHandler
     ) {
-        AsHandler handler;
+        AsRunner handler;
         if (ParseUtil.isStr(curr)) {
             values.add(handler = ParseConst.parseStr(chars, indexer, curr));
         } else if (ParseUtil.isNum(curr)) {
@@ -193,7 +193,7 @@ class ParseCore {
 
     private final static AsCompute toGtLtAndOr(
         char[] chars, IntAccessor indexer,
-        LinkedList<AsHandler> values, LinkedList<AsHandler> methods,
+        LinkedList<AsRunner> values, LinkedList<AsRunner> methods,
         int testTarget, DataComputes matchType, DataComputes defaultType
     ) {
         DataComputes type;
@@ -207,9 +207,9 @@ class ParseCore {
     }
 
     private final static AsCompute compareAndSwapSymbol(
-        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, AsCompute computer
+        LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsCompute computer
     ) {
-        AsHandler prev = methods.peekFirst();
+        AsRunner prev = methods.peekFirst();
         int currPriority = computer.getPriority();
         if (isBoundary(prev) || currPriority > prev.getPriority()) {
             methods.offerFirst(computer);
@@ -227,21 +227,21 @@ class ParseCore {
     }
 
 
-    private final static LinkedList<AsHandler> cleanMethodsTo(
-        LinkedList<AsHandler> values, LinkedList<AsHandler> methods, Object end
+    private final static LinkedList<AsRunner> cleanMethodsTo(
+        LinkedList<AsRunner> values, LinkedList<AsRunner> methods, Object end
     ) {
-        AsHandler computer;
+        AsRunner computer;
         while ((computer = methods.pollFirst()) != end && computer != null) {
             values.add(computer);
         }
         return values;
     }
 
-    private final static boolean isBoundary(AsHandler computer) {
+    private final static boolean isBoundary(AsRunner computer) {
         return computer == null || computer == DataComputes.YUAN_LEFT;
     }
 
-    private final static boolean isNotBoundary(AsHandler computer) {
+    private final static boolean isNotBoundary(AsRunner computer) {
         return !isBoundary(computer);
     }
 }

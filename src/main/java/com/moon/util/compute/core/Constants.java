@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-class Constants {
+final class Constants {
 
     final static char PLUS = '+';
     final static char MINUS = '-';

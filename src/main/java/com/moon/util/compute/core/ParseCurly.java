@@ -17,9 +17,9 @@ final class ParseCurly {
         noInstanceError();
     }
 
-    final static AsHandler parse(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parse(char[] chars, IntAccessor indexer, int len) {
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
-        AsHandler handler = tryEmpty(chars, indexer, len, curr);
+        AsRunner handler = tryEmpty(chars, indexer, len, curr);
         if (handler == null) {
             LinkedList<BiConsumer> creators = new LinkedList<>();
             CreateType type = getType(chars, indexer, len, curr);
@@ -30,11 +30,11 @@ final class ParseCurly {
         return handler;
     }
 
-    private final static AsHandler parseList(
+    private final static AsRunner parseList(
         char[] chars, IntAccessor indexer, int len, int curr,
         final LinkedList<BiConsumer> creators
     ) {
-        AsHandler valuer;
+        AsRunner valuer;
         outer:
         for (int next = curr; ; ) {
             inner:
@@ -63,23 +63,23 @@ final class ParseCurly {
 
     private static class ListAdder implements BiConsumer<List, Object> {
 
-        final AsHandler valuer;
+        final AsRunner valuer;
 
-        private ListAdder(AsHandler valuer) {
+        private ListAdder(AsRunner valuer) {
             this.valuer = valuer == null ? DataConst.NULL : valuer;
         }
 
         @Override
         public void accept(List list, Object data) {
-            list.add(valuer.use(data));
+            list.add(valuer.run(data));
         }
     }
 
-    private final static AsHandler parseMap(
+    private final static AsRunner parseMap(
         char[] chars, IntAccessor indexer, int len, int curr,
         final LinkedList<BiConsumer> creators
     ) {
-        AsHandler key;
+        AsRunner key;
         for (int next = curr, index; ; ) {
             switch (next) {
                 case HUA_RIGHT:
@@ -128,16 +128,16 @@ final class ParseCurly {
 
     private static class MapPutter implements BiConsumer<Map, Object> {
         final AsConst key;
-        final AsHandler valuer;
+        final AsRunner valuer;
 
-        private MapPutter(AsConst key, AsHandler valuer) {
+        private MapPutter(AsConst key, AsRunner valuer) {
             this.key = key;
             this.valuer = valuer;
         }
 
         @Override
         public void accept(Map map, Object data) {
-            map.put(key.use(), valuer.use(data));
+            map.put(key.run(), valuer.run(data));
         }
     }
 
@@ -187,7 +187,7 @@ final class ParseCurly {
         return ParseUtil.skipWhitespaces(chars, indexer, len) == COLON ? CreateType.MAP : CreateType.LIST;
     }
 
-    private final static AsHandler tryEmpty(char[] chars, IntAccessor indexer, int len, int curr) {
+    private final static AsRunner tryEmpty(char[] chars, IntAccessor indexer, int len, int curr) {
         if (curr == COLON) {
             int next = ParseUtil.skipWhitespaces(chars, indexer, len);
             ParseUtil.assertTrue(next == HUA_RIGHT, chars, indexer);
@@ -221,7 +221,7 @@ final class ParseCurly {
             }
 
             @Override
-            public Object use(Object data) {
+            public Object run(Object data) {
                 return get();
             }
         },
@@ -237,7 +237,7 @@ final class ParseCurly {
             }
 
             @Override
-            public Object use(Object data) {
+            public Object run(Object data) {
                 return get();
             }
         }

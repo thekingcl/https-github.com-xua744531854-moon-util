@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-interface AsCompute extends AsHandler {
+interface AsCompute extends AsRunner {
     /**
      * 计算器
      *
@@ -23,7 +23,7 @@ interface AsCompute extends AsHandler {
      * @return
      */
     @Override
-    default Object handle(AsHandler right, AsHandler left, Object data) {
-        return handle(right.use(data), left.use(data));
+    default Object handle(AsRunner right, AsRunner left, Object data) {
+        return handle(right.run(data), left.run(data));
     }
 }

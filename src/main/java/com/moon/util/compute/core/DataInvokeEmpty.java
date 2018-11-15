@@ -12,7 +12,7 @@ final class DataInvokeEmpty extends DataInvokeBase {
     }
 
     @Override
-    public Object use(Object data) {
+    public Object run(Object data) {
         return MethodUtil.invoke(true, getMethod(data), data);
     }
 }

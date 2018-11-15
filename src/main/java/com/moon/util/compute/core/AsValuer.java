@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-interface AsValuer extends AsHandler {
+interface AsValuer extends AsRunner {
     /**
      * 取值器
      *
@@ -22,7 +22,7 @@ interface AsValuer extends AsHandler {
      * @return
      */
     @Override
-    default Object handle(AsHandler left, AsHandler right, Object data) {
+    default Object handle(AsRunner left, AsRunner right, Object data) {
         throw new UnsupportedOperationException();
     }
 }

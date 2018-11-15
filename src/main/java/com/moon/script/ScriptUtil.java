@@ -18,20 +18,22 @@ public final class ScriptUtil {
     }
 
     public final static Object runJSCode(String code) {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
         try {
-            return engine.eval(code);
+            return newJSEngine().eval(code);
         } catch (ScriptException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
     public final static Object runJSFile(File js) {
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
         try {
-            return engine.eval(IOUtil.getBufferedReader(js));
+            return newJSEngine().eval(IOUtil.getBufferedReader(js));
         } catch (ScriptException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    public final static ScriptEngine newJSEngine() {
+        return new ScriptEngineManager().getEngineByName("JavaScript");
     }
 }

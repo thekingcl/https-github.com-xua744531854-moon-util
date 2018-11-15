@@ -5,15 +5,15 @@ package com.moon.util.compute.core;
  */
 final class DataGetterNot implements AsGetter {
 
-    final AsHandler valuer;
+    final AsRunner valuer;
 
-    DataGetterNot(AsHandler valuer) {
+    DataGetterNot(AsRunner valuer) {
         this.valuer = valuer;
     }
 
     @Override
-    public Object use(Object data) {
-        return !((Boolean) valuer.use(data)).booleanValue();
+    public Object run(Object data) {
+        return !((Boolean) valuer.run(data)).booleanValue();
     }
 
     /**

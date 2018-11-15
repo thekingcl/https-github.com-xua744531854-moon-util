@@ -3,6 +3,7 @@ package com.moon.util.compute.core;
 import com.moon.lang.CharUtil;
 import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.Runner;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.DOUBLE_QUOTE;
@@ -37,20 +38,6 @@ public class ParseUtil {
 
     final static boolean isStr(int value) {
         return value == SINGLE_QUOTE || value == DOUBLE_QUOTE;
-    }
-
-    /*
-     * -----------------------------------------------
-     * tools
-     * -----------------------------------------------
-     */
-
-    final static void setIndexer(IntAccessor indexer, int index, int len) {
-        indexer.set(index < len ? index : len);
-    }
-
-    final static String toStr(char[] chars, int len) {
-        return new String(chars, 0, len);
     }
 
     /**
@@ -96,26 +83,11 @@ public class ParseUtil {
      * -----------------------------------------------
      */
 
-    /**
-     * 解析运行一个字符串表达式的入口方法
-     *
-     * @param expression
-     * @param data
-     * @return
-     */
-    protected final static Object run0(String expression, Object data) {
-        return ParseCore.parse(expression).use(data);
+    public final static Runner parse(String expression) {
+        return ParseCore.parse(expression);
     }
 
-    /**
-     * 解析运行一个包含字符串表达式的入口方法
-     *
-     * @param expression
-     * @param delimiters 指定分隔符
-     * @param data       如表达式中有变量，变量则从 data 中读取值
-     * @return 返回运行结果
-     */
-    protected final static Object parseRun0(String expression, String[] delimiters, Object data) {
-        return ParseDelimiters.parse(expression, delimiters).use(data);
+    public final static Runner parse(String expression, String[] delimiters) {
+        return ParseDelimiters.parse(expression, delimiters);
     }
 }

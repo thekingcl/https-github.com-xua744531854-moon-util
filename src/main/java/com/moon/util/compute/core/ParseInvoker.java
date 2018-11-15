@@ -1,6 +1,5 @@
 package com.moon.util.compute.core;
 
-import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
 import com.moon.lang.reflect.FieldUtil;
 
@@ -28,7 +27,7 @@ final class ParseInvoker {
 
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
-    final static AsHandler tryParseInvoker(
+    final static AsRunner tryParseInvoker(
         char[] chars, IntAccessor indexer, int len, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
@@ -48,10 +47,10 @@ final class ParseInvoker {
         }
     }
 
-    /*
+    /**
      * 带有参数的方法调用
      */
-    private final static AsHandler parseHasParams(
+    private final static AsRunner parseHasParams(
         char[] chars, IntAccessor indexer, int len,
         AsValuer prev, String name, boolean isStatic
     ) {
@@ -65,10 +64,10 @@ final class ParseInvoker {
         }
     }
 
-    /*
+    /**
      * 多参数调用的方法
      */
-    private final static AsHandler parseMultiParamCaller(
+    private final static AsRunner parseMultiParamCaller(
         List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
     ) {
         if (isStatic) {
@@ -79,10 +78,10 @@ final class ParseInvoker {
         throw new UnsupportedOperationException();
     }
 
-    /*
+    /**
      * 带有一个参数的方法
      */
-    private final static AsHandler parseOnlyParamCaller(
+    private final static AsRunner parseOnlyParamCaller(
         List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
     ) {
         if (isStatic) {
@@ -95,10 +94,10 @@ final class ParseInvoker {
         }
     }
 
-    /*
+    /**
      * 无参方法调用
      */
-    private final static AsHandler parseNoneParams(
+    private final static AsRunner parseNoneParams(
         AsValuer prev, String name, boolean isStatic
     ) {
         if (isStatic) {
@@ -112,7 +111,7 @@ final class ParseInvoker {
         }
     }
 
-    /*
+    /**
      * 尝试解析静态字段，如果不是静态字段调用返回 null
      */
     private final static AsValuer tryParseStaticField(

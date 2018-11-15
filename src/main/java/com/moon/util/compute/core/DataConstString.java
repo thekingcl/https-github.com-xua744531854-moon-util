@@ -16,8 +16,7 @@ class DataConstString extends DataConst {
     final static AsConst valueOf(String str) {
         AsConst CONST = getValue(str);
         if (CONST == null) {
-            CONST = new DataConstString(str);
-            putValue(str, CONST);
+            CONST = putValue(str, new DataConstString(str));
         }
         return CONST;
     }

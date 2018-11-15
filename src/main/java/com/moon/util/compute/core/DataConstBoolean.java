@@ -6,13 +6,13 @@ package com.moon.util.compute.core;
 enum DataConstBoolean implements AsConst {
     TRUE {
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             return Boolean.TRUE;
         }
     },
     FALSE {
         @Override
-        public Object use(Object data) {
+        public Object run(Object data) {
             return Boolean.FALSE;
         }
     };
