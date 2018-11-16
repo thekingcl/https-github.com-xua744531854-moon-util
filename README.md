@@ -214,6 +214,7 @@ RunnerUtil.run("@Objects.toString(25) "); // "25"
     @TableSheet(sheetName = "'人员信息'", value = {
       // 这里引入了作用域的概念，每一层都可以使用“var”定义一个自己单独的作用域
       // 同一级作用域互不影响，var 的声明方式一共有四种，在下面有详细介绍
+      // 根据 RunnerUtil 的语法，这儿声明的是一个 ArrayList
       @TableRow(var = "in = {'序号', '姓名', '性别', '年龄', '电话'}", value = {
         // 中间的“in”是一个迭代符号，由于灵感来自 JavaScript，故引入了 js 的迭代方式
         // 但是“in”并不是一个关键字，任然可作为普通变量使用
