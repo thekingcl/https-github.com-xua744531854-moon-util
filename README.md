@@ -253,7 +253,7 @@ RunnerUtil.run("@Objects.toString(25) "); // "25"
 TableRow 的 skipRows 属性默认是 0，可不写。注意这儿的 var 参数，在注解中引入的作用域的概念，sheet、row、cell 均有自己的作用域，
 下层作用域不影响上层作用域的数据，但是相同变量名下层作用域会优先于上层作用域。
 
-var 有以下表示方式：
+- var 有以下几种表示方式：
 1. var = "";  var = "   " 等，空白字符串，没有任何意义；
 2. var = "$varName = expression"; 这个表达式表示用 expression 代表的表达式从上层作用域取得对应的值，并命别名为 $varName，供下层作用域使用，相当于声明一个变量；
 3. var = "$varName in 100"; 这是用了 in 表达式，代表一个迭代器，可迭代以下数据：Iterable、Iterator、String、int、Map、数组、JavaBean 按字段迭代；
@@ -263,6 +263,9 @@ var 有以下表示方式：
 > 通常 Iterator （迭代器模式）可用于超大数据导出，int 可迭代对应次数，String 将认为是一个 char 字符数组进行迭代；
 
 5. var = "($item, $key, $index, $size, $isFirst, $isLast) in collectExpression";可获取迭代项、键名、索引、size、是否第一项、是否最后一项
+- 使用和效果示例：
+![https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png](https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png)
+![https://raw.githubusercontent.com/xua744531854/files/master/images/1542364910(1).png](https://raw.githubusercontent.com/xua744531854/files/master/images/1542364910(1).png)
 - 下面列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
 150 万行以上不建议能用 xls 格式了（180 万行直接 OOM），500 万行以上 TableExcel 的 type 值应为 SUPER；
 

@@ -2,6 +2,7 @@ package com.moon.office.excel;
 
 import com.moon.io.FileUtil;
 import com.moon.office.excel.core.*;
+import com.moon.office.excel.core.TableStyle;
 import com.moon.office.excel.enums.ValueType;
 import com.moon.util.Console;
 import com.moon.util.DateUtil;
@@ -161,31 +162,30 @@ class ExcelUtilTestTest {
         assertions.assertEquals(cell.getStringCellValue(), "张三");
     }
 
-    @TableExcel(value = {
-        @TableSheet(sheetName = "'企业订单追踪'", value = {
-            @TableRow(height = 600, value = {
-                @TableCell(colspan = "14", value = "'企业订单追踪表'", className = "align-center border-bottom")
-            }),
+    @TableExcel(styles = {
+        @TableStyle(className = "align-center", align = HorizontalAlignment.CENTER, verticalAlign = VerticalAlignment.CENTER)
+    }, value = {
+        @TableSheet(sheetName = "'企业订单追踪'", value = {//设置样式居中
+            @TableRow(height = 800, value = @TableCell(className = "align-center", colspan = "8", value = "'订单追踪'")),
             @TableRow(value = {
-                @TableCell(className = "align-center", value = "'序号'", rowspan = "2"),
-                @TableCell(className = "align-center", value = "'企业名称'", rowspan = "2"),
-                @TableCell(className = "align-center border-right", value = "'业务月份'", rowspan = "2"),
-                @TableCell(className = "align-center border-right", value = "'订单生成'", colspan = "3"),
-                @TableCell(className = "align-center border-right", value = "'付款&发票'", colspan = "4"),
-                @TableCell(className = "align-center border-right", value = "'分发&处理'", colspan = "3"),
-                @TableCell(className = "align-center", value = "'完成情况'", rowspan = "2"),
+                @TableCell(value = "'序号'", rowspan = "2", className = "align-center"),
+                @TableCell(value = "'企业名称'", rowspan = "2", className = "align-center"),
+                @TableCell(value = "'人员情况'", colspan = "2", className = "align-center"),
+                @TableCell(value = "'订单&发票'", colspan = "3", className = "align-center"),
+                @TableCell(value = "'完成情况'", rowspan = "2", className = "align-center"),
+            }),//声明一个名为 $columns 的数组
+            @TableRow(var = "$columns = {'已有人数','需要人数','已提交','已付款','已完成',}", value = {
+                @TableCell(var = "name:$columns", value = "name"),
             }),
-            @TableRow(value = {
-                @TableCell(className = "align-center border-left", value = "'在册人员'"),
-                @TableCell(className = "align-center", value = "'已生成人员'"),
-                @TableCell(className = "align-center border-right", value = "'订单生成'"),
-                @TableCell(className = "align-center", value = "'客户付款'", width = 3000),
-                @TableCell(className = "align-center", value = "'客户申请发票'", width = 4000),
-                @TableCell(className = "align-center", value = "'业务员申请发票'", width = 4000),
-                @TableCell(className = "align-center border-right", value = "'财务开具发票'", width = 4000),
-                @TableCell(className = "align-center", value = "'前道分发'", width = 3000),
-                @TableCell(className = "align-center", value = "'后道分发'", width = 3000),
-                @TableCell(className = "align-center border-right", value = "'后道处理'", width = 3000),
+            @TableRow(var = "($item, $index) in 5", value = {
+                @TableCell("$index + 1"),
+                @TableCell(value = "'大公司'", width = 4500), // 设置列宽
+                @TableCell("100"),
+                @TableCell("180"),
+                @TableCell("'是'"),
+                @TableCell("'是'"),
+                @TableCell("'是'"),
+                @TableCell("'是'"),
             })
         })
     })

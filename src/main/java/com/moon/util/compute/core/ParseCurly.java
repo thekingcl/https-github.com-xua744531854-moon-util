@@ -58,6 +58,9 @@ final class ParseCurly {
             }
             creators.add(new ListAdder(valuer));
             next = ParseUtil.skipWhitespaces(chars, indexer, len);
+            if (next == COMMA) {
+                next = ParseUtil.skipWhitespaces(chars, indexer, len);
+            }
         }
     }
 

@@ -67,24 +67,6 @@ class WorkCenterMap extends RunnerDataMap
 
     private int prevRowIndex;
 
-    WorkCenterMap createNextRow(int skips) {
-        int actualIndex = prevRowIndex = currentRowIndex + skips, index;
-        if (actualIndex > lastRowIndex) {
-            createSheet(currentSheet.getSheetName());
-            return createNextRow(0);
-        } else {
-            for (index = currentRowIndex - 1; index < actualIndex; index++) {
-                mergeManage.remove(index);
-            }
-
-            currentRow = currentSheet.createRow(actualIndex);
-            currentRowIndex = actualIndex + 1;
-
-            currentCellIndex = 0;
-            return this;
-        }
-    }
-
     private Sheet ensureCreateSheet(String sheetName) {
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null) {
@@ -112,6 +94,35 @@ class WorkCenterMap extends RunnerDataMap
         }
     }
 
+    WorkCenterMap createNextRow(int skips) {
+        int actualIndex = prevRowIndex = currentRowIndex + skips, index;
+        if (actualIndex > lastRowIndex) {
+            createSheet(currentSheet.getSheetName());
+            return createNextRow(0);
+        } else {
+            for (index = currentRowIndex - 1; index < actualIndex; index++) {
+                mergeManage.remove(index);
+            }
+
+            currentRow = currentSheet.createRow(actualIndex);
+            currentRowIndex = actualIndex + 1;
+
+            currentCellIndex = 0;
+            return this;
+        }
+    }
+
+    WorkCenterMap setHeight(short height) {
+        if (height > -1) {
+            currentRow.setHeight(height);
+        }
+        return this;
+    }
+
+    public void setRowStyle(String className) {
+        CellStyleUtil.setRowStyle(workbook, currentSheet, null, currentRow, getStyles(className));
+    }
+
     WorkCenterMap createNextCell(int colspan, int rowspan, int skips, ValueType type) {
         int index = currentCellIndex + skips;
         HashMap<Integer, Class> row = mergeManage.get(prevRowIndex);
@@ -128,13 +139,6 @@ class WorkCenterMap extends RunnerDataMap
     WorkCenterMap setWidth(int width) {
         if (width > -1) {
             currentSheet.setColumnWidth(currentCellIndex - 1, width);
-        }
-        return this;
-    }
-
-    WorkCenterMap setHeight(short height) {
-        if (height > -1) {
-            currentRow.setHeight(height);
         }
         return this;
     }
@@ -183,17 +187,13 @@ class WorkCenterMap extends RunnerDataMap
         return styleMapper;
     }
 
-    public void setRowStyle(String className) {
-        CellStyleUtil.setRowStyle(workbook, currentSheet, null, currentRow, getStyles(className));
-    }
-
     public void setCellStyle(String className) {
         CellStyleUtil.setCellStyle(workbook, currentSheet, currentRange, currentCell, getStyles(className));
     }
 
     private final static TableStyle[] DEFAULT_STYLES = new TableStyle[0];
 
-    public TableStyle[] getStyles(String className) {
+    private TableStyle[] getStyles(String className) {
         Map<String, TableStyle[]> mapper = getStyleMapper();
         TableStyle[] styles = mapper.get(className);
         if (styles == null) {

@@ -217,7 +217,8 @@ class RunnerUtilTestTest {
 
     @Test
     void testParseToRunner() {
-        Runner runner = RunnerUtil.parse("1+1");
+        Runner runner = RunnerUtil.parse("{'已有人数','需要人数','已提交','已付款','已完成'}");
         res = runner.run();
+        System.out.println(res);
     }
 }
