@@ -265,8 +265,11 @@ TableRow 的 skipRows 属性默认是 0，可不写。注意这儿的 var 参数
 
 5. var = "($item, $key, $index, $size, $isFirst, $isLast) in collectExpression";可获取迭代项、键名、索引、size、是否第一项、是否最后一项
 - 使用和效果示例：
-![https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png](https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png)
+
 ![https://raw.githubusercontent.com/xua744531854/files/master/images/1542364910(1).png](https://raw.githubusercontent.com/xua744531854/files/master/images/1542364910(1).png)
+
+![https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png](https://raw.githubusercontent.com/xua744531854/files/master/images/1542364958(1).png)
+
 - 下面列出一个渲染十列数据的性能测试表（本机环境 i7-8700 16G Win10）：
 150 万行以上不建议能用 xls 格式了（180 万行直接 OOM），500 万行以上 TableExcel 的 type 值应为 SUPER；
 
