@@ -191,10 +191,15 @@ class WorkCenterMap extends RunnerDataMap
         CellStyleUtil.setCellStyle(workbook, currentSheet, currentRange, currentCell, getStyles(className));
     }
 
+    private final static TableStyle[] DEFAULT_STYLES = new TableStyle[0];
+
     public TableStyle[] getStyles(String className) {
         Map<String, TableStyle[]> mapper = getStyleMapper();
         TableStyle[] styles = mapper.get(className);
         if (styles == null) {
+            if (styleMaps == null) {
+                return DEFAULT_STYLES;
+            }
             String[] names = StringUtil.onlyWhitespace(className.trim()).split(" ");
             int i = 0, length = names.length;
             styles = new TableStyle[length];

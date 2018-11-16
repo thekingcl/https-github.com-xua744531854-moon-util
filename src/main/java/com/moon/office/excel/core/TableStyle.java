@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 /**
  * @author benshaoye
  */
-@interface TableStyle {
+public @interface TableStyle {
 
     String className();
 

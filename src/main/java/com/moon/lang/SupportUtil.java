@@ -130,14 +130,12 @@ public final class SupportUtil {
     }
 
     public final static boolean isVar(int value) {
-        return CharUtil.isLetter(value)
-            || value == '$' || value == '_'
-            || CharUtil.isChinese(value);
+        return CharUtil.isLetter(value) || value == '$'
+            || value == '_' || CharUtil.isChinese(value);
     }
 
     public final static int skipWhitespaces(char[] chars, IntAccessor indexer, final int len) {
-        int index = indexer.get();
-        int ch = 0;
+        int index = indexer.get(), ch = 0;
         while (index < len && isWhitespace(ch = chars[index++])) {
         }
         indexer.set(index);
@@ -201,6 +199,18 @@ public final class SupportUtil {
         }
         chars[index] = ch;
         return chars;
+    }
+
+    public static <T> T[] setArrItem(T[] arr, int index, T item) {
+        int len = arr.length;
+        if (index >= len) {
+            Class type = arr.getClass().getComponentType();
+            T[] newArray = (T[]) Array.newInstance(type, len << 1);
+            System.arraycopy(arr, 0, newArray, 0, len);
+            arr = newArray;
+        }
+        arr[index] = item;
+        return arr;
     }
 
     public static char[] safeGetChars(char[] chars, int index, String str) {
