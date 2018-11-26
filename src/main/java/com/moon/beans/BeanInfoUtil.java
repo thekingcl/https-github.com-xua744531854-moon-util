@@ -66,7 +66,7 @@ public final class BeanInfoUtil {
      */
     public static Method getSetterMethod(Class clazz, String fieldName) {
         FieldDescriptor descriptor = getFieldDescriptor(clazz, fieldName);
-        if (descriptor.isSetterPresent()) {
+        if (descriptor.isSetterMethodPresent()) {
             return descriptor.getSetterMethod();
         }
         return ThrowUtil.throwRuntime(new NoSuchMethodException(
@@ -82,7 +82,7 @@ public final class BeanInfoUtil {
      */
     public static Method getGetterMethod(Class clazz, String fieldName) {
         FieldDescriptor descriptor = getFieldDescriptor(clazz, fieldName);
-        if (descriptor.isGetterPresent()) {
+        if (descriptor.isGetterMethodPresent()) {
             return descriptor.getGetterMethod();
         }
         return ThrowUtil.throwRuntime(new NoSuchMethodException(
@@ -146,7 +146,7 @@ public final class BeanInfoUtil {
 
     public static void ifSetterExecutorPresent(Class clazz, String propertyName, Consumer<FieldDescriptor> c) {
         try {
-            getFieldDescriptor(clazz, propertyName).ifSetterExecutorPresent(c);
+            getFieldDescriptor(clazz, propertyName).ifSetterPresent(c);
         } catch (IllegalArgumentException e) {
             // ignore
         }
@@ -154,7 +154,7 @@ public final class BeanInfoUtil {
 
     public static void ifGetterExecutorPresent(Class clazz, String propertyName, Consumer<FieldDescriptor> c) {
         try {
-            getFieldDescriptor(clazz, propertyName).ifGetterExecutorPresent(c);
+            getFieldDescriptor(clazz, propertyName).ifGetterPresent(c);
         } catch (IllegalArgumentException e) {
             // ignore
         }

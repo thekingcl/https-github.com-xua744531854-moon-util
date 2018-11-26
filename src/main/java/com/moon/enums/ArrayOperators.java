@@ -5,6 +5,7 @@ import com.moon.util.able.Stringify;
 import com.moon.util.function.IntBiConsumer;
 
 import java.lang.reflect.Array;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -12,6 +13,34 @@ import java.util.function.Predicate;
  * @author benshaoye
  */
 public interface ArrayOperators extends IteratorAble, Predicate, Stringify {
+
+    /**
+     * 获取一个迭代器
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    Iterator iterator(Object o);
+
+    /**
+     * 字符串化对象
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    String stringify(Object o);
+
+    /**
+     * Evaluates this predicate on the given argument.
+     *
+     * @param o the input argument
+     * @return {@code true} if the input argument matches the predicate,
+     * otherwise {@code false}
+     */
+    @Override
+    boolean test(Object o);
 
     /**
      * 转成一个对象

@@ -1,7 +1,5 @@
 package com.moon.beans;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * 字段读取/设置执行器
  *
@@ -17,9 +15,8 @@ public interface FieldExecutor {
      * @param value      字段值
      * @param accessAble 访问权限
      * @return 字段值（具体根据实现）
-     * @throws InvocationTargetException 执行异常
-     * @throws IllegalAccessException    访问异常
+     * @throws Exception 执行异常或访问异常
      */
     Object execute(Object source, Object value, boolean accessAble)
-            throws InvocationTargetException, IllegalAccessException;
+        throws Exception;
 }

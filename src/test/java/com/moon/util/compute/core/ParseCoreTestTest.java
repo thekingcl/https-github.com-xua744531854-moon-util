@@ -31,6 +31,36 @@ class ParseCoreTestTest {
     }
 
     @Test
+    void testRunnerThree() {
+        handler = running("true?'name':'age'");
+        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertEquals(handler.run(), "name");
+        handler = running("false?'name':'age'");
+        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertEquals(handler.run(), "age");
+        handler = running("1>2?'name':'age'");
+        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertEquals(handler.run(), "age");
+        handler = running("1<=2?'name':'age'");
+        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertEquals(handler.run(), "name");
+    }
+
+    @Test
+    void testRunnerThree0() {
+        handler = running("{assertion: true, value1: 20, value2: 30}");
+        data = handler.run();
+        handler = running("assertion?value1:value2");
+        res = handler.run(data);
+        assertions.assertEquals(res, 20);
+        assertions.assertNotInstanceOf(handler, DataConst.class);
+
+        handler = running("@BooleanUtil.toBooleanValue(20)?value1:value2");
+        res = handler.run(data);
+        assertions.assertEquals(res, 20);
+    }
+
+    @Test
     void testCompare() {
         handler = running("1>2");
         assertions.assertEquals(handler.run(), false);

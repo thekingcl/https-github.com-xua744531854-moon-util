@@ -2,7 +2,10 @@ package com.moon.util;
 
 import com.moon.enums.CollectionEnum;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -387,6 +390,14 @@ public final class FilterUtil {
      * --------------------------------------------------------------
      */
 
+    /**
+     * 遍历每一个符合条件的项
+     *
+     * @param collect
+     * @param tester
+     * @param consumer
+     * @param <T>
+     */
     public static <T> void forEachMatches(
         Collection<T> collect, Predicate<? super T> tester, Consumer<T> consumer) {
         if (collect != null) {
@@ -398,6 +409,14 @@ public final class FilterUtil {
         }
     }
 
+    /**
+     * 遍历每一个符合条件的项
+     *
+     * @param ts
+     * @param tester
+     * @param consumer
+     * @param <T>
+     */
     public static <T> void forEachMatches(
         T[] ts, Predicate<? super T> tester, Consumer<T> consumer) {
         final int length = ts == null ? 0 : ts.length;
@@ -407,5 +426,25 @@ public final class FilterUtil {
                 consumer.accept(item);
             }
         }
+    }
+
+    /**
+     * 找出第一项符合条件的项
+     *
+     * @param collect
+     * @param finder
+     * @param <T>
+     * @return
+     */
+    public final static <T> T findOne(Collection<T> collect, Predicate<T> finder) {
+        if (collect == null) {
+            return null;
+        }
+        for (T item : collect) {
+            if (finder.test(item)) {
+                return item;
+            }
+        }
+        return null;
     }
 }

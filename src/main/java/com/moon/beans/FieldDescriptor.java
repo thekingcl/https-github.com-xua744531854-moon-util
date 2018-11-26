@@ -26,7 +26,6 @@ import java.util.function.Consumer;
  */
 public final class FieldDescriptor {
 
-    private final Object LOCK = new Object();
     /**
      * 默认访问权限
      */
@@ -47,11 +46,11 @@ public final class FieldDescriptor {
     /**
      * 属性名对应字段
      */
-    private Field field;
+    private volatile Field field;
     /**
      * 属性名对应的数据类型
      */
-    private Class propertyType;
+    private volatile Class propertyType;
 
     /**
      * 属性描述
@@ -66,13 +65,13 @@ public final class FieldDescriptor {
      */
     private final Method getterMethod;
 
-    private Boolean isSetterPresent;
+    private volatile Boolean isSetterPresent;
     /**
      * 属性设置值执行器
      */
     private FieldExecutor setterExecutor;
 
-    private Boolean isGetterPresent;
+    private volatile Boolean isGetterPresent;
     /**
      * 属性获取值值执行器
      */
@@ -135,7 +134,7 @@ public final class FieldDescriptor {
      *
      * @return true or false
      */
-    public boolean isGetterPresent() {
+    public boolean isGetterMethodPresent() {
         return getterMethod != null;
     }
 
@@ -144,7 +143,7 @@ public final class FieldDescriptor {
      *
      * @return true or false
      */
-    public boolean isSetterPresent() {
+    public boolean isSetterMethodPresent() {
         return setterMethod != null;
     }
 
@@ -213,7 +212,7 @@ public final class FieldDescriptor {
      * @return
      */
     public FieldExecutor getSetterExecutor() {
-        if (isSetterExecutorPresent()) {
+        if (isSetterPresent()) {
             return setterExecutor;
         }
         String msg = exMsg("No setter defaultExecutor of ", name, " in class ", String.valueOf(declaringClass), " for you!");
@@ -226,7 +225,7 @@ public final class FieldDescriptor {
      * @return
      */
     public FieldExecutor getGetterExecutor() {
-        if (isGetterExecutorPresent()) {
+        if (isGetterPresent()) {
             return getterExecutor;
         }
         String msg = exMsg("No getter defaultExecutor of ", name, " in class ", String.valueOf(declaringClass), " for you!");
@@ -238,9 +237,9 @@ public final class FieldDescriptor {
      *
      * @return
      */
-    public boolean isSetterExecutorPresent() {
+    public boolean isSetterPresent() {
         if (isSetterPresent == null) {
-            synchronized (LOCK) {
+            synchronized (this) {
                 if (isSetterPresent == null) {
                     isSetterPresent = createWriterExecutor();
                 }
@@ -254,9 +253,9 @@ public final class FieldDescriptor {
      *
      * @return
      */
-    public boolean isGetterExecutorPresent() {
+    public boolean isGetterPresent() {
         if (isGetterPresent == null) {
-            synchronized (LOCK) {
+            synchronized (this) {
                 if (isGetterPresent == null) {
                     isGetterPresent = createReaderExecutor();
                 }
@@ -271,8 +270,8 @@ public final class FieldDescriptor {
      * @param c
      * @return
      */
-    public FieldDescriptor ifSetterExecutorPresent(Consumer<FieldDescriptor> c) {
-        if (isSetterExecutorPresent()) {
+    public FieldDescriptor ifSetterPresent(Consumer<FieldDescriptor> c) {
+        if (isSetterPresent()) {
             c.accept(this);
         }
         return this;
@@ -285,7 +284,7 @@ public final class FieldDescriptor {
      * @return
      */
     public FieldDescriptor ifSetterMethodPresent(Consumer<FieldDescriptor> c) {
-        if (isSetterPresent()) {
+        if (isSetterMethodPresent()) {
             c.accept(this);
         }
         return this;
@@ -297,8 +296,8 @@ public final class FieldDescriptor {
      * @param c
      * @return
      */
-    public FieldDescriptor ifGetterExecutorPresent(Consumer<FieldDescriptor> c) {
-        if (isGetterPresent()) {
+    public FieldDescriptor ifGetterPresent(Consumer<FieldDescriptor> c) {
+        if (isGetterMethodPresent()) {
             c.accept(this);
         }
         return this;
@@ -324,9 +323,9 @@ public final class FieldDescriptor {
      */
     public Class getPropertyType() {
         if (propertyType == null) {
-            synchronized (LOCK) {
+            synchronized (this) {
                 if (propertyType == null) {
-                    if (isSetterPresent()) {
+                    if (isSetterMethodPresent()) {
                         Class[] types = this.setterMethod.getParameterTypes();
                         if (types.length == 1) {
                             this.propertyType = types[0];
@@ -366,7 +365,7 @@ public final class FieldDescriptor {
      * @return
      */
     public Object setValueIfPresent(Object obj, Object value, boolean accessible) {
-        if (isSetterExecutorPresent()) {
+        if (isSetterPresent()) {
             return setValue(obj, value, accessible);
         }
         return obj;
@@ -407,7 +406,7 @@ public final class FieldDescriptor {
     public Object setValue(Object obj, Object value, boolean accessible, TypeConverter converter) {
         try {
             return getSetterExecutor().execute(obj, converter.toType(value, getPropertyType()), accessible);
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             return ThrowUtil.throwRuntime(e);
         }
     }
@@ -434,7 +433,7 @@ public final class FieldDescriptor {
      * @return
      */
     public Object getValueIfPresent(Object obj, boolean accessible) {
-        if (isGetterExecutorPresent()) {
+        if (isGetterPresent()) {
             return getValue(obj, accessible);
         }
         return null;
@@ -447,7 +446,7 @@ public final class FieldDescriptor {
     public Object getValue(Object obj, boolean accessible) {
         try {
             return getGetterExecutor().execute(obj, null, accessible);
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             return ThrowUtil.throwRuntime(e);
         }
     }
@@ -567,7 +566,7 @@ public final class FieldDescriptor {
     private Object accessorAndExecute(
         Object source, Object value, boolean isNotPublic,
         boolean accessAble, FieldHandler handler, AccessibleObject ao)
-        throws InvocationTargetException, IllegalAccessException {
+        throws Exception {
         Object result;
         if (accessAble) {
             if (isNotPublic) {
@@ -591,7 +590,7 @@ public final class FieldDescriptor {
     private boolean loadField() {
         if (field == null) {
             boolean isFieldPresent;
-            synchronized (LOCK) {
+            synchronized (this) {
                 if (field == null) {
                     try {
                         this.field = FieldUtil.getAccessibleField(declaringClass, name);

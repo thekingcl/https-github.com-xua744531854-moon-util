@@ -23,21 +23,23 @@ class ParseCore {
 
     private final static Map<String, AsRunner> CACHE = ReferenceUtil.manageMap();
 
+    private static final synchronized AsRunner putCache(String expression, AsRunner runner) {
+        if (CACHE.get(expression) == null) {
+            CACHE.put(expression, runner);
+        }
+        return runner;
+    }
+
     final static AsRunner parse(String expression) {
-        AsRunner handler = CACHE.get(expression);
-        if (handler == null) {
+        AsRunner runner = CACHE.get(expression);
+        if (runner == null) {
             if (expression == null) {
                 return DataConst.NULL;
             }
             char[] chars = expression.trim().toCharArray();
-            handler = parse(chars, IntAccessor.of(), chars.length);
-            synchronized (CACHE) {
-                if (CACHE.get(expression) == null) {
-                    CACHE.put(expression, handler);
-                }
-            }
+            runner = putCache(expression, parse(chars, IntAccessor.of(), chars.length));
         }
-        return handler;
+        return runner;
     }
 
     final static AsRunner parse(
@@ -62,6 +64,7 @@ class ParseCore {
         char[] chars, IntAccessor indexer, int len, int end0, int end1, IntPredicate tester
     ) {
         AsRunner handler = null;
+        DataGetterThree.Builder builder = null;
         LinkedList<AsRunner> values = new LinkedList<>(), methods = new LinkedList();
         for (int curr; indexer.get() < len; ) {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
@@ -70,9 +73,24 @@ class ParseCore {
                     cleanMethodsTo(values, methods, DataComputes.YUAN_LEFT);
                 }
                 break;
+            } else if (curr == ASK) {
+                // ?
+                builder = new DataGetterThree.Builder(toRunner(values, methods));
+                values = new LinkedList<>();
+                methods = new LinkedList();
+            } else if (curr == COLON) {
+                // :
+                builder.setTrueRunner(toRunner(values, methods));
+                values = new LinkedList<>();
+                methods = new LinkedList();
+            } else {
+                handler = core(chars, indexer, len, curr, values, methods, handler);
             }
-            handler = core(chars, indexer, len, curr, values, methods, handler);
         }
+        return builder == null ? toRunner(values, methods) : builder.setFalseRunner(toRunner(values, methods)).build();
+    }
+
+    private final static AsRunner toRunner(LinkedList<AsRunner> values, LinkedList<AsRunner> methods) {
         return DataGetterCalculator.valueOf(cleanMethodsTo(values, methods, null));
     }
 

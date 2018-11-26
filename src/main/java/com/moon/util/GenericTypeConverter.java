@@ -401,7 +401,7 @@ public class GenericTypeConverter implements TypeConverter {
         if (!map.isEmpty()) {
             BeanInfoUtil.getFieldDescriptorsMap(clazz).forEach((name, desc) -> {
                 map.computeIfPresent(name, (key, value) -> {
-                    desc.ifSetterExecutorPresent(descriptor ->
+                    desc.ifSetterPresent(descriptor ->
                         descriptor.setValue(obj, value, true));
                     return value;
                 });
@@ -830,7 +830,7 @@ public class GenericTypeConverter implements TypeConverter {
         <T> T toMap(Object value, Class mapClass) {
             Map result = createMap(mapClass);
             BeanInfoUtil.getFieldDescriptorsMap(value.getClass()).forEach((name, desc) ->
-                desc.ifGetterExecutorPresent(descriptor ->
+                desc.ifGetterPresent(descriptor ->
                     result.put(name, descriptor.getValue(value, true))));
             return (T) result;
         }

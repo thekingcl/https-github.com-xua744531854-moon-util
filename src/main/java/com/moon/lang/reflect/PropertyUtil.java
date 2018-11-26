@@ -274,7 +274,7 @@ public final class PropertyUtil {
                                     Object source, boolean accessible) {
         try {
             return reader(targetType, propertyName).execute(source, null, accessible);
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -293,7 +293,7 @@ public final class PropertyUtil {
                                      Object source, Object value, boolean accessible) {
         try {
             return writer(targetType, propertyName).execute(source, value, accessible);
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
     }

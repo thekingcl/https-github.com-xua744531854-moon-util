@@ -31,8 +31,9 @@ interface AsRunner extends Runner {
     /**
      * 计算
      *
-     * @param left
      * @param right
+     * @param left
+     * @param data
      * @return
      */
     Object handle(AsRunner right, AsRunner left, Object data);

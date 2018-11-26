@@ -36,7 +36,7 @@ final class ParseCurly {
     ) {
         AsRunner valuer;
         outer:
-        for (int next = curr; ; ) {
+        for (int next = curr; ; curr = next) {
             inner:
             switch (next) {
                 case HUA_RIGHT:
@@ -58,7 +58,7 @@ final class ParseCurly {
             }
             creators.add(new ListAdder(valuer));
             next = ParseUtil.skipWhitespaces(chars, indexer, len);
-            if (next == COMMA) {
+            if (next == COMMA && (valuer != DataConst.NULL || (curr != COMMA && curr != YUAN_LEFT))) {
                 next = ParseUtil.skipWhitespaces(chars, indexer, len);
             }
         }

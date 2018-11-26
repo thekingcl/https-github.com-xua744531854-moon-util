@@ -23,7 +23,7 @@
     <modules></modules>
 
     <properties>
-        <version.poi>3.17</version.poi>
+        <version.poi>4.0.0</version.poi>
     </properties>
 
     <dependencies>

@@ -266,7 +266,7 @@ public final class RunnerUtil extends ParseUtil {
      * <p>
      * String[] delimiters = {"${", "}"};
      * <p>
-     * RunnerUtil.parseRun("本草纲目{desc}", delimiters, data); // =====> "本草纲目棒棒的"
+     * RunnerUtil.parseRun("本草纲目${desc}", delimiters, data); // =====> "本草纲目棒棒的"
      * <p>
      * <strong>【注意：】</strong>同一个字符串中不可包含多种不同的分隔符而运行多次；
      * <p>

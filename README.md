@@ -113,6 +113,13 @@ RunnerUtil.run(" 1 + 1 < 2 "); // false
 ``` java
 RunnerUtil.run("1+1==2 && 5 > 4"); // true
 ```
+5、三元运算：assertExpression ? trueExpression : falseExpression
+``` java
+RunnerUtil.run("true ? 'name' : 'age'"); // name
+RunnerUtil.run("false ? 'name' : 'age'"); // age
+RunnerUtil.run("1 > 2 ? 'name' : 'age'"); // age
+RunnerUtil.run("1 < 2 ? 'name' : 'age'"); // name
+```
 6. 变量：命名规则与 Java 变量命名规则相同，同时 null、true、false 不能作为变量
 
 表达式中包含变量就代表这个表达式在运行得到结果时需要从外部获取数据，如果不能正确的从数据源读取到数据，运行就会抛出异常；

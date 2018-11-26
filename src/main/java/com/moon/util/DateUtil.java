@@ -65,6 +65,10 @@ public final class DateUtil {
         return new java.sql.Time(now());
     }
 
+    public final static Timestamp nowTimestamp() {
+        return new Timestamp(now());
+    }
+
     public final static Calendar nowCalendar() {
         return Calendar.getInstance();
     }
@@ -259,6 +263,34 @@ public final class DateUtil {
         return set(value, MILLISECOND, amount);
     }
 
+    public final static Date setYear(Date value, int amount) {
+        return set(toCalendar(value), YEAR, amount).getTime();
+    }
+
+    public final static Date setMonth(Date value, int amount) {
+        return set(toCalendar(value), MONTH, amount).getTime();
+    }
+
+    public final static Date setDayOfMonth(Date value, int amount) {
+        return set(toCalendar(value), DAY_OF_MONTH, amount).getTime();
+    }
+
+    public final static Date setHour(Date value, int amount) {
+        return set(toCalendar(value), HOUR_OF_DAY, amount).getTime();
+    }
+
+    public final static Date setMinute(Date value, int amount) {
+        return set(toCalendar(value), MINUTE, amount).getTime();
+    }
+
+    public final static Date setSecond(Date value, int amount) {
+        return set(toCalendar(value), SECOND, amount).getTime();
+    }
+
+    public final static Date setMillisecond(Date value, int amount) {
+        return set(toCalendar(toCalendar(value)), MILLISECOND, amount).getTime();
+    }
+
     public final static Calendar set(Calendar value, int field, int amount) {
         Calendar current = copy(value);
         current.set(field, field == MONTH ? amount - 1 : amount);
@@ -291,6 +323,34 @@ public final class DateUtil {
 
     public final static int getMillisecond(Calendar value) {
         return get(value, MILLISECOND);
+    }
+
+    public final static int getYear(Date value) {
+        return get(toCalendar(value), YEAR);
+    }
+
+    public final static int getMonth(Date value) {
+        return get(toCalendar(value), MONTH);
+    }
+
+    public final static int getDayOfMonth(Date value) {
+        return get(toCalendar(value), DAY_OF_MONTH);
+    }
+
+    public final static int getHour(Date value) {
+        return get(toCalendar(value), HOUR_OF_DAY);
+    }
+
+    public final static int getMinute(Date value) {
+        return get(toCalendar(value), MINUTE);
+    }
+
+    public final static int getSecond(Date value) {
+        return get(toCalendar(value), SECOND);
+    }
+
+    public final static int getMillisecond(Date value) {
+        return get(toCalendar(value), MILLISECOND);
     }
 
     public final static int get(Calendar cal, int field) {
@@ -440,7 +500,7 @@ public final class DateUtil {
         try {
             return new Time(toCalendar(value).getTimeInMillis());
         } catch (Throwable t) {
-            throw new IllegalArgumentException("can not converter value to java.sql.Time");
+            throw new IllegalArgumentException("can not converter to java.sql.Time of value: " + value);
         }
     }
 
@@ -454,7 +514,7 @@ public final class DateUtil {
         try {
             return new Timestamp(toCalendar(value).getTimeInMillis());
         } catch (Throwable t) {
-            throw new IllegalArgumentException("can not converter value to java.sql.Timestamp");
+            throw new IllegalArgumentException("can not converter to java.sql.Timestamp of value: " + value);
         }
     }
 
@@ -468,7 +528,7 @@ public final class DateUtil {
         try {
             return new java.sql.Date(toCalendar(value).getTimeInMillis());
         } catch (Throwable t) {
-            throw new IllegalArgumentException("can not converter value to java.sql.Date");
+            throw new IllegalArgumentException("can not converter to java.sql.Date of value: " + value);
         }
     }
 
@@ -486,7 +546,7 @@ public final class DateUtil {
         try {
             return toCalendar(value).getTime();
         } catch (Throwable t) {
-            throw new IllegalArgumentException("can not converter value to java.util.Date");
+            throw new IllegalArgumentException("can not converter to java.util.Date of value: " + value);
         }
     }
 
@@ -659,6 +719,6 @@ public final class DateUtil {
         if (value instanceof String[]) {
             return toCalendar((String[]) value);
         }
-        throw new IllegalArgumentException("can not converter value to java.util.Date");
+        throw new IllegalArgumentException("can not converter to java.util.CharSequence of value: " + value);
     }
 }

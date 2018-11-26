@@ -32,6 +32,27 @@ class ParseCurlyTestTest {
     Object res, data;
 
     @Test
+    void testParseSimpleList() {
+        str = "  {  ,  ,}  ";
+        handler = running0(str);
+        res = handler.run();
+        assertions.assertInstanceOf(res, ArrayList.class);
+        assertions.assertEq(ListUtil.sizeByObject(res), 2);
+
+        str = "  {  ,  (),,(null),,}  ";
+        handler = running0(str);
+        res = handler.run();
+        assertions.assertInstanceOf(res, ArrayList.class);
+        assertions.assertEq(ListUtil.sizeByObject(res), 5);
+
+        str = "  {  'name' ,'age'  ,}  ";
+        handler = running0(str);
+        res = handler.run();
+        assertions.assertInstanceOf(res, ArrayList.class);
+        assertions.assertEq(ListUtil.sizeByObject(res), 2);
+    }
+
+    @Test
     void testParse0() {
         doEmpty();
         doList();

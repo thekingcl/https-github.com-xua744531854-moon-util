@@ -102,6 +102,8 @@ public final class TimeUtil {
     public final static LocalDate toDate(int... values) {
         int i = 0, len = values.length, max = 3;
         switch (len) {
+            case 0:
+                return LocalDate.now();
             case 1:
                 return LocalDate.of(values[i++], 1, 1);
             case 2:
@@ -118,7 +120,7 @@ public final class TimeUtil {
         int i = 0, len = values.length, max = 3;
         switch (len) {
             case 0:
-                return LocalTime.of(0, 0);
+                return LocalTime.now();
             case 1:
                 return LocalTime.of(values[i++], 0);
             case 2:
@@ -136,6 +138,8 @@ public final class TimeUtil {
     public final static LocalDateTime toDateTime(int... values) {
         int i = 0, len = values.length, max = 6;
         switch (len) {
+            case 0:
+                return LocalDateTime.now();
             case 1:
                 return LocalDateTime.of(values[i++], 1, 1, 0, 0);
             case 2:

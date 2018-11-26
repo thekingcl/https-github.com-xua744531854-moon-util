@@ -56,15 +56,6 @@ public class CollectUtil extends BaseCollectUtil {
         return collect;
     }
 
-    public static <E, C extends Collection<E>> C add(C collect, E element1, E element2, E element3) {
-        if (collect != null) {
-            collect.add(element1);
-            collect.add(element2);
-            collect.add(element3);
-        }
-        return collect;
-    }
-
     public static <E, C extends Collection<E>> C addAll(C collect, E... elements) {
         if (collect != null) {
             for (E element : elements) {
@@ -139,16 +130,28 @@ public class CollectUtil extends BaseCollectUtil {
         return collect != null && (collect.contains(item1) && collect.contains(item2));
     }
 
-    public final static <T> boolean containsAny(Collection<T> collect, T item1, T item2, T item3) {
-        return collect != null && (collect.contains(item1)
-            || collect.contains(item2)
-            || collect.contains(item3));
+    public final static <T> boolean containsAny(Collection<T> collect, T... items) {
+        if (collect == null) {
+            return false;
+        }
+        for (int i = 0, l = items.length; i < l; i++) {
+            if (collect.contains(items[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public final static <T> boolean containsAll(Collection<T> collect, T item1, T item2, T item3) {
-        return collect != null && (collect.contains(item1)
-            && collect.contains(item2)
-            && collect.contains(item3));
+    public final static <T> boolean containsAll(Collection<T> collect, T... items) {
+        if (collect == null) {
+            return false;
+        }
+        for (int i = 0, l = items.length; i < l; i++) {
+            if (!collect.contains(items[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public final static <T> boolean containsAny(Collection<T> collect1, Collection<T> collect2) {
