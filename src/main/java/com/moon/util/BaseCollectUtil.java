@@ -1,6 +1,6 @@
 package com.moon.util;
 
-import com.moon.enums.CollectionEnum;
+import com.moon.enums.CollectEnum;
 
 import java.util.Collection;
 
@@ -17,7 +17,7 @@ class BaseCollectUtil {
      */
 
     static <E, C extends Collection<E>> Collection concat0(C collect, C... cs) {
-        Collection collection = CollectionEnum.getAsSuperOrDeduce(collect).apply(collect);
+        Collection collection = CollectEnum.getAsSuperOrDeduce(collect).apply(collect);
         for (C c : cs) {
             collection.addAll(c);
         }

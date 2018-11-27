@@ -87,7 +87,7 @@ public class CollectUtil extends BaseCollectUtil {
      * ---------------------------------------------------------------------------------
      */
 
-    public static <T, O, C1 extends Collection<T>, C2 extends Collection<O>> C2 map(C1 src, Function<T, O> function) {
+    public static <T, O, C1 extends Collection<T>> Collection<O> map(C1 src, Function<T, O> function) {
         return IteratorUtil.map(src, function);
     }
 

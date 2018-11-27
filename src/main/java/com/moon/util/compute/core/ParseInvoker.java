@@ -2,6 +2,8 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 import com.moon.lang.reflect.FieldUtil;
+import com.moon.util.compute.Runner;
+import com.moon.util.compute.RunnerSettings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -28,7 +30,7 @@ final class ParseInvoker {
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
     final static AsRunner tryParseInvoker(
-        char[] chars, IntAccessor indexer, int len, String name, AsValuer prevValuer
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
         final boolean isStatic = prevValuer instanceof DataConstLoader;
@@ -38,7 +40,7 @@ final class ParseInvoker {
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
                 // 带有参数的方法调用
-                return parseHasParams(chars, indexer.minus(), len, prevValuer, name, isStatic);
+                return parseHasParams(chars, indexer.minus(), len,settings, prevValuer, name, isStatic);
             }
         } else {
             // 静态字段检测
@@ -51,11 +53,11 @@ final class ParseInvoker {
      * 带有参数的方法调用
      */
     private final static AsRunner parseHasParams(
-        char[] chars, IntAccessor indexer, int len,
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings,
         AsValuer prev, String name, boolean isStatic
     ) {
         for (List valuers = new ArrayList(); ; ) {
-            valuers.add(ParseCore.parse(chars, indexer, len, YUAN_RIGHT, COMMA));
+            valuers.add(ParseCore.parse(chars, indexer, len, settings,YUAN_RIGHT, COMMA));
             if (chars[indexer.get() - 1] == YUAN_RIGHT) {
                 return valuers.size() > 1
                     ? parseMultiParamCaller(valuers, prev, name, isStatic)

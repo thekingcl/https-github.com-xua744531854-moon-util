@@ -78,9 +78,9 @@ final class Reflection {
         Class superType = type.getSuperclass();
         Package packet = type.getPackage(), superPacket = superType.getPackage();
         Predicate<Executable> tester = packet == superPacket ? Asserts.lowestDefault : Asserts.lowestProtected;
-        FilterUtil.filterTo(superType.getDeclaredMethods(), tester, set);
+        FilterUtil.filter(superType.getDeclaredMethods(), tester, set);
         for (superType = superType.getSuperclass(); superType != null; superType = superType.getSuperclass()) {
-            FilterUtil.filterTo(superType.getDeclaredMethods(), Asserts.lowestProtected, set);
+            FilterUtil.filter(superType.getDeclaredMethods(), Asserts.lowestProtected, set);
         }
         return set;
     }

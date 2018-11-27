@@ -1,6 +1,6 @@
 package com.moon.util.iterators;
 
-import com.moon.enums.CollectionEnum;
+import com.moon.enums.CollectEnum;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +54,7 @@ public class CollectionSplitter<E, T extends Collection<E>> implements Iterator<
      * 构造器
      */
     private Constructor<T> constructor;
-    private CollectionEnum containerSupplier;
+    private CollectEnum containerSupplier;
     /**
      * 容器
      */
@@ -113,7 +113,7 @@ public class CollectionSplitter<E, T extends Collection<E>> implements Iterator<
             Class type = src.getClass();
             if (length == 1) {
                 container[0] = this.src;
-            } else if ((containerSupplier = CollectionEnum.getAsSuper(type)) == null) {
+            } else if ((containerSupplier = CollectEnum.getAsSuper(type)) == null) {
                 try {
                     this.constructor = type.getConstructor(int.class);
                 } catch (NoSuchMethodException e) {

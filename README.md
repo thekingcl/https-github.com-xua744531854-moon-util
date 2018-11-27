@@ -113,7 +113,7 @@ RunnerUtil.run(" 1 + 1 < 2 "); // false
 ``` java
 RunnerUtil.run("1+1==2 && 5 > 4"); // true
 ```
-5、三元运算：assertExpression ? trueExpression : falseExpression
+5. 三元运算：assertExpression ? trueExpression : falseExpression
 ``` java
 RunnerUtil.run("true ? 'name' : 'age'"); // name
 RunnerUtil.run("false ? 'name' : 'age'"); // age

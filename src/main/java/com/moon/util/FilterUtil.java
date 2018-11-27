@@ -1,6 +1,6 @@
 package com.moon.util;
 
-import com.moon.enums.CollectionEnum;
+import com.moon.enums.CollectEnum;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -251,7 +251,7 @@ public final class FilterUtil {
      */
 
     public final static <E, C extends Collection<? super E>> C
-    filterTo(E[] es, Predicate<? super E> tester, C container) {
+    filter(E[] es, Predicate<? super E> tester, C container) {
         if (es != null) {
             for (int i = 0, len = es.length; i < len; i++) {
                 if (tester.test(es[i])) {
@@ -272,13 +272,13 @@ public final class FilterUtil {
      * @return
      */
     public static <E, L extends List<E>> List<E> filter(L list, Predicate<? super E> tester) {
-        final Supplier supplier = CollectionEnum.getOrDefault(list, CollectionEnum.ArrayList);
+        final Supplier supplier = CollectEnum.getOrDefault(list, CollectEnum.ArrayList);
         return (List) filter(list, tester, supplier);
     }
 
     public static <E, L extends List<E>> List<E> multiplyFilter(L list, Predicate<? super E>... testers) {
-        final Supplier supplier = CollectionEnum.getOrDefault(list, CollectionEnum.HashSet);
-        return (List) multiplyFilter(list, supplier, testers);
+        final Supplier supplier = CollectEnum.getOrDefault(list, CollectEnum.HashSet);
+        return (List) multiplyFilterTo(list, supplier, testers);
     }
 
     /**
@@ -291,13 +291,13 @@ public final class FilterUtil {
      * @return
      */
     public static <E, S extends Set<E>> Set<E> filter(S set, Predicate<? super E> tester) {
-        final Supplier supplier = CollectionEnum.getOrDefault(set, CollectionEnum.HashSet);
+        final Supplier supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
         return (Set) filter(set, tester, supplier);
     }
 
     public static <E, S extends Set<E>> Set<E> multiplyFilter(S set, Predicate<? super E>... testers) {
-        final Supplier supplier = CollectionEnum.getOrDefault(set, CollectionEnum.HashSet);
-        return (Set) multiplyFilter(set, supplier, testers);
+        final Supplier supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
+        return (Set) multiplyFilterTo(set, supplier, testers);
     }
 
     /**
@@ -319,8 +319,8 @@ public final class FilterUtil {
 
     public static <E, C extends Collection<E>, CR extends Collection<? super E>>
 
-    CR multiplyFilter(C collect, Supplier<CR> resultContainerSupplier, Predicate<? super E>... testers) {
-        return multiplyFilter(collect, resultContainerSupplier.get(), testers);
+    CR multiplyFilterTo(C collect, Supplier<CR> resultContainerSupplier, Predicate<? super E>... testers) {
+        return multiplyFilterTo(collect, resultContainerSupplier.get(), testers);
     }
 
     /**
@@ -349,7 +349,7 @@ public final class FilterUtil {
 
     public static <E, C extends Iterable<E>, CR extends Collection<? super E>>
 
-    CR multiplyFilter(C collect, CR container, Predicate<? super E>... testers) {
+    CR multiplyFilterTo(C collect, CR container, Predicate<? super E>... testers) {
         if (collect != null) {
             int i;
             final int len = testers.length;
@@ -426,25 +426,5 @@ public final class FilterUtil {
                 consumer.accept(item);
             }
         }
-    }
-
-    /**
-     * 找出第一项符合条件的项
-     *
-     * @param collect
-     * @param finder
-     * @param <T>
-     * @return
-     */
-    public final static <T> T findOne(Collection<T> collect, Predicate<T> finder) {
-        if (collect == null) {
-            return null;
-        }
-        for (T item : collect) {
-            if (finder.test(item)) {
-                return item;
-            }
-        }
-        return null;
     }
 }

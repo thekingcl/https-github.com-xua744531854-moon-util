@@ -4,6 +4,7 @@ import com.moon.lang.CharUtil;
 import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
 import com.moon.util.compute.Runner;
+import com.moon.util.compute.RunnerSettings;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.DOUBLE_QUOTE;
@@ -89,5 +90,13 @@ public class ParseUtil {
 
     public final static Runner parse(String expression, String[] delimiters) {
         return ParseDelimiters.parse(expression, delimiters);
+    }
+
+    public final static Runner parse(String expression, RunnerSettings settings) {
+        return ParseCore.parse(expression, settings);
+    }
+
+    public final static Runner parse(String expression, String[] delimiters, RunnerSettings settings) {
+        return ParseDelimiters.parse(expression, delimiters, settings);
     }
 }

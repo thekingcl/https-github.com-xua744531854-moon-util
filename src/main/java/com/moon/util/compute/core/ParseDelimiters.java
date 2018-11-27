@@ -2,9 +2,9 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.StringUtil;
 import com.moon.lang.ref.ReferenceUtil;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +23,7 @@ final class ParseDelimiters {
     final static AsRunner parse(String expression, String[] delimiters) {
         AsRunner parsed = CACHE.get(expression);
         if (parsed == null) {
-            parsed = parseCore(expression, delimiters);
+            parsed = parseCore(expression, delimiters, RunnerSettings.DEFAULT);
             synchronized (CACHE) {
                 if (CACHE.get(expression) == null) {
                     CACHE.put(expression, parsed);
@@ -33,7 +33,11 @@ final class ParseDelimiters {
         return parsed;
     }
 
-    private static AsRunner parseCore(String expression, String[] delimiters) {
+    final static AsRunner parse(String expression, String[] delimiters, RunnerSettings settings) {
+        return parseCore(expression, delimiters, settings);
+    }
+
+    private static AsRunner parseCore(String expression, String[] delimiters, RunnerSettings settings) {
         String begin = StringUtil.requireNotBlank(delimiters[0]);
         String ender = StringUtil.requireNotBlank(delimiters[1]);
         final int length = expression.length(),
@@ -41,7 +45,7 @@ final class ParseDelimiters {
         int from = expression.indexOf(begin), to = expression.indexOf(ender);
         int one = 0, temp, size;
         if (from == 0 && to + endLen == length && expression.indexOf(begin, from + 1) < 0) {
-            return ParseCore.parse(expression.substring(from + beginLen, to));
+            return ParseCore.parse(expression.substring(from + beginLen, to), settings);
         } else if (from < 0) {
             return DataConst.get(expression);
         } else {
@@ -51,7 +55,7 @@ final class ParseDelimiters {
                     list.add(DataConst.get(expression.substring(one, from)));
                 }
                 if (to > (temp = from + beginLen)) {
-                    list.add(ParseCore.parse(expression.substring(temp, to)));
+                    list.add(ParseCore.parse(expression.substring(temp, to), settings));
                 }
                 one = to + endLen;
                 from = expression.indexOf(begin, one);

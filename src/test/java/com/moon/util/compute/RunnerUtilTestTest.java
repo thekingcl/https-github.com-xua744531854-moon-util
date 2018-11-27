@@ -221,4 +221,31 @@ class RunnerUtilTestTest {
         res = runner.run();
         System.out.println(res);
     }
+
+    @Test
+    void testCustomCaller() {
+        RunnerSettings settings = RunnerSettings.builder()
+            .addCaller("call", Caller.class)
+            .addCaller("Objects", InnerObjects.class)
+            .build();
+
+        Runner runner = RunnerUtil.parse("@call.get()", settings);
+        assertions.assertEquals(runner.run(), "123456789");
+        runner = RunnerUtil.parse("@Objects.toString('123123')", settings);
+        assertions.assertEquals(runner.run(), "--11--");
+        runner = RunnerUtil.parse("@Objects.toString('123123')");
+        assertions.assertEquals(runner.run(), "123123");
+    }
+
+    public static class Caller {
+        public static final String get() {
+            return "123456789";
+        }
+    }
+
+    public static class InnerObjects {
+        public static final String toString(Object o) {
+            return "--11--";
+        }
+    }
 }

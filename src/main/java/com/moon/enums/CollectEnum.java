@@ -25,7 +25,7 @@ import java.util.function.*;
  * @author benshaoye
  * @date 2018/9/11
  */
-public enum CollectionEnum implements Supplier<Collection>,
+public enum CollectEnum implements Supplier<Collection>,
     IntFunction<Collection>, Function<Collection, Collection> {
 
     /*
@@ -73,17 +73,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     ArrayList(ArrayList.class) {
         @Override
-        public Collection apply(Collection collection) {
+        public ArrayList apply(Collection collection) {
             return new ArrayList(collection);
         }
 
         @Override
-        public Collection apply(int initCapacity) {
+        public ArrayList apply(int initCapacity) {
             return new ArrayList(initCapacity);
         }
 
         @Override
-        public Collection get() {
+        public ArrayList get() {
             return new ArrayList();
         }
     },
@@ -163,17 +163,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     LinkedList(LinkedList.class) {
         @Override
-        public Collection apply(Collection collection) {
+        public LinkedList apply(Collection collection) {
             return new LinkedList(collection);
         }
 
         @Override
-        public Collection apply(int initCapacity) {
+        public LinkedList apply(int initCapacity) {
             return get();
         }
 
         @Override
-        public Collection get() {
+        public LinkedList get() {
             return new LinkedList();
         }
     },
@@ -200,17 +200,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     Vector(Vector.class) {
         @Override
-        public Collection get() {
+        public Vector get() {
             return new Vector();
         }
 
         @Override
-        public Collection apply(int size) {
+        public Vector apply(int size) {
             return new Vector(size);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public Vector apply(Collection collection) {
             return new Vector(collection);
         }
     },
@@ -236,18 +236,18 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     Stack(Stack.class) {
         @Override
-        public Collection get() {
+        public Stack get() {
             return new Stack();
         }
 
         @Override
-        public Collection apply(int value) {
+        public Stack apply(int value) {
             return get();
         }
 
         @Override
-        public Collection apply(Collection collection) {
-            Collection c = get();
+        public Stack apply(Collection collection) {
+            Stack c = get();
             c.addAll(collection);
             return c;
         }
@@ -275,17 +275,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     TreeSet(TreeSet.class) {
         @Override
-        public Collection apply(Collection collection) {
+        public TreeSet apply(Collection collection) {
             return new TreeSet(collection);
         }
 
         @Override
-        public Collection apply(int initCapacity) {
+        public TreeSet apply(int initCapacity) {
             return new TreeSet();
         }
 
         @Override
-        public Collection get() {
+        public TreeSet get() {
             return new TreeSet();
         }
     },
@@ -318,17 +318,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     HashSet(HashSet.class) {
         @Override
-        public Collection get() {
+        public HashSet get() {
             return new HashSet();
         }
 
         @Override
-        public Collection apply(int initCapacity) {
+        public HashSet apply(int initCapacity) {
             return new HashSet(initCapacity);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public HashSet apply(Collection collection) {
             return new HashSet(collection);
         }
     },
@@ -347,17 +347,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     LinkedHashSet(LinkedHashSet.class) {
         @Override
-        public Collection apply(Collection collection) {
+        public LinkedHashSet apply(Collection collection) {
             return new LinkedHashSet(collection);
         }
 
         @Override
-        public Collection apply(int initCapacity) {
+        public LinkedHashSet apply(int initCapacity) {
             return new LinkedHashSet(initCapacity);
         }
 
         @Override
-        public Collection get() {
+        public LinkedHashSet get() {
             return new LinkedHashSet();
         }
     },
@@ -380,17 +380,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     ArrayDeque(ArrayDeque.class) {
         @Override
-        public Collection get() {
+        public ArrayDeque get() {
             return new ArrayDeque();
         }
 
         @Override
-        public Collection apply(int value) {
+        public ArrayDeque apply(int value) {
             return new ArrayDeque(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public ArrayDeque apply(Collection collection) {
             return new ArrayDeque(collection);
         }
     },
@@ -409,17 +409,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     LinkedBlockingDeque(LinkedBlockingDeque.class) {
         @Override
-        public Collection get() {
+        public LinkedBlockingDeque get() {
             return new LinkedBlockingDeque();
         }
 
         @Override
-        public Collection apply(int value) {
+        public LinkedBlockingDeque apply(int value) {
             return new LinkedBlockingDeque(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public LinkedBlockingDeque apply(Collection collection) {
             return new LinkedBlockingDeque(collection);
         }
     },
@@ -442,17 +442,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     PriorityQueue(PriorityQueue.class) {
         @Override
-        public Collection get() {
+        public PriorityQueue get() {
             return new PriorityQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public PriorityQueue apply(int value) {
             return new PriorityQueue(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public PriorityQueue apply(Collection collection) {
             return new PriorityQueue(collection);
         }
     },
@@ -469,17 +469,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     LinkedBlockingQueue(LinkedBlockingQueue.class) {
         @Override
-        public Collection get() {
+        public LinkedBlockingQueue get() {
             return new LinkedBlockingQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public LinkedBlockingQueue apply(int value) {
             return new LinkedBlockingQueue(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public LinkedBlockingQueue apply(Collection collection) {
             return new LinkedBlockingQueue(collection);
         }
     },
@@ -496,21 +496,21 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     ArrayBlockingQueue(ArrayBlockingQueue.class) {
         @Override
-        public Collection get() {
+        public ArrayBlockingQueue get() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Collection apply(int value) {
+        public ArrayBlockingQueue apply(int value) {
             return new ArrayBlockingQueue(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public ArrayBlockingQueue apply(Collection collection) {
             if (collection == null) {
                 return null;
             } else {
-                Collection collect = new ArrayBlockingQueue<>(collection.size());
+                ArrayBlockingQueue collect = new ArrayBlockingQueue<>(collection.size());
                 collect.addAll(collection);
                 return collect;
             }
@@ -529,17 +529,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     PriorityBlockingQueue(PriorityBlockingQueue.class) {
         @Override
-        public Collection get() {
+        public PriorityBlockingQueue get() {
             return new PriorityBlockingQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public PriorityBlockingQueue apply(int value) {
             return new PriorityBlockingQueue(value);
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public PriorityBlockingQueue apply(Collection collection) {
             return new PriorityBlockingQueue(collection);
         }
     },
@@ -556,17 +556,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     SynchronousQueue(SynchronousQueue.class) {
         @Override
-        public Collection get() {
+        public SynchronousQueue get() {
             return new SynchronousQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public SynchronousQueue apply(int value) {
             return get();
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public SynchronousQueue apply(Collection collection) {
             return get();
         }
     },
@@ -585,17 +585,17 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     LinkedTransferQueue(LinkedTransferQueue.class) {
         @Override
-        public Collection get() {
+        public LinkedTransferQueue get() {
             return new LinkedTransferQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public LinkedTransferQueue apply(int value) {
             return get();
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public LinkedTransferQueue apply(Collection collection) {
             return new LinkedTransferQueue(collection);
         }
     },
@@ -612,28 +612,28 @@ public enum CollectionEnum implements Supplier<Collection>,
      */
     ConcurrentLinkedQueue(ConcurrentLinkedQueue.class) {
         @Override
-        public Collection get() {
+        public ConcurrentLinkedQueue get() {
             return new ConcurrentLinkedQueue();
         }
 
         @Override
-        public Collection apply(int value) {
+        public ConcurrentLinkedQueue apply(int value) {
             return new ConcurrentLinkedQueue();
         }
 
         @Override
-        public Collection apply(Collection collection) {
+        public ConcurrentLinkedQueue apply(Collection collection) {
             return new ConcurrentLinkedQueue(collection);
         }
     };
 
     static final class CtorCached {
-        final static HashMap<Class, CollectionEnum> CACHE = new HashMap();
+        final static HashMap<Class, CollectEnum> CACHE = new HashMap();
     }
 
     private final Class type;
 
-    CollectionEnum(Class type) {
+    CollectEnum(Class type) {
         CtorCached.CACHE.put(this.type = type, this);
     }
 
@@ -647,7 +647,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param type 集合类
      * @return
      */
-    public static CollectionEnum get(Class type) {
+    public static CollectEnum get(Class type) {
         return CtorCached.CACHE.get(type);
     }
 
@@ -657,7 +657,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param object 集合对象
      * @return
      */
-    public static CollectionEnum get(Object object) {
+    public static CollectEnum get(Object object) {
         return object == null ? null : get(object.getClass());
     }
 
@@ -668,8 +668,8 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param type
      * @return
      */
-    public static CollectionEnum getAsSuper(Class type) {
-        for (CollectionEnum collect;
+    public static CollectEnum getAsSuper(Class type) {
+        for (CollectEnum collect;
              type != null;
              type = type.getSuperclass()) {
             if ((collect = get(type)) != null) {
@@ -686,7 +686,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static CollectionEnum getAsSuper(Object object) {
+    public static CollectEnum getAsSuper(Object object) {
         return object == null ? null : getAsSuper(object.getClass());
     }
 
@@ -697,7 +697,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectionEnum getOrDefault(Class type, CollectionEnum defaultType) {
+    public static CollectEnum getOrDefault(Class type, CollectEnum defaultType) {
         return CtorCached.CACHE.getOrDefault(type, defaultType);
     }
 
@@ -708,7 +708,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectionEnum getOrDefault(Object object, CollectionEnum defaultType) {
+    public static CollectEnum getOrDefault(Object object, CollectEnum defaultType) {
         return object == null ? defaultType : getOrDefault(object.getClass(), defaultType);
     }
 
@@ -720,8 +720,8 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectionEnum getAsSuperOrDefault(Class type, CollectionEnum defaultType) {
-        for (CollectionEnum collect;
+    public static CollectEnum getAsSuperOrDefault(Class type, CollectEnum defaultType) {
+        for (CollectEnum collect;
              type != null;
              type = type.getSuperclass()) {
             if ((collect = get(type)) != null) {
@@ -739,7 +739,7 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectionEnum getAsSuperOrDefault(Object object, CollectionEnum defaultType) {
+    public static CollectEnum getAsSuperOrDefault(Object object, CollectEnum defaultType) {
         return object == null ? defaultType : getAsSuperOrDefault(object.getClass(), defaultType);
     }
 
@@ -749,10 +749,10 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param type
      * @return
      */
-    public static CollectionEnum getAsSuperOrDeduce(Class type) {
-        CollectionEnum collect = getAsSuper(type);
+    public static CollectEnum getAsSuperOrDeduce(Class type) {
+        CollectEnum collect = getAsSuper(type);
         if (collect == null && type != null) {
-            return FilterUtil.nullableFirst(CollectionEnum.values(),
+            return FilterUtil.nullableFirst(CollectEnum.values(),
                 item -> item.type().isAssignableFrom(type));
         }
         return collect;
@@ -764,10 +764,10 @@ public enum CollectionEnum implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static CollectionEnum getAsSuperOrDeduce(Object object) {
-        CollectionEnum collect = getAsSuper(object);
+    public static CollectEnum getAsSuperOrDeduce(Object object) {
+        CollectEnum collect = getAsSuper(object);
         if (collect == null && object != null) {
-            return FilterUtil.nullableFirst(CollectionEnum.values(),
+            return FilterUtil.nullableFirst(CollectEnum.values(),
                 item -> item.type().isInstance(object));
         }
         return collect;

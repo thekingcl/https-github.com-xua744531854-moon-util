@@ -1,6 +1,7 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
@@ -13,21 +14,21 @@ final class ParseOpposite {
         noInstanceError();
     }
 
-    final static AsRunner parse(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parse(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         AsRunner handler, linked;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case YUAN_LEFT:
-                handler = ParseGetter.parseYuan(chars, indexer, len);
+                handler = ParseGetter.parseYuan(chars, indexer, len, settings);
                 break;
             case FANG_LEFT:
-                handler = ParseGetter.parseFang(chars, indexer, len);
+                handler = ParseGetter.parseFang(chars, indexer, len, settings);
                 break;
             case HUA_LEFT:
-                handler = ParseCurly.parse(chars, indexer, len);
+                handler = ParseCurly.parse(chars, indexer, len, settings);
                 break;
             case CALLER:
-                handler = ParseGetter.parseCaller(chars, indexer, len);
+                handler = ParseGetter.parseCaller(chars, indexer, len, settings);
                 break;
             default:
                 if (ParseUtil.isNum(curr)) {
@@ -41,7 +42,7 @@ final class ParseOpposite {
                 break;
         }
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        linked = ParseGetter.tryParseLinked(chars, indexer, len, handler);
+        linked = ParseGetter.tryParseLinked(chars, indexer, len, settings, handler);
         return linked.isConst()
             ? DataConst.getOpposite((DataConst) linked)
             : new DataGetterOpposite(linked);

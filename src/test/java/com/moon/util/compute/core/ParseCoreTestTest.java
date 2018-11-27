@@ -5,6 +5,7 @@ import com.moon.lang.StringUtil;
 import com.moon.util.Console;
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
+import com.moon.util.compute.RunnerSettings;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -27,7 +28,7 @@ class ParseCoreTestTest {
     AsRunner handler, handler1;
 
     static AsRunner running(String str) {
-        return ParseCore.parse(str);
+        return ParseCore.parse(str, RunnerSettings.DEFAULT);
     }
 
     @Test

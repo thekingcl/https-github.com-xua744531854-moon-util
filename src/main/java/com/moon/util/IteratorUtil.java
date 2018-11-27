@@ -3,7 +3,7 @@ package com.moon.util;
 import com.moon.beans.BeanInfoUtil;
 import com.moon.beans.FieldDescriptor;
 import com.moon.enums.ArraysEnum;
-import com.moon.enums.CollectionEnum;
+import com.moon.enums.CollectEnum;
 import com.moon.lang.EnumUtil;
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.IntAccessor;
@@ -898,18 +898,18 @@ public final class IteratorUtil {
      * @param <L>      List 类型
      * @return
      */
-    public static <K, E, L extends List<E>> Map<K, L> groupBy(L list, Function<E, K> function) {
-        final Supplier supplier = CollectionEnum.getOrDefault(list, CollectionEnum.ArrayList);
+    public static <K, E, L extends List<E>> Map<K, List<E>> groupBy(L list, Function<E, K> function) {
+        final Supplier supplier = CollectEnum.getOrDefault(list, CollectEnum.ArrayList);
         return groupBy(list, function, supplier);
     }
 
-    public static <K, E, S extends Set<E>> Map<K, S> groupBy(S set, Function<E, K> function) {
-        final Supplier supplier = CollectionEnum.getOrDefault(set, CollectionEnum.HashSet);
+    public static <K, E, S extends Set<E>> Map<K, Set<E>> groupBy(S set, Function<E, K> function) {
+        final Supplier supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
         return groupBy(set, function, supplier);
     }
 
-    public static <K, E, C extends Collection<E>> Map<K, C> groupBy(C collect, Function<E, K> function) {
-        final Supplier supplier = CollectionEnum.getOrDefault(collect, CollectionEnum.HashSet);
+    public static <K, E, C extends Collection<E>> Map<K, Collection<E>> groupBy(C collect, Function<E, K> function) {
+        final Supplier supplier = CollectEnum.getOrDefault(collect, CollectEnum.HashSet);
         return groupBy(collect, function, supplier);
     }
 
@@ -989,29 +989,29 @@ public final class IteratorUtil {
      */
 
     public static <E, T, L extends List<E>> List<T> map(L list, Function<E, T> function) {
-        final IntFunction supplier = CollectionEnum.getOrDefault(list, CollectionEnum.ArrayList);
-        return (List) map(list, function, supplier);
+        final IntFunction supplier = CollectEnum.getOrDefault(list, CollectEnum.ArrayList);
+        return (List) mapTo(list, function, supplier);
     }
 
     public static <E, T, S extends Set<E>> Set<T> map(S set, Function<E, T> function) {
-        final IntFunction supplier = CollectionEnum.getOrDefault(set, CollectionEnum.HashSet);
-        return (Set) map(set, function, supplier);
+        final IntFunction supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
+        return (Set) mapTo(set, function, supplier);
     }
 
-    public static <E, T, C extends Collection<E>, CR extends Collection<T>> CR map(C collect, Function<E, T> function) {
-        final IntFunction supplier = CollectionEnum.getOrDefault(collect, CollectionEnum.HashSet);
-        return (CR) map(collect, function, supplier);
-    }
-
-    public static <E, T, C extends Collection<E>, CR extends Collection<T>>
-
-    CR map(C collect, Function<E, T> function, IntFunction<CR> containerSupplier) {
-        return map(collect, function, containerSupplier.apply(collect == null ? 0 : collect.size()));
+    public static <E, T, C extends Collection<E>> Collection<T> map(C collect, Function<E, T> function) {
+        final IntFunction supplier = CollectEnum.getOrDefault(collect, CollectEnum.HashSet);
+        return mapTo(collect, function, supplier);
     }
 
     public static <E, T, C extends Collection<E>, CR extends Collection<T>>
 
-    CR map(C collect, Function<E, T> function, CR container) {
+    CR mapTo(C collect, Function<E, T> function, IntFunction<CR> containerSupplier) {
+        return mapTo(collect, function, containerSupplier.apply(collect == null ? 0 : collect.size()));
+    }
+
+    public static <E, T, C extends Collection<E>, CR extends Collection<T>>
+
+    CR mapTo(C collect, Function<E, T> function, CR container) {
         if (collect != null) {
             for (E item : collect) {
                 container.add(function.apply(item));

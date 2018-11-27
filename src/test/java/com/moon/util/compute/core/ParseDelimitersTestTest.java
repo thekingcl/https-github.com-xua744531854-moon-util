@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
+import com.moon.util.compute.RunnerSettings;
 import com.moon.util.compute.RunnerUtil;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ class ParseDelimitersTestTest {
     }
 
     static AsRunner running(String expression, String[] delimiters) {
-        return ParseDelimiters.parse(expression, delimiters);
+        return ParseDelimiters.parse(expression, delimiters, RunnerSettings.DEFAULT);
     }
 
     Object data;

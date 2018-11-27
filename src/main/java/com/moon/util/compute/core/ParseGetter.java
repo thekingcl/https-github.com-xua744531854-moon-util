@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.LinkedList;
 import java.util.Objects;
@@ -53,29 +54,33 @@ final class ParseGetter {
         return parseVar(chars, indexer, len, curr);
     }
 
-    final static AsRunner parseDot(char[] chars, IntAccessor indexer, int len, AsRunner prevHandler) {
+    final static AsRunner parseDot(
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+    ) {
         AsValuer prevValuer = (AsValuer) prevHandler;
         AsRunner handler = parseDot(chars, indexer, len);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, handler.toString(), prevValuer);
+        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len,settings, handler.toString(), prevValuer);
         return invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
     }
 
-    final static AsRunner parseNot(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parseNot(
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
+    ) {
         AsRunner valuer, parsed;
         int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
         switch (curr) {
             case Constants.FANG_LEFT:
-                valuer = parseFang(chars, indexer, len);
+                valuer = parseFang(chars, indexer, len, settings);
                 break;
             case Constants.YUAN_LEFT:
-                valuer = parseYuan(chars, indexer, len);
+                valuer = parseYuan(chars, indexer, len, settings);
                 break;
             case Constants.HUA_LEFT:
-                valuer = ParseCurly.parse(chars, indexer, len);
+                valuer = ParseCurly.parse(chars, indexer, len, settings);
                 break;
             case Constants.CALLER:
-                valuer = parseCaller(chars, indexer, len);
+                valuer = parseCaller(chars, indexer, len, settings);
                 break;
             default:
                 if (ParseUtil.isVar(curr)) {
@@ -91,20 +96,22 @@ final class ParseGetter {
                 }
                 break;
         }
-        parsed = tryParseLinked(chars, indexer, len, valuer);
+        parsed = tryParseLinked(chars, indexer, len, settings, valuer);
         return parsed == valuer && parsed.isConst() ? valuer
             : new DataGetterNot(parsed);
     }
 
-    final static AsRunner tryParseLinked(char[] chars, IntAccessor indexer, int len, AsRunner valuer) {
+    final static AsRunner tryParseLinked(
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner valuer
+    ) {
         final int index = indexer.get();
         AsRunner next = valuer;
         for (int curr; ; ) {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == Constants.DOT) {
-                next = parseDot(chars, indexer, len, next);
+                next = parseDot(chars, indexer, len,settings, next);
             } else if (curr == Constants.FANG_LEFT) {
-                next = parseFangToComplex(chars, indexer, len, next);
+                next = parseFangToComplex(chars, indexer, len, settings, next);
             } else {
                 if (next == valuer) {
                     indexer.set(index);
@@ -122,14 +129,14 @@ final class ParseGetter {
      * @param len
      * @return
      */
-    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len) {
-        AsRunner handler = ParseCore.parse(chars, indexer, len, Constants.FANG_RIGHT);
+    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
+        AsRunner handler = ParseCore.parse(chars, indexer, len, settings, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
     }
 
     /**
-     * 参考{@link ParseCore#core(char[], IntAccessor, int, int, LinkedList, LinkedList, AsRunner)}
+     * 参考{@link ParseCore#core(char[], IntAccessor, int, RunnerSettings, int, LinkedList, LinkedList, AsRunner)}
      * case FANG_LEFT: 的详细步骤
      *
      * @param chars
@@ -138,17 +145,19 @@ final class ParseGetter {
      * @param prevHandler
      * @return
      */
-    private final static AsRunner parseFangToComplex(char[] chars, IntAccessor indexer, int len, AsRunner prevHandler) {
-        AsRunner handler = ParseGetter.parseFang(chars, indexer, len);
+    private final static AsRunner parseFangToComplex(
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+    ) {
+        AsRunner handler = ParseGetter.parseFang(chars, indexer, len, settings);
         ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
         return ((DataGetterFang) handler).toComplex(prevHandler);
     }
 
-    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len) {
-        return ParseCore.parse(chars, indexer, len, Constants.YUAN_RIGHT);
+    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
+        return ParseCore.parse(chars, indexer, len, settings, Constants.YUAN_RIGHT);
     }
 
-    final static AsRunner parseCaller(char[] chars, IntAccessor indexer, int len) {
+    final static AsRunner parseCaller(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         int curr = chars[indexer.get()];
         AsRunner handler;
         if (curr == Constants.CALLER) {
@@ -158,7 +167,8 @@ final class ParseGetter {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (ParseUtil.isVar(curr)) {
                 handler = parseVar(chars, indexer, len, curr);
-                handler = new DataConstLoader(ILoader.of(handler.toString()));
+                Class caller = settings.getCaller(handler.toString());
+                handler = new DataConstLoader(caller == null ? ILoader.of(handler.toString()) : caller);
             } else {
                 ParseUtil.throwErr(chars, indexer);
                 // 为更多符号留位置，比如动态变化的类，等

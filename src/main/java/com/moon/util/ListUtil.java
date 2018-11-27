@@ -1,6 +1,6 @@
 package com.moon.util;
 
-import com.moon.enums.CollectionEnum;
+import com.moon.enums.CollectEnum;
 import com.moon.lang.ThrowUtil;
 
 import java.util.*;
@@ -306,7 +306,7 @@ public final class ListUtil extends CollectUtil {
                 T item = iterator.next();
                 if (map.containsKey(item)) {
                     if (repeated == null) {
-                        CollectionEnum collect = CollectionEnum.getOrDefault(list, CollectionEnum.ArrayList);
+                        CollectEnum collect = CollectEnum.getOrDefault(list, CollectEnum.ArrayList);
                         try {
                             repeated = (List) collect.apply(size);
                         } catch (Throwable e) {

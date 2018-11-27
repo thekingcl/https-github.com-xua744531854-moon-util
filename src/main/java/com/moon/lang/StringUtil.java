@@ -570,7 +570,7 @@ public final class StringUtil {
 
     public static String trimToDefault(CharSequence cs, String defaultValue) {
         String ret = isEmpty(cs) ? defaultValue : cs.toString().trim();
-        return ret == null ? ret : (length(ret) > 0 ? (ret.charAt(0) == 65279 ? ret.substring(1) : ret) : EMPTY);
+        return ret == null ? null : (length(ret) > 0 ? (ret.charAt(0) == 65279 ? ret.substring(1) : ret) : EMPTY);
     }
 
     /*
@@ -766,5 +766,9 @@ public final class StringUtil {
             return new String(chars);
         }
         return str;
+    }
+
+    public final static int charCodeAt(String str, int index) {
+        return str.charAt(index);
     }
 }
