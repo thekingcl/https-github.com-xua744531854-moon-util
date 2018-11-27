@@ -37,7 +37,7 @@ class ParseCore {
             if (expression == null) {
                 return DataConst.NULL;
             }
-            runner = putCache(expression, parse(expression, RunnerSettings.DEFAULT));
+            runner = putCache(expression, parse(expression, null));
         }
         return runner;
     }

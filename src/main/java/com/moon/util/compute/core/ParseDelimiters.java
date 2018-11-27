@@ -23,7 +23,7 @@ final class ParseDelimiters {
     final static AsRunner parse(String expression, String[] delimiters) {
         AsRunner parsed = CACHE.get(expression);
         if (parsed == null) {
-            parsed = parseCore(expression, delimiters, RunnerSettings.DEFAULT);
+            parsed = parseCore(expression, delimiters, null);
             synchronized (CACHE) {
                 if (CACHE.get(expression) == null) {
                     CACHE.put(expression, parsed);

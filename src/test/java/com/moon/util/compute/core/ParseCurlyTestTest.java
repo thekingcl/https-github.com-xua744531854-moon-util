@@ -25,7 +25,7 @@ class ParseCurlyTestTest {
         IntAccessor indexer = IntAccessor.of();
         int length = chars.length;
         ParseUtil.skipWhitespaces(chars, indexer, length);
-        return ParseCurly.parse(chars, indexer, length, RunnerSettings.DEFAULT);
+        return ParseCurly.parse(chars, indexer, length, null);
     }
 
     String str;

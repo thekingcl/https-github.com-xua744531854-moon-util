@@ -216,7 +216,7 @@ final class ParseCurly {
         MAP {
             @Override
             public Supplier apply(RunnerSettings settings) {
-                return Objects.requireNonNull(settings.getObjCreator());
+                return settings == null ? MAP : Objects.requireNonNull(settings.getObjCreator());
             }
 
             @Override
@@ -237,7 +237,7 @@ final class ParseCurly {
         LIST {
             @Override
             public Supplier apply(RunnerSettings settings) {
-                return Objects.requireNonNull(settings.getArrCreator());
+                return settings == null ? LIST : Objects.requireNonNull(settings.getArrCreator());
             }
 
             @Override

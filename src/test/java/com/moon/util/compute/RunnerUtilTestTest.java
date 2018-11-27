@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 
 import static com.moon.util.assertions.Assertions.of;
@@ -225,6 +227,8 @@ class RunnerUtilTestTest {
     @Test
     void testCustomCaller() {
         RunnerSettings settings = RunnerSettings.builder()
+            .setObjCreator(LinkedHashMap::new)
+            .setArrCreator(LinkedList::new)
             .addCaller("call", Caller.class)
             .addCaller("Objects", InnerObjects.class)
             .build();
@@ -235,6 +239,9 @@ class RunnerUtilTestTest {
         assertions.assertEquals(runner.run(), "--11--");
         runner = RunnerUtil.parse("@Objects.toString('123123')");
         assertions.assertEquals(runner.run(), "123123");
+        runner = RunnerUtil.parse("{'已有人数','需要人数','已提交','已付款','已完成'}", settings);
+        assertions.assertInstanceOf(runner.run(), LinkedList.class);
+        assertions.assertEquals(ListUtil.sizeByObject(runner.run()), 5);
     }
 
     public static class Caller {

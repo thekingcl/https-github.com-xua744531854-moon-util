@@ -28,7 +28,7 @@ class ParseCoreTestTest {
     AsRunner handler, handler1;
 
     static AsRunner running(String str) {
-        return ParseCore.parse(str, RunnerSettings.DEFAULT);
+        return ParseCore.parse(str, null);
     }
 
     @Test

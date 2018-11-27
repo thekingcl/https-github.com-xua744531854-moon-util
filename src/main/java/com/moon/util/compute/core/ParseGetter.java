@@ -60,7 +60,7 @@ final class ParseGetter {
         AsValuer prevValuer = (AsValuer) prevHandler;
         AsRunner handler = parseDot(chars, indexer, len);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len,settings, handler.toString(), prevValuer);
+        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, settings, handler.toString(), prevValuer);
         return invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
     }
 
@@ -109,7 +109,7 @@ final class ParseGetter {
         for (int curr; ; ) {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (curr == Constants.DOT) {
-                next = parseDot(chars, indexer, len,settings, next);
+                next = parseDot(chars, indexer, len, settings, next);
             } else if (curr == Constants.FANG_LEFT) {
                 next = parseFangToComplex(chars, indexer, len, settings, next);
             } else {
@@ -159,22 +159,26 @@ final class ParseGetter {
 
     final static AsRunner parseCaller(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         int curr = chars[indexer.get()];
-        AsRunner handler;
+        AsRunner runner;
         if (curr == Constants.CALLER) {
             // 为自定义静态类留位置，调用方式是两个‘@’：@@CustomType.method()
             throw new UnsupportedOperationException("@@");
         } else {
             curr = ParseUtil.skipWhitespaces(chars, indexer, len);
             if (ParseUtil.isVar(curr)) {
-                handler = parseVar(chars, indexer, len, curr);
-                Class caller = settings.getCaller(handler.toString());
-                handler = new DataConstLoader(caller == null ? ILoader.of(handler.toString()) : caller);
+                runner = parseVar(chars, indexer, len, curr);
+                runner = new DataConstLoader(parseCaller(runner, settings));
             } else {
                 ParseUtil.throwErr(chars, indexer);
                 // 为更多符号留位置，比如动态变化的类，等
                 throw new UnsupportedOperationException();
             }
         }
-        return Objects.requireNonNull(handler);
+        return Objects.requireNonNull(runner);
+    }
+
+    private final static Class parseCaller(AsRunner runner, RunnerSettings settings) {
+        Class caller = settings == null ? ILoader.of(runner.toString()) : settings.getCaller(runner.toString());
+        return caller == null ? ILoader.of(runner.toString()) : caller;
     }
 }

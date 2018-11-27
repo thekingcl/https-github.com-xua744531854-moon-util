@@ -1,7 +1,5 @@
 package com.moon.util.compute;
 
-import com.moon.lang.ThrowUtil;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.function.Supplier;
  */
 public class RunnerSettings {
 
-    public final static RunnerSettings DEFAULT = new PrivateRunnerSettings();
+
 
     protected Supplier<List> arrCreator;
     protected Supplier<Map> objCreator;
@@ -127,51 +125,6 @@ public class RunnerSettings {
 
         public RunnerSettings build() {
             return new RunnerSettings(callers, arrCreator, objCreator);
-        }
-    }
-
-    private static class PrivateRunnerSettings extends RunnerSettings {
-        private final Supplier<List> arrCreator;
-        private final Supplier<Map> objCreator;
-
-        private PrivateRunnerSettings() {
-            if (RunnerSettings.DEFAULT == null) {
-                this.arrCreator = ArrayList::new;
-                this.objCreator = HashMap::new;
-            } else {
-                this.arrCreator = ThrowUtil.rejectAccessError();
-                this.objCreator = ThrowUtil.rejectAccessError();
-            }
-        }
-
-        @Override
-        public Supplier<List> getArrCreator() {
-            return this.arrCreator;
-        }
-
-        @Override
-        public Supplier<Map> getObjCreator() {
-            return this.objCreator;
-        }
-
-        @Override
-        public PrivateRunnerSettings addCaller(String name, Class staticCallerClass) {
-            return this;
-        }
-
-        @Override
-        public RunnerSettings addCallers(Map<String, Class> callers) {
-            return this;
-        }
-
-        @Override
-        public RunnerSettings removeCaller(String name) {
-            return this;
-        }
-
-        @Override
-        public RunnerSettings removeCallers(String... names) {
-            return this;
         }
     }
 }

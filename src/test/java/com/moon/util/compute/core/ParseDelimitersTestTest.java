@@ -20,7 +20,7 @@ class ParseDelimitersTestTest {
     }
 
     static AsRunner running(String expression, String[] delimiters) {
-        return ParseDelimiters.parse(expression, delimiters, RunnerSettings.DEFAULT);
+        return ParseDelimiters.parse(expression, delimiters);
     }
 
     Object data;
