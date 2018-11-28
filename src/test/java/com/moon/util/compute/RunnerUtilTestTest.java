@@ -266,6 +266,9 @@ class RunnerUtilTestTest {
         res = runner.run(data);
         assertions.assertEquals(res, 1 >> 1);
         assertions.assertEquals(RunnerUtil.run("1<<1"), 1 << 1);
+        assertions.assertEquals(RunnerUtil.run("1>>1"), 1 >> 1);
+        assertions.assertEquals(RunnerUtil.run("1>>>1"), 1 >>> 1);
+        assertions.assertEquals(RunnerUtil.run("2>>>2"), 2 >>> 2);
         assertions.assertEquals(RunnerUtil.run("1==1"), 1 == 1);
         assertions.assertEquals(RunnerUtil.run("1!=1"), 1 != 1);
         assertions.assertEquals(RunnerUtil.run("1|1"), 1 | 1);
@@ -282,8 +285,6 @@ class RunnerUtilTestTest {
         runner = RunnerUtil.parse("((money+count)*people/100)+50-88+cat*10");
         int money = 2640, count = 50, people = 25, cat = 1;
         assertions.assertEquals(runner.run(data), ((money + count) * people / 100) + 50 - 88 + cat * 10);
-        System.out.println(1<<2);
-        System.out.println(1>>2);
     }
 
     public static class Caller {
