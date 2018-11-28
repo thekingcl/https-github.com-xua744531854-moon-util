@@ -17,6 +17,12 @@ enum DataComputes implements AsCompute {
             return ((Number) o1).intValue() << ((Number) o2).intValue();
         }
     },
+    UN_BIT_RIGHT(ConstPriorities.UN_BIT_RIGHT) {
+        @Override
+        public Object handle(Object o2, Object o1) {
+            return ((Number) o1).intValue() >>> ((Number) o2).intValue();
+        }
+    },
     BIT_RIGHT(ConstPriorities.BIT_RIGHT) {
         @Override
         public Object handle(Object o2, Object o1) {

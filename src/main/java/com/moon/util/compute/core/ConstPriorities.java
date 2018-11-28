@@ -15,6 +15,7 @@ final class ConstPriorities {
     final static int NOT_OR = 4;
     final static int BIT_LEFT = 4;
     final static int BIT_RIGHT = 4;
+    final static int UN_BIT_RIGHT = 4;
     final static int PLUS = 5;
     final static int MINUS = 5;
     final static int MULTI = 6;

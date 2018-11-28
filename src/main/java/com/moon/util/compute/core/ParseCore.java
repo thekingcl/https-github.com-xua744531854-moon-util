@@ -143,8 +143,12 @@ class ParseCore {
                 case GT:
                     // >、>=
                     if (chars[indexer.get()] == GT) {
-                        indexer.add();
-                        handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_RIGHT);
+                        if (chars[indexer.addAndGet()] == GT){
+                            indexer.add();
+                            handler = compareAndSwapSymbol(values, methods, DataComputes.UN_BIT_RIGHT);
+                        } else {
+                            handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_RIGHT);
+                        }
                     } else {
                         handler = toGtLtAndOr(chars, indexer, values, methods,
                             EQ, DataComputes.GT_OR_EQ, DataComputes.GT);
