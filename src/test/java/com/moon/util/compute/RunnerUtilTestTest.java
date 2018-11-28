@@ -244,6 +244,46 @@ class RunnerUtilTestTest {
         assertions.assertEquals(ListUtil.sizeByObject(runner.run()), 5);
     }
 
+    @Test
+    void testJEP() {
+        str = "((a+b)*(c+b))/(c+a)/b";
+        data = new HashMap() {{
+            put("a", 10);
+            put("b", 20);
+            put("c", 30);
+        }};
+        int a = 10, b = 20, c = 30;
+
+        Runner runner = RunnerUtil.parse(str);
+        res = runner.run(data);
+        assertions.assertEquals(res, ((a + b) * (c + b)) / (c + a) / b);
+
+        str = "43*(2 + 1.4)+2*32/(3-2.1)";
+        assertions.assertEquals(RunnerUtil.run(str), 43 * (2 + 1.4) + 2 * 32 / (3 - 2.1));
+
+        str = "1 >> 1";
+        runner = RunnerUtil.parse(str);
+        res = runner.run(data);
+        assertions.assertEquals(res, 1 >> 1);
+        assertions.assertEquals(RunnerUtil.run("1<<1"), 1 << 1);
+        assertions.assertEquals(RunnerUtil.run("1==1"), 1 == 1);
+        assertions.assertEquals(RunnerUtil.run("1!=1"), 1 != 1);
+        assertions.assertEquals(RunnerUtil.run("1|1"), 1 | 1);
+        assertions.assertEquals(RunnerUtil.run("1&1"), 1 & 1);
+        assertions.assertEquals(RunnerUtil.run("1^1"), 1 ^ 1);
+        assertions.assertEquals(RunnerUtil.run("3>4?1:2"), 3 > 4 ? 1 : 2);
+
+        data = new HashMap() {{
+            put("money", 2640);
+            put("count", 50);
+            put("people", 25);
+            put("cat", 1);
+        }};
+        runner = RunnerUtil.parse("((money+count)*people/100)+50-88+cat*10");
+        int money = 2640, count = 50, people = 25, cat = 1;
+        assertions.assertEquals(runner.run(data), ((money + count) * people / 100) + 50 - 88 + cat * 10);
+    }
+
     public static class Caller {
         public static final String get() {
             return "123456789";

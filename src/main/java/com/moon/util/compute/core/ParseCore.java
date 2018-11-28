@@ -33,18 +33,13 @@ class ParseCore {
 
     final static AsRunner parse(String expression) {
         AsRunner runner = CACHE.get(expression);
-        if (runner == null) {
-            if (expression == null) {
-                return DataConst.NULL;
-            }
-            runner = putCache(expression, parse(expression, null));
-        }
-        return runner;
+        return runner == null ? (expression == null ? DataConst.NULL : parse(expression, null)) : runner;
     }
 
     final static AsRunner parse(String expression, RunnerSettings settings) {
         char[] chars = expression.trim().toCharArray();
-        return parse(chars, IntAccessor.of(), chars.length, settings);
+        AsRunner runner = parse(chars, IntAccessor.of(), chars.length, settings);
+        return settings == null ? putCache(expression, runner) : runner;
     }
 
     final static AsRunner parse(
@@ -142,12 +137,13 @@ class ParseCore {
                     break;
                 case EQ:
                     // ==
-                    ParseUtil.assertTrue(chars[indexer.get()] == EQ, chars, indexer);
+                    ParseUtil.assertTrue(chars[indexer.getAndAdd()] == EQ, chars, indexer);
                     handler = compareAndSwapSymbol(values, methods, DataComputes.EQ);
                     break;
                 case GT:
                     // >、>=
                     if (chars[indexer.get()] == GT) {
+                        indexer.add();
                         handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_RIGHT);
                     } else {
                         handler = toGtLtAndOr(chars, indexer, values, methods,
@@ -157,6 +153,7 @@ class ParseCore {
                 case LT:
                     // <、<=
                     if (chars[indexer.get()] == LT) {
+                        indexer.add();
                         handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_LEFT);
                     } else {
                         handler = toGtLtAndOr(chars, indexer, values, methods,
@@ -175,7 +172,12 @@ class ParseCore {
                     break;
                 case NOT:
                     // !
-                    values.add(handler = ParseGetter.parseNot(chars, indexer, len, settings));
+                    if (chars[indexer.get()] == EQ) {
+                        indexer.add();
+                        handler = compareAndSwapSymbol(values, methods, DataComputes.NOT_EQ);
+                    } else {
+                        values.add(handler = ParseGetter.parseNot(chars, indexer, len, settings));
+                    }
                     break;
                 case CALLER:
                     // @

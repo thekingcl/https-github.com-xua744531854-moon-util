@@ -140,6 +140,12 @@ enum DataComputes implements AsCompute {
             return (Boolean) left.run(data) || (Boolean) right.run(data);
         }
     },
+    NOT_EQ(ConstPriorities.NOT_EQ) {
+        @Override
+        public Object handle(Object right, Object left) {
+            return Boolean.valueOf(!Objects.equals(right, left));
+        }
+    },
     EQ(ConstPriorities.EQ) {
         @Override
         public Object handle(Object o2, Object o1) {

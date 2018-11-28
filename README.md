@@ -193,6 +193,30 @@ RunnerUtil.run("@System.currentTimeMillis() ");
 RunnerUtil.run("@Objects.toString(25) "); // "25"
 ```
 
+10. 自定义 List 类型、Map 类型、静态方法调用类。
+``` java
+public statlc class InnerObjects {
+    public static String toString(Object o){
+        return "123";
+    }
+}
+
+RunnerSettings settings = RunnerSettings.builder()
+    // 自定义生成的数组是 LinkedList，默认 ArrayList
+    .setArrCreator(LinkedList::new)
+    // 自定义生成的数组是 TreeMap，默认是 HashMap
+    .setArrCreator(TreeMap::new)
+    // 自定义静态方法类 Objects，将覆盖 java.util.Objects
+    .addCaller("Objects", InnerObjects.class)
+    .build();
+
+Runner runner0 = RunnerUtil.parse("@Objects.toString('juejin shequ')");
+Runner runner1 = RunnerUtil.parse("@Objects.toString('juejin shequ')", settings);
+
+Object result0 = runner0.run(); // "juejin shequ"
+Object result1 = runner1.run(); // "123"
+```
+
 综上，就是这个工具库所支持的字符串表达式运算了，以上所列举的运算可以嵌套、连接、但是不能交叉的进行运算。
 
 也考虑过使用 Java 内置的 js 引擎，但是 js 引擎的效率非常低（写这个初衷就是为了下面的[ExcelUtil](#ExcelUtil)导出，数据量一大直接就“卡死”了），

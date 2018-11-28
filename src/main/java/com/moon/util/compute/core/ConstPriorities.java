@@ -26,6 +26,7 @@ final class ConstPriorities {
     final static int NOT = 2;
 
     final static int EQ = 3;
+    final static int NOT_EQ = 3;
     final static int GT = 3;
     final static int LT = 3;
     final static int GT_OR_EQ = 3;

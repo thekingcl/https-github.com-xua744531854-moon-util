@@ -11,16 +11,11 @@ import java.util.function.Supplier;
  */
 public class RunnerSettings {
 
-
-
     protected Supplier<List> arrCreator;
     protected Supplier<Map> objCreator;
     private final Map<String, Class> callers = new HashMap<>();
 
-    public RunnerSettings() {
-    }
-
-    public RunnerSettings(Map<? extends String, ? extends Class> callers, Supplier<List> arrCreator, Supplier<Map> objCreator) {
+    private RunnerSettings(Map<? extends String, ? extends Class> callers, Supplier<List> arrCreator, Supplier<Map> objCreator) {
         this.callers.putAll(callers);
         this.arrCreator = arrCreator;
         this.objCreator = objCreator;
@@ -41,6 +36,17 @@ public class RunnerSettings {
 
     public RunnerSettings setObjCreator(Supplier<Map> objCreator) {
         this.objCreator = objCreator;
+        return this;
+    }
+
+    public RunnerSettings addCaller(Class clazz) {
+        return addCaller(clazz.getSimpleName(), clazz);
+    }
+
+    public RunnerSettings addCallers(Class... classes) {
+        for (Class type : classes) {
+            addCaller(type);
+        }
         return this;
     }
 
@@ -103,6 +109,17 @@ public class RunnerSettings {
 
         public Builder addCaller(String name, Class staticCallerClass) {
             this.callers.put(name, staticCallerClass);
+            return this;
+        }
+
+        public Builder addCaller(Class clazz) {
+            return addCaller(clazz.getSimpleName(), clazz);
+        }
+
+        public Builder addCallers(Class... classes) {
+            for (Class type : classes) {
+                addCaller(type);
+            }
             return this;
         }
 
